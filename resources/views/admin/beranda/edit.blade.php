@@ -468,17 +468,17 @@
                     }">
                         <label class="block text-xs font-semibold text-gray-600 mb-3">Kartu Fitur (Ikon Emoji, Judul, Deskripsi)</label>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                             <template x-for="(card, index) in cards" :key="index">
-                                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 relative group">
-                                    <div class="flex gap-2 mb-2">
-                                        <input type="text" :name="'fitur_cards[' + index + '][ikon]'" x-model="card.ikon" class="form-input w-16 px-3 py-2 text-center rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-white" placeholder="Ikon">
-                                        <input type="text" :name="'fitur_cards[' + index + '][judul]'" x-model="card.judul" class="form-input flex-1 px-3 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-blue-500 font-semibold bg-white" placeholder="Judul Fitur">
-                                        <button type="button" @click="confirmRemoveCard(index)" class="text-red-500 hover:text-red-700 p-2 bg-red-50 hover:bg-red-100 rounded-lg transition-colors cursor-pointer" title="Hapus Fitur">
+                                <div class="bg-gray-50 p-3.5 sm:p-4 rounded-xl border border-gray-200 relative group">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <input type="text" :name="'fitur_cards[' + index + '][ikon]'" x-model="card.ikon" class="form-input w-12 sm:w-14 shrink-0 px-1 py-2 text-center rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-white text-base shadow-sm" placeholder="Ikon">
+                                        <input type="text" :name="'fitur_cards[' + index + '][judul]'" x-model="card.judul" class="form-input flex-1 min-w-0 px-3 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-blue-500 font-semibold bg-white text-sm shadow-sm" placeholder="Judul Fitur">
+                                        <button type="button" @click="confirmRemoveCard(index)" class="shrink-0 w-9 h-9 sm:w-10 sm:h-10 text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-100 rounded-lg transition-colors cursor-pointer flex items-center justify-center shadow-sm" title="Hapus Fitur">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                         </button>
                                     </div>
-                                    <input type="text" :name="'fitur_cards[' + index + '][deskripsi]'" x-model="card.deskripsi" class="form-input w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 bg-white" placeholder="Deskripsi pendek...">
+                                    <input type="text" :name="'fitur_cards[' + index + '][deskripsi]'" x-model="card.deskripsi" class="form-input w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 bg-white shadow-sm" placeholder="Deskripsi pendek...">
                                 </div>
                             </template>
                         </div>
