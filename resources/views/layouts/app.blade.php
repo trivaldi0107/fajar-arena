@@ -36,14 +36,14 @@
         <!-- Schema.org JSON-LD Structured Data for Google -->
         <script type="application/ld+json">
         {
-          "@context": "https://schema.org",
-          "@type": "SportsActivityLocation",
+          "{{ '@' }}context": "https://schema.org",
+          "{{ '@' }}type": "SportsActivityLocation",
           "name": "Fajar Arena Badminton",
           "alternateName": "Fajar Arena Graha Pena Makassar",
           "image": "{{ asset('images/badminton.png') }}",
           "url": "https://fajararena.cloud",
           "address": {
-            "@type": "PostalAddress",
+            "{{ '@' }}type": "PostalAddress",
             "streetAddress": "Lantai 2 Gedung Graha Pena, Jl. Urip Sumoharjo No. 20",
             "addressLocality": "Makassar",
             "addressRegion": "Sulawesi Selatan",
