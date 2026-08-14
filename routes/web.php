@@ -7,6 +7,20 @@ use App\Models\Pemesanan;
 use App\Http\Controllers\AdminController;
 use App\Models\Jadwal;
 
+Route::get('/sitemap.xml', function () {
+    $sitemapPath = public_path('sitemap.xml');
+    if (!file_exists($sitemapPath)) {
+        $sitemapPath = base_path('public/sitemap.xml');
+    }
+    if (file_exists($sitemapPath)) {
+        return response(file_get_contents($sitemapPath), 200, [
+            'Content-Type' => 'application/xml',
+        ]);
+    }
+    return response('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://fajararena.cloud/</loc></url></urlset>', 200, [
+        'Content-Type' => 'application/xml',
+    ]);
+});
 
 Route::get('/pembayaran/{id}', function ($id) {
 
