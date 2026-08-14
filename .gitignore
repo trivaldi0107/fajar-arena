@@ -1,0 +1,41 @@
+/.phpunit.cache
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+/.fleet
+/.idea
+/.vscode
+
+# Scratch and temporary scripts
+/debug.html
+/test_output.html
+/fix_*.py
+/build_test_docx.py
+/test_midtrans.php
+/add_columns.php
+/clean_duplicates.php
+/0
+/j2.id
+
+# E-books & document drafts
+/*.pdf
+/*.docx
+
+# Database backups and secret guides
+*.sql
+*.sql.gz
+PANDUAN_HOSTING_RUMAHWEB.md
+panduan_hosting_rumahweb.md
+panduan_*.md
+serve.bat

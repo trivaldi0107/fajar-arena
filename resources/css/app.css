@@ -1,0 +1,291 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak] {
+    display: none !important;
+}
+
+.grecaptcha-badge {
+    position: fixed !important;
+    bottom: 14px !important;
+    right: -186px !important;
+    z-index: 999999 !important;
+    visibility: visible !important;
+    opacity: 0.85 !important;
+    transition: right 0.35s ease-in-out, opacity 0.35s ease-in-out !important;
+    border-radius: 8px 0 0 8px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+}
+.grecaptcha-badge:hover {
+    right: 14px !important;
+    opacity: 1 !important;
+}
+
+
+/* ===== GLOBAL ===== */
+html, body {
+    height: 100%;
+}
+
+/* ===== AUTOFILL HACK UNTUK TEMA GLASSMORPHISM ===== */
+.text-white:-webkit-autofill,
+.text-white:-webkit-autofill:hover, 
+.text-white:-webkit-autofill:focus, 
+.text-white:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: white !important;
+}
+
+/* ===== CHARACTER BASE ===== */
+.character {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    transition: 0.3s ease;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+/* ===== VARIASI ===== */
+
+/* UNGU */
+.char-1 {
+    width: 80px;
+    height: 130px;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+}
+
+/* HITAM */
+.char-2 {
+    width: 50px;
+    height: 110px;
+    background: #020617;
+    border-radius: 12px;
+}
+
+/* ORANGE */
+.char-3 {
+    width: 110px;
+    height: 75px;
+    background: #f97316;
+    border-radius: 60px 60px 20px 20px;
+}
+
+/* KUNING */
+.char-4 {
+    width: 55px;
+    height: 95px;
+    background: #facc15;
+    border-radius: 40px;
+}
+
+/* ===== EYES ===== */
+.eye {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 35%;
+    transition: 0.15s ease;
+}
+
+/* DEFAULT (UNTUK KARAKTER BESAR) */
+.eye.left { left: 22px; }
+.eye.right { right: 22px; }
+
+/* HITAM (kecil & ramping) */
+.char-2 .eye.left { left: 10px; }
+.char-2 .eye.right { right: 10px; }
+
+/* KUNING (lebih kecil) */
+.char-4 .eye.left { left: 12px; }
+.char-4 .eye.right { right: 12px; }
+
+/* ORANGE (lebar) */
+.char-3 .eye.left { left: 28px; }
+.char-3 .eye.right { right: 28px; }
+
+/* ===== MOUTH ===== */
+.mouth {
+    position: absolute;
+    bottom: 18px;
+    width: 22px;
+    height: 5px;
+    background: white;
+    border-radius: 10px;
+    transition: 0.25s ease;
+}
+
+/* ===== EKSPRESI ===== */
+
+/* 🙂 NORMAL */
+.character.smile .mouth {
+    border-radius: 20px;
+}
+
+/* 😮 O SHAPE */
+.character.o .mouth {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+/* 😡 ERROR */
+.character.error .mouth {
+    width: 20px;
+    height: 6px;
+    border-radius: 2px;
+    transform: rotate(180deg);
+}
+
+/* mata ketutup saat password */
+.character.password .eye {
+    height: 2px;
+}
+
+/* ===== TOM SELECT PREMIUM ===== */
+.ts-wrapper{
+    width:100%;
+    border:none;
+    box-shadow:none;
+    background:transparent;
+}
+
+.ts-wrapper.single{
+    padding:0;
+}
+
+.ts-control{
+    border-radius:14px !important;
+    border:1px solid #dbe2ea !important;
+    min-height:42px !important;
+    font-size:14px !important;
+    background:white !important;
+
+    position:relative;
+
+    transition:all .25s ease;
+}
+
+.ts-control:hover{
+    border-color:#2563eb !important;
+}
+
+.ts-wrapper.focus .ts-control{
+    border-color:#2563eb !important;
+    box-shadow:0 0 0 4px rgba(37,99,235,.12) !important;
+}
+
+/* dropdown */
+.ts-dropdown{
+    border:none !important;
+    border-radius:16px !important;
+
+    margin-top:10px !important;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.08),
+        0 2px 8px rgba(0,0,0,.04);
+
+    animation:dropdownShow .22s ease;
+}
+
+/* option */
+.ts-dropdown .option{
+    padding:12px 14px !important;
+    font-size:14px;
+    transition:all .15s ease;
+}
+
+/* hover */
+.ts-dropdown .option:hover{
+    background:#eff6ff !important;
+    color:#2563eb !important;
+}
+
+/* selected */
+.ts-dropdown .active{
+    background:#2563eb !important;
+    color:white !important;
+}
+
+/* animation */
+@keyframes dropdownShow{
+    from{
+        opacity:0;
+        transform:translateY(-8px) scale(.98);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+/* icon dropdown tom select */
+.ts-wrapper.single .ts-control::after{
+    content: "";
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #6b7280;
+    pointer-events: none;
+    transition: .2s ease;
+}
+
+/* rotate saat terbuka */
+.ts-wrapper.single .ts-control::after{
+    content: "";
+    position: absolute;
+    right: 16px;
+    top: 50%;
+
+    width: 7px;
+    height: 7px;
+
+    border-right: 2px solid #6b7280;
+    border-bottom: 2px solid #6b7280;
+
+    transform: translateY(-65%) rotate(45deg);
+
+    pointer-events: none;
+    transition: .2s ease;
+}
+
+
+/* rotate saat open */
+.ts-wrapper.single.dropdown-active .ts-control::after{
+    transform: translateY(-35%) rotate(225deg);
+}
+
+.ts-wrapper.single .ts-control,
+.ts-wrapper.single .ts-control input,
+.ts-wrapper.single .ts-control .item{
+    line-height:28px !important;
+}
+
+.ts-wrapper.single .ts-control .item{
+    display:block !important;
+}
+
+.ts-wrapper.single .ts-control{
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    height: 42px !important;
+}
+
+.ts-wrapper.single .ts-control .item{
+    line-height: 42px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.ts-wrapper.single .ts-control input{
+    line-height: 42px !important;
+}
