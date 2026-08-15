@@ -565,18 +565,77 @@ function testPlayMode(mode) {
                 alert('Silakan pilih file audio dari perangkat terlebih dahulu.');
             }
         }
-    } else if (mode === 'voice') {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            const text = "Pesanan Masuk! Budi Santoso, Badminton. Silakan periksa bukti pembayaran.";
+function speakIndonesianText(text, vol = currentVolume) {
+    if (!('speechSynthesis' in window)) {
+        playSynthesizedChime(vol);
+        return;
+    }
+
+    try {
+        window.speechSynthesis.cancel();
+        
+        setTimeout(() => {
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'id-ID';
-            utterance.rate = 0.95;
-            utterance.volume = vol;
+            utterance.rate = 0.92;
+            utterance.pitch = 1.0;
+            utterance.volume = Math.max(0.1, Math.min(1.0, vol));
+
+            // Cari suara bahasa Indonesia jika tersedia di browser
+            const voices = window.speechSynthesis.getVoices();
+            if (voices && voices.length > 0) {
+                const idVoice = voices.find(v => (v.lang && v.lang.toLowerCase().includes('id')) || (v.name && v.name.toLowerCase().includes('indonesia')));
+                if (idVoice) {
+                    utterance.voice = idVoice;
+                }
+            }
+
+            utterance.onerror = function(err) {
+                console.warn('SpeechSynthesis error, fallback to chime', err);
+                playSynthesizedChime(vol);
+            };
+
+            window.speechSynthesis.resume();
             window.speechSynthesis.speak(utterance);
+        }, 60);
+    } catch(e) {
+        console.warn('Speech synthesis catch error', e);
+        playSynthesizedChime(vol);
+    }
+}
+
+// Muat daftar suara browser secara asinkron
+if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+    };
+}
+
+function testPlayMode(mode) {
+    const vol = parseFloat(document.getElementById('volumeSlider').value) / 100;
+    
+    if (mode === 'custom') {
+        if (customAudioData) {
+            const audio = new Audio(customAudioData);
+            audio.volume = vol;
+            audio.play().catch(e => {
+                console.warn('Audio play error', e);
+                playSynthesizedChime(vol);
+            });
         } else {
-            playSynthesizedChime(vol);
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Pilih File Terlebih Dahulu',
+                    text: 'Silakan klik tombol "Pilih File Audio" untuk mengambil lagu/ringtone dari perangkat Anda.',
+                    confirmButtonColor: '#2563eb'
+                });
+            } else {
+                alert('Silakan pilih file audio dari perangkat terlebih dahulu.');
+            }
         }
+    } else if (mode === 'voice') {
+        speakIndonesianText("Pesanan Masuk! Budi Santoso, Badminton. Silakan periksa bukti pembayaran.", vol);
     } else if (mode === 'chime') {
         playSynthesizedChime(vol);
     }
@@ -601,17 +660,8 @@ function playActiveNotification(customerName = 'Pelanggan', cabor = 'Badminton')
             playSynthesizedChime(vol);
         }
     } else if (mode === 'voice') {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            const text = `Pesanan Masuk! ${customerName}, ${cabor}. Silakan periksa bukti pembayaran.`;
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'id-ID';
-            utterance.rate = 0.95;
-            utterance.volume = vol;
-            window.speechSynthesis.speak(utterance);
-        } else {
-            playSynthesizedChime(vol);
-        }
+        const text = `Pesanan Masuk! ${customerName}, ${cabor}. Silakan periksa bukti pembayaran.`;
+        speakIndonesianText(text, vol);
     } else {
         playSynthesizedChime(vol);
     }
