@@ -92,29 +92,92 @@ document.addEventListener('click', function unlockAudioOnPage() {
     } catch(e) {}
 }, { passive: true });
 
-function playNotificationSound() {
+function playNotificationSound(customerName = 'Pelanggan', caborName = 'Badminton') {
+    const mode = localStorage.getItem('fajar_notif_mode') || 'chime';
+    const vol = parseFloat(localStorage.getItem('fajar_notif_volume') || '0.8');
+
+    if (mode === 'mute') {
+        return;
+    }
+
+    if (mode === 'custom') {
+        const audioData = localStorage.getItem('fajar_custom_audio_data');
+        if (audioData) {
+            try {
+                const audio = new Audio(audioData);
+                audio.volume = vol;
+                audio.play().catch(function(e) {
+                    console.warn('Audio play error, fallback to chime:', e);
+                    playGlobalChime(vol);
+                });
+                return;
+            } catch(e) {
+                console.warn('Custom audio error:', e);
+            }
+        }
+        playGlobalChime(vol);
+        return;
+    }
+
+    if (mode === 'voice') {
+        if ('speechSynthesis' in window) {
+            try {
+                window.speechSynthesis.cancel();
+                setTimeout(function() {
+                    const text = "Pesanan Masuk! " + (customerName || 'Pelanggan') + ", " + (caborName || 'Badminton') + ". Silakan periksa bukti pembayaran.";
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'id-ID';
+                    utterance.rate = 0.92;
+                    utterance.pitch = 1.0;
+                    utterance.volume = Math.max(0.1, Math.min(1.0, vol));
+
+                    const voices = window.speechSynthesis.getVoices();
+                    if (voices && voices.length > 0) {
+                        const idVoice = voices.find(function(v) {
+                            return (v.lang && v.lang.toLowerCase().includes('id')) || (v.name && v.name.toLowerCase().includes('indonesia'));
+                        });
+                        if (idVoice) utterance.voice = idVoice;
+                    }
+
+                    utterance.onerror = function() { playGlobalChime(vol); };
+                    window.speechSynthesis.resume();
+                    window.speechSynthesis.speak(utterance);
+                }, 60);
+                return;
+            } catch(e) {
+                console.warn('Speech error:', e);
+            }
+        }
+        playGlobalChime(vol);
+        return;
+    }
+
+    // Default: Chime
+    playGlobalChime(vol);
+}
+
+function playGlobalChime(vol = 0.8) {
     try {
         const ctx = getAudioContext();
         if (!ctx) return;
-        
         if (ctx.state === 'suspended') {
-            ctx.resume().then(function() { makeTwoToneChime(ctx); });
+            ctx.resume().then(function() { makeTwoToneChime(ctx, vol); });
         } else {
-            makeTwoToneChime(ctx);
+            makeTwoToneChime(ctx, vol);
         }
     } catch(e) {
         console.log('Audio error:', e);
     }
 }
 
-function makeTwoToneChime(ctx) {
+function makeTwoToneChime(ctx, vol = 0.8) {
     try {
         // Tone 1: E5 (659.25 Hz)
         const osc1 = ctx.createOscillator();
         const gain1 = ctx.createGain();
         osc1.type = 'sine';
         osc1.frequency.setValueAtTime(659.25, ctx.currentTime);
-        gain1.gain.setValueAtTime(0.6, ctx.currentTime);
+        gain1.gain.setValueAtTime(0.6 * vol, ctx.currentTime);
         gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
         osc1.connect(gain1);
         gain1.connect(ctx.destination);
@@ -126,7 +189,7 @@ function makeTwoToneChime(ctx) {
         const gain2 = ctx.createGain();
         osc2.type = 'sine';
         osc2.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
-        gain2.gain.setValueAtTime(0.7, ctx.currentTime + 0.15);
+        gain2.gain.setValueAtTime(0.7 * vol, ctx.currentTime + 0.15);
         gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
         osc2.connect(gain2);
         gain2.connect(ctx.destination);
@@ -294,8 +357,8 @@ function checkNewOrders() {
             const ackId = sessionStorage.getItem('ack_order_id');
 
             if (data.count > 0 && currentLatestId && ackId != currentLatestId) {
-                // 1. Play Loud Chime Sound
-                playNotificationSound();
+                // 1. Play Configured Notification Sound (Custom File / Voice / Chime)
+                playNotificationSound(data.customer_name || 'Pelanggan', data.cabor_name || 'Badminton');
 
                 const targetUrl = "/admin/pemesanan/" + currentLatestId;
                 const notifTitle = (data.arena_name || 'Fajar Arena') + ' 💳';
@@ -324,9 +387,9 @@ function checkNewOrders() {
                 // Mark order ID as notified in session storage
                 sessionStorage.setItem('ack_order_id', currentLatestId);
 
-                // Auto reload if admin is on /admin/pemesanan page
+                // Auto reload if admin is on /admin/pemesanan page after audio finishes
                 if (window.location.pathname.includes('/admin/pemesanan')) {
-                    setTimeout(function() { window.location.reload(); }, 1200);
+                    setTimeout(function() { window.location.reload(); }, 6000);
                 }
             }
         })
