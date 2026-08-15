@@ -250,6 +250,26 @@
     @csrf
 </form>
 
+<!-- Modal Confirm Action -->
+<div id="modalConfirm" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4 transition-all duration-300">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center transform transition-all">
+        <div id="confirmIconBox" class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4">
+            <!-- Icon diisi via JS -->
+        </div>
+        <h4 id="confirmTitle" class="font-extrabold text-gray-900 text-lg mb-1">Konfirmasi</h4>
+        <p id="confirmMessage" class="text-xs text-gray-500 mb-6 leading-relaxed"></p>
+        
+        <div class="flex gap-3">
+            <button type="button" onclick="closeConfirmModal()" class="w-1/2 py-2.5 border border-gray-200 rounded-xl font-bold text-xs text-gray-600 hover:bg-gray-50 transition cursor-pointer">
+                Batal
+            </button>
+            <button type="button" id="btnSubmitConfirm" onclick="submitConfirmModal()" class="w-1/2 py-2.5 text-white rounded-xl font-bold text-xs transition shadow-md cursor-pointer">
+                Lanjutkan
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Setel Suara Notifikasi -->
 <div id="modalAudioSettings" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4 transition-all duration-300">
     <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 text-left transform transition-all max-h-[90vh] overflow-y-auto">
@@ -378,7 +398,7 @@ let currentAudioMode = localStorage.getItem('fajar_notif_mode') || 'chime';
 let currentVolume = parseFloat(localStorage.getItem('fajar_notif_volume') || '0.8');
 let customAudioData = localStorage.getItem('fajar_custom_audio_data') || null;
 let customAudioName = localStorage.getItem('fajar_custom_audio_name') || null;
-let lastKnownPendingCount = {{ $pemesanans->where('status', 'proses')->count() }};
+let lastKnownPendingCount = 0;
 let lastProcessedOrderId = null;
 
 function initAudioSettingsUI() {
@@ -483,7 +503,6 @@ function handleAudioUpload(event) {
         document.getElementById('customFileName').innerText = '🎵 ' + customAudioName;
         selectAudioMode('custom', true);
 
-        // Putar langsung pratinjau audio yang baru diunggah
         testPlayMode('custom');
     };
     reader.readAsDataURL(file);
@@ -498,7 +517,7 @@ function playSynthesizedChime(vol = currentVolume) {
         const osc1 = ctx.createOscillator();
         const gain1 = ctx.createGain();
         osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(587.33, now); // D5
+        osc1.frequency.setValueAtTime(587.33, now);
         osc1.frequency.exponentialRampToValueAtTime(880, now + 0.1);
         gain1.gain.setValueAtTime(0.35 * vol, now);
         gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
@@ -511,7 +530,7 @@ function playSynthesizedChime(vol = currentVolume) {
         const osc2 = ctx.createOscillator();
         const gain2 = ctx.createGain();
         osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(1046.50, now + 0.12); // C6
+        osc2.frequency.setValueAtTime(1046.50, now + 0.12);
         gain2.gain.setValueAtTime(0.45 * vol, now + 0.12);
         gain2.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
         osc2.connect(gain2);
@@ -659,14 +678,18 @@ function startRealtimeNotificationWatcher() {
         .then(res => res.json())
         .then(data => {
             if (data && typeof data.count !== 'undefined') {
+                if (lastKnownPendingCount === 0) {
+                    lastKnownPendingCount = data.count;
+                    lastProcessedOrderId = data.latest_id;
+                    return;
+                }
+
                 if (data.count > lastKnownPendingCount || (data.latest_id && data.latest_id !== lastProcessedOrderId && data.count > 0)) {
                     lastKnownPendingCount = data.count;
                     lastProcessedOrderId = data.latest_id;
 
-                    // Putar Notifikasi Suara yang Sedang Aktif
                     playActiveNotification(data.customer_name, data.cabor);
 
-                    // Tampilkan Notifikasi Toast Melayang
                     if (typeof Swal !== 'undefined') {
                         const Toast = Swal.mixin({
                             toast: true,
@@ -695,10 +718,9 @@ function startRealtimeNotificationWatcher() {
             }
         })
         .catch(err => console.debug('Watcher quiet check', err));
-    }, 8000); // Cek otomatis setiap 8 detik
+    }, 8000);
 }
 
-// Inisialisasi saat halaman dimuat
 document.addEventListener('DOMContentLoaded', () => {
     initAudioSettingsUI();
     startRealtimeNotificationWatcher();
