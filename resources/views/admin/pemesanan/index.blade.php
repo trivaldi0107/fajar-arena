@@ -542,29 +542,6 @@ function playSynthesizedChime(vol = currentVolume) {
     }
 }
 
-function testPlayMode(mode) {
-    const vol = parseFloat(document.getElementById('volumeSlider').value) / 100;
-    
-    if (mode === 'custom') {
-        if (customAudioData) {
-            const audio = new Audio(customAudioData);
-            audio.volume = vol;
-            audio.play().catch(e => {
-                console.warn('Audio play error', e);
-                playSynthesizedChime(vol);
-            });
-        } else {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Pilih File Terlebih Dahulu',
-                    text: 'Silakan klik tombol "Pilih File Audio" untuk mengambil lagu/ringtone dari perangkat Anda.',
-                    confirmButtonColor: '#2563eb'
-                });
-            } else {
-                alert('Silakan pilih file audio dari perangkat terlebih dahulu.');
-            }
-        }
 function speakIndonesianText(text, vol = currentVolume) {
     if (!('speechSynthesis' in window)) {
         playSynthesizedChime(vol);
