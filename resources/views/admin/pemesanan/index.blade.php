@@ -37,6 +37,13 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 <span class="whitespace-nowrap">Upload QRIS Statis</span>
             </button>
+
+            <!-- Tombol Setel Suara Notifikasi (di sebelah kanan tombol Upload QRIS) -->
+            <button type="button" onclick="openModalAudioSettings()" class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-sm shadow-md shadow-slate-900/20 transition flex items-center justify-center gap-2 cursor-pointer shrink-0 w-full sm:w-auto border border-slate-700/50" title="Atur Nada Dering / Suara Notifikasi Pesanan">
+                <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                <span class="whitespace-nowrap">Setel Notifikasi</span>
+                <span id="badgeActiveMode" class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold">Default</span>
+            </button>
         </div>
     </div>
 
@@ -243,27 +250,461 @@
     @csrf
 </form>
 
-<!-- Modal Confirm Action -->
-<div id="modalConfirm" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4 transition-all duration-300">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center transform transition-all">
-        <div id="confirmIconBox" class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4">
-            <!-- Icon diisi via JS -->
-        </div>
-        <h4 id="confirmTitle" class="font-extrabold text-gray-900 text-lg mb-1">Konfirmasi</h4>
-        <p id="confirmMessage" class="text-xs text-gray-500 mb-6 leading-relaxed"></p>
-        
-        <div class="flex gap-3">
-            <button type="button" onclick="closeConfirmModal()" class="w-1/2 py-2.5 border border-gray-200 rounded-xl font-bold text-xs text-gray-600 hover:bg-gray-50 transition cursor-pointer">
-                Batal
+<!-- Modal Setel Suara Notifikasi -->
+<div id="modalAudioSettings" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4 transition-all duration-300">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 text-left transform transition-all max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center pb-4 border-b border-gray-100 mb-5">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                </div>
+                <div>
+                    <h4 class="font-extrabold text-gray-900 text-base sm:text-lg">Setel Suara Notifikasi</h4>
+                    <p class="text-xs text-gray-500">Pilih nada dering dari perangkat Anda atau asisten pintar</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeModalAudioSettings()" class="text-gray-400 hover:text-gray-600 p-1.5 rounded-xl hover:bg-gray-100 transition cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            <button type="button" id="btnSubmitConfirm" onclick="submitConfirmModal()" class="w-1/2 py-2.5 text-white rounded-xl font-bold text-xs transition shadow-md cursor-pointer">
-                Lanjutkan
+        </div>
+
+        <div class="space-y-3.5">
+            <!-- OPSI 1: KUSTOM DARI PERANGKAT -->
+            <div class="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-gray-200" id="cardModeCustom" onclick="selectAudioMode('custom')">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start gap-3">
+                        <input type="radio" name="notif_sound_mode" id="modeCustom" value="custom" class="mt-1 text-blue-600 focus:ring-blue-500">
+                        <div>
+                            <label for="modeCustom" class="font-bold text-sm text-gray-900 cursor-pointer flex items-center gap-2">
+                                <span>📁 File Audio dari Perangkat</span>
+                                <span class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Kustom HP / Laptop</span>
+                            </label>
+                            <p class="text-xs text-gray-500 mt-1">Gunakan lagu atau ringtone favorit yang tersimpan di penyimpanan perangkat Anda.</p>
+                            <div class="mt-2.5 flex items-center gap-2">
+                                <input type="file" id="customAudioInput" accept="audio/*" onchange="handleAudioUpload(event)" class="hidden">
+                                <button type="button" onclick="event.stopPropagation(); document.getElementById('customAudioInput').click()" class="px-3 py-1.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-xl transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+                                    <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                    Pilih File Audio
+                                </button>
+                                <span id="customFileName" class="text-xs text-gray-600 truncate max-w-[180px] italic">Belum ada file dipilih</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="event.stopPropagation(); testPlayMode('custom')" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl transition flex items-center gap-1 shrink-0 cursor-pointer" title="Putar Pratinjau Suara">
+                        <span>▶️ Tes</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- OPSI 2: ASISTEN SUARA BICARA (VOICE) -->
+            <div class="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-gray-200" id="cardModeVoice" onclick="selectAudioMode('voice')">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start gap-3">
+                        <input type="radio" name="notif_sound_mode" id="modeVoice" value="voice" class="mt-1 text-blue-600 focus:ring-blue-500">
+                        <div>
+                            <label for="modeVoice" class="font-bold text-sm text-gray-900 cursor-pointer flex items-center gap-2">
+                                <span>🗣️ Asisten Suara Pintar (Voice)</span>
+                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Sebut Nama & Cabor</span>
+                            </label>
+                            <p class="text-xs text-gray-500 mt-1 leading-relaxed">
+                                Suara otomatis menyebutkan: <em>"Pesanan Masuk! [Nama Customer], [Cabor]. Silakan periksa bukti pembayaran."</em>
+                            </p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="event.stopPropagation(); testPlayMode('voice')" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-xl transition flex items-center gap-1 shrink-0 cursor-pointer" title="Putar Pratinjau Suara">
+                        <span>▶️ Tes</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- OPSI 3: NADA BEL TING KLASIK -->
+            <div class="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-gray-200" id="cardModeChime" onclick="selectAudioMode('chime')">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start gap-3">
+                        <input type="radio" name="notif_sound_mode" id="modeChime" value="chime" class="mt-1 text-blue-600 focus:ring-blue-500">
+                        <div>
+                            <label for="modeChime" class="font-bold text-sm text-gray-900 cursor-pointer flex items-center gap-2">
+                                <span>🔔 Nada Bel 'Ting' Kasir (Chime Bawaan)</span>
+                            </label>
+                            <p class="text-xs text-gray-500 mt-1">Denting bel kasir klasik yang lembut dan jernih.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="event.stopPropagation(); testPlayMode('chime')" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold rounded-xl transition flex items-center gap-1 shrink-0 cursor-pointer" title="Putar Pratinjau Suara">
+                        <span>▶️ Tes</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- OPSI 4: SENYAP -->
+            <div class="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-gray-200" id="cardModeMute" onclick="selectAudioMode('mute')">
+                <div class="flex items-start gap-3">
+                    <input type="radio" name="notif_sound_mode" id="modeMute" value="mute" class="mt-1 text-blue-600 focus:ring-blue-500">
+                    <div>
+                        <label for="modeMute" class="font-bold text-sm text-gray-900 cursor-pointer">
+                            🔇 Senyap (Mute)
+                        </label>
+                        <p class="text-xs text-gray-500 mt-1">Matikan suara notifikasi (hanya menampilkan tanda visual lonceng).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Volume Slider -->
+        <div class="mt-5 pt-4 border-t border-gray-100">
+            <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                    Volume Suara
+                </label>
+                <span id="volumeLabel" class="text-xs font-bold text-blue-600">80%</span>
+            </div>
+            <input type="range" id="volumeSlider" min="10" max="100" value="80" oninput="updateVolumeLabel(this.value)" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+        </div>
+
+        <div class="flex gap-2.5 pt-6">
+            <button type="button" onclick="resetDefaultAudioSettings()" class="w-1/3 py-2.5 border border-gray-200 rounded-xl font-bold text-xs text-gray-600 hover:bg-gray-50 cursor-pointer transition">
+                Reset Bawaan
+            </button>
+            <button type="button" onclick="saveAudioSettings()" class="w-2/3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md shadow-blue-500/20 cursor-pointer transition">
+                Simpan Pengaturan
             </button>
         </div>
     </div>
 </div>
 
 <script>
+// ==================== ENGINE SUARA NOTIFIKASI ====================
+let currentAudioMode = localStorage.getItem('fajar_notif_mode') || 'chime';
+let currentVolume = parseFloat(localStorage.getItem('fajar_notif_volume') || '0.8');
+let customAudioData = localStorage.getItem('fajar_custom_audio_data') || null;
+let customAudioName = localStorage.getItem('fajar_custom_audio_name') || null;
+let lastKnownPendingCount = {{ $pemesanans->where('status', 'proses')->count() }};
+let lastProcessedOrderId = null;
+
+function initAudioSettingsUI() {
+    currentAudioMode = localStorage.getItem('fajar_notif_mode') || 'chime';
+    currentVolume = parseFloat(localStorage.getItem('fajar_notif_volume') || '0.8');
+    customAudioData = localStorage.getItem('fajar_custom_audio_data') || null;
+    customAudioName = localStorage.getItem('fajar_custom_audio_name') || null;
+
+    selectAudioMode(currentAudioMode, false);
+    
+    const slider = document.getElementById('volumeSlider');
+    if (slider) {
+        slider.value = Math.round(currentVolume * 100);
+        updateVolumeLabel(slider.value);
+    }
+
+    const fileLabel = document.getElementById('customFileName');
+    if (fileLabel) {
+        fileLabel.innerText = customAudioName ? ('🎵 ' + customAudioName) : 'Belum ada file dipilih';
+    }
+
+    updateBadgeMode(currentAudioMode);
+}
+
+function updateBadgeMode(mode) {
+    const badge = document.getElementById('badgeActiveMode');
+    if (!badge) return;
+    if (mode === 'custom') {
+        badge.innerText = '📁 File Perangkat';
+        badge.className = 'text-[10px] bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2 py-0.5 rounded-full font-bold';
+    } else if (mode === 'voice') {
+        badge.innerText = '🗣️ Asisten Suara';
+        badge.className = 'text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold';
+    } else if (mode === 'mute') {
+        badge.innerText = '🔇 Senyap';
+        badge.className = 'text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded-full font-bold';
+    } else {
+        badge.innerText = '🔔 Bel Ting';
+        badge.className = 'text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold';
+    }
+}
+
+function selectAudioMode(mode, saveImmediately = false) {
+    currentAudioMode = mode;
+    
+    ['custom', 'voice', 'chime', 'mute'].forEach(m => {
+        const card = document.getElementById('cardMode' + capitalize(m));
+        const radio = document.getElementById('mode' + capitalize(m));
+        if (card && radio) {
+            if (m === mode) {
+                card.classList.add('border-blue-500', 'bg-blue-50/40', 'ring-2', 'ring-blue-500/20');
+                card.classList.remove('border-gray-200', 'bg-slate-50/50');
+                radio.checked = true;
+            } else {
+                card.classList.remove('border-blue-500', 'bg-blue-50/40', 'ring-2', 'ring-blue-500/20');
+                card.classList.add('border-gray-200', 'bg-slate-50/50');
+                radio.checked = false;
+            }
+        }
+    });
+
+    if (saveImmediately) {
+        localStorage.setItem('fajar_notif_mode', mode);
+        updateBadgeMode(mode);
+    }
+}
+
+function capitalize(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function updateVolumeLabel(val) {
+    document.getElementById('volumeLabel').innerText = val + '%';
+    currentVolume = val / 100;
+}
+
+function handleAudioUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Ukuran File Terlalu Besar',
+                text: 'Maksimal ukuran file audio adalah 8MB agar sistem tetap cepat.',
+                confirmButtonColor: '#2563eb'
+            });
+        } else {
+            alert('Maksimal ukuran file audio adalah 8MB.');
+        }
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        customAudioData = e.target.result;
+        customAudioName = file.name;
+        localStorage.setItem('fajar_custom_audio_data', customAudioData);
+        localStorage.setItem('fajar_custom_audio_name', customAudioName);
+        
+        document.getElementById('customFileName').innerText = '🎵 ' + customAudioName;
+        selectAudioMode('custom', true);
+
+        // Putar langsung pratinjau audio yang baru diunggah
+        testPlayMode('custom');
+    };
+    reader.readAsDataURL(file);
+}
+
+function playSynthesizedChime(vol = currentVolume) {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const now = ctx.currentTime;
+        
+        // Tone 1
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(587.33, now); // D5
+        osc1.frequency.exponentialRampToValueAtTime(880, now + 0.1);
+        gain1.gain.setValueAtTime(0.35 * vol, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.8);
+        
+        // Tone 2
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(1046.50, now + 0.12); // C6
+        gain2.gain.setValueAtTime(0.45 * vol, now + 0.12);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(now + 0.12);
+        osc2.stop(now + 1.2);
+    } catch(e) {
+        console.warn('Web Audio error', e);
+    }
+}
+
+function testPlayMode(mode) {
+    const vol = parseFloat(document.getElementById('volumeSlider').value) / 100;
+    
+    if (mode === 'custom') {
+        if (customAudioData) {
+            const audio = new Audio(customAudioData);
+            audio.volume = vol;
+            audio.play().catch(e => {
+                console.warn('Audio play error', e);
+                playSynthesizedChime(vol);
+            });
+        } else {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Pilih File Terlebih Dahulu',
+                    text: 'Silakan klik tombol "Pilih File Audio" untuk mengambil lagu/ringtone dari perangkat Anda.',
+                    confirmButtonColor: '#2563eb'
+                });
+            } else {
+                alert('Silakan pilih file audio dari perangkat terlebih dahulu.');
+            }
+        }
+    } else if (mode === 'voice') {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const text = "Pesanan Masuk! Budi Santoso, Badminton. Silakan periksa bukti pembayaran.";
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'id-ID';
+            utterance.rate = 0.95;
+            utterance.volume = vol;
+            window.speechSynthesis.speak(utterance);
+        } else {
+            playSynthesizedChime(vol);
+        }
+    } else if (mode === 'chime') {
+        playSynthesizedChime(vol);
+    }
+}
+
+function playActiveNotification(customerName = 'Pelanggan', cabor = 'Badminton') {
+    const mode = localStorage.getItem('fajar_notif_mode') || 'chime';
+    const vol = parseFloat(localStorage.getItem('fajar_notif_volume') || '0.8');
+
+    if (mode === 'mute') {
+        return;
+    } else if (mode === 'custom') {
+        const audioData = localStorage.getItem('fajar_custom_audio_data');
+        if (audioData) {
+            const audio = new Audio(audioData);
+            audio.volume = vol;
+            audio.play().catch(e => {
+                console.warn('Autoplay error', e);
+                playSynthesizedChime(vol);
+            });
+        } else {
+            playSynthesizedChime(vol);
+        }
+    } else if (mode === 'voice') {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const text = `Pesanan Masuk! ${customerName}, ${cabor}. Silakan periksa bukti pembayaran.`;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'id-ID';
+            utterance.rate = 0.95;
+            utterance.volume = vol;
+            window.speechSynthesis.speak(utterance);
+        } else {
+            playSynthesizedChime(vol);
+        }
+    } else {
+        playSynthesizedChime(vol);
+    }
+}
+
+function saveAudioSettings() {
+    localStorage.setItem('fajar_notif_mode', currentAudioMode);
+    localStorage.setItem('fajar_notif_volume', currentVolume.toString());
+    updateBadgeMode(currentAudioMode);
+    closeModalAudioSettings();
+
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Pengaturan Tersimpan!',
+            text: 'Suara notifikasi pesanan berhasil diperbarui.',
+            timer: 2000,
+            showConfirmButton: false,
+            customClass: { popup: 'rounded-3xl' }
+        });
+    }
+}
+
+function resetDefaultAudioSettings() {
+    localStorage.removeItem('fajar_custom_audio_data');
+    localStorage.removeItem('fajar_custom_audio_name');
+    localStorage.setItem('fajar_notif_mode', 'chime');
+    localStorage.setItem('fajar_notif_volume', '0.8');
+    customAudioData = null;
+    customAudioName = null;
+    initAudioSettingsUI();
+
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'info',
+            title: 'Reset Selesai',
+            text: 'Suara notifikasi dikembalikan ke nada bel bawaan.',
+            timer: 1800,
+            showConfirmButton: false,
+            customClass: { popup: 'rounded-3xl' }
+        });
+    }
+}
+
+function openModalAudioSettings() {
+    initAudioSettingsUI();
+    const modal = document.getElementById('modalAudioSettings');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeModalAudioSettings() {
+    const modal = document.getElementById('modalAudioSettings');
+    modal.classList.remove('flex');
+    modal.classList.add('hidden');
+}
+
+// ==================== REAL-TIME BACKGROUND CHECK ====================
+function startRealtimeNotificationWatcher() {
+    setInterval(() => {
+        fetch("{{ route('admin.pemesanan.latest_check') }}", {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data && typeof data.count !== 'undefined') {
+                if (data.count > lastKnownPendingCount || (data.latest_id && data.latest_id !== lastProcessedOrderId && data.count > 0)) {
+                    lastKnownPendingCount = data.count;
+                    lastProcessedOrderId = data.latest_id;
+
+                    // Putar Notifikasi Suara yang Sedang Aktif
+                    playActiveNotification(data.customer_name, data.cabor);
+
+                    // Tampilkan Notifikasi Toast Melayang
+                    if (typeof Swal !== 'undefined') {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Segarkan Tabel',
+                            confirmButtonColor: '#2563eb',
+                            timer: 10000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: 'info',
+                            title: `🔔 Pesanan Masuk: ${data.customer_name}`,
+                            text: `${data.cabor} (Menunggu Verifikasi)`
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+                    }
+                }
+            }
+        })
+        .catch(err => console.debug('Watcher quiet check', err));
+    }, 8000); // Cek otomatis setiap 8 detik
+}
+
+// Inisialisasi saat halaman dimuat
+document.addEventListener('DOMContentLoaded', () => {
+    initAudioSettingsUI();
+    startRealtimeNotificationWatcher();
+});
+
+// ==================== MODAL KONFIRMASI & QRIS ====================
 function openConfirmModal(type, actionUrl, kode) {
     const form = document.getElementById('formConfirmAction');
     form.action = actionUrl;

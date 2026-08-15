@@ -243,6 +243,24 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         ->name('admin.scan.cancelCheckIn');
 
 
+    Route::get('/pemesanan/latest-check', function () {
+        $arena = active_arena();
+        $latest = \App\Models\Pemesanan::with('user')
+            ->where('pengaturan_id', $arena->id)
+            ->where('status', 'proses')
+            ->latest()
+            ->first();
+        $count = \App\Models\Pemesanan::where('pengaturan_id', $arena->id)
+            ->where('status', 'proses')
+            ->count();
+        return response()->json([
+            'count' => $count,
+            'latest_id' => $latest ? $latest->id : null,
+            'customer_name' => $latest && $latest->user ? $latest->user->name : 'Pelanggan',
+            'cabor' => $arena->nama_lapangan ?? 'Badminton',
+        ]);
+    })->name('admin.pemesanan.latest_check');
+
     Route::get('/pemesanan/{id}', [AdminController::class, 'detailPemesanan'])
         ->name('admin.pemesanan.detail');
     Route::post('/pemesanan/konfirmasi/{id}', [AdminController::class, 'konfirmasiPemesanan'])
