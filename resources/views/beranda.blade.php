@@ -297,7 +297,7 @@ body{
             }
         @endphp
 
-        <div class="mb-0 w-full">
+        <div class="w-full" style="margin-bottom: 0 !important;">
             <!-- ================= HEADLINE BANNER (IMAGE 1 TOP) ================= -->
             @if($headlineBerita)
             <div onclick="openBeritaModal('headline')" class="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl bg-gray-950 aspect-[16/10] sm:aspect-[21/9] md:aspect-[24/9] group cursor-pointer border border-gray-800 transition-all duration-300 hover:shadow-2xl mb-6 sm:mb-8">
@@ -596,7 +596,7 @@ body{
             }
         @endphp
         @if(!empty($ytData))
-        <div class="mt-3 sm:mt-4 mb-8 sm:mb-12 flex flex-col gap-6 w-full">
+        <div style="margin-top: 0.75rem !important; margin-bottom: 2rem !important;" class="flex flex-col gap-6 w-full">
             @foreach($ytData as $video)
                 @php
                     $link = $video['url'] ?? '';
@@ -610,7 +610,7 @@ body{
                 @endphp
                 <div class="max-w-4xl w-full mx-auto flex flex-col items-center group relative z-10 px-4 sm:px-6">
                     @if($title)
-                    <h3 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 mb-4 sm:mb-6 text-center tracking-tight">{{ $title }}</h3>
+                    <h3 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 text-center tracking-tight" style="margin-top: 0 !important; margin-bottom: 1rem !important;">{{ $title }}</h3>
                     @endif
                     <div class="w-full rounded-2xl md:rounded-3xl overflow-hidden shadow-lg relative aspect-video bg-gray-900 border-4 border-white group-hover:scale-[1.005] transition-all duration-300">
                         <iframe src="{{ $embedUrl }}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
