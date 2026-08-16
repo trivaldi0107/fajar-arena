@@ -124,7 +124,7 @@ function playNotificationSound(customerName = 'Pelanggan', caborName = 'Badminto
             try {
                 window.speechSynthesis.cancel();
                 setTimeout(function() {
-                    const text = "Pesanan Masuk! " + (customerName || 'Pelanggan') + ", " + (caborName || 'Badminton') + ". Silakan periksa bukti pembayaran.";
+                    const text = "Pesanan Masuk! Atas nama " + (customerName || 'Pelanggan') + ", " + (caborName || 'Badminton') + ". Silakan periksa bukti pembayaran.";
                     const utterance = new SpeechSynthesisUtterance(text);
                     utterance.lang = 'id-ID';
                     utterance.rate = 0.92;

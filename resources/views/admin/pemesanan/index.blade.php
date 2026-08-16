@@ -348,7 +348,7 @@
                             </button>
                         </div>
                         <p class="text-xs text-gray-500 mt-1 leading-relaxed">
-                            Suara otomatis menyebutkan: <em>"Pesanan Masuk! [Nama Customer], [Cabor]. Silakan periksa bukti pembayaran."</em>
+                            Suara otomatis menyebutkan: <em>"Pesanan Masuk! Atas nama [Nama Customer], [Cabor]. Silakan periksa bukti pembayaran."</em>
                         </p>
                     </div>
                 </div>
@@ -377,33 +377,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- OPSI 4: SENYAP -->
-            <div class="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-white hover:bg-slate-50 border-gray-200" id="cardModeMute" onclick="selectAudioMode('mute')">
-                <div class="flex items-start gap-3">
-                    <!-- Custom Radio Circle -->
-                    <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center mt-0.5 shrink-0 transition-colors" id="radioCircleMute">
-                        <div class="w-2.5 h-2.5 rounded-full bg-blue-600 hidden" id="radioDotMute"></div>
-                    </div>
-                    
-                    <div class="flex-1 min-w-0">
-                        <span class="font-bold text-sm text-gray-900">Senyap / Nonaktif</span>
-                        <p class="text-xs text-gray-500 mt-1 leading-relaxed">Hanya menampilkan tanda visual lonceng tanpa mengeluarkan suara.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Volume Slider -->
-        <div class="mt-5 pt-4 border-t border-gray-100">
-            <div class="flex items-center justify-between mb-2">
-                <label class="text-xs font-bold text-gray-700 flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
-                    Volume Suara
-                </label>
-                <span id="volumeLabel" class="text-xs font-extrabold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">80%</span>
-            </div>
-            <input type="range" id="volumeSlider" min="10" max="100" value="80" oninput="updateVolumeLabel(this.value)" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
         </div>
 
         <div class="flex gap-3 pt-6">
@@ -421,7 +394,6 @@
 <script>
 // ==================== ENGINE SUARA NOTIFIKASI ====================
 let currentAudioMode = localStorage.getItem('fajar_notif_mode') || 'chime';
-let currentVolume = parseFloat(localStorage.getItem('fajar_notif_volume') || '0.8');
 let customAudioData = localStorage.getItem('fajar_custom_audio_data') || null;
 let customAudioName = localStorage.getItem('fajar_custom_audio_name') || null;
 let lastKnownPendingCount = 0;
@@ -429,17 +401,10 @@ let lastProcessedOrderId = null;
 
 function initAudioSettingsUI() {
     currentAudioMode = localStorage.getItem('fajar_notif_mode') || 'chime';
-    currentVolume = parseFloat(localStorage.getItem('fajar_notif_volume') || '0.8');
     customAudioData = localStorage.getItem('fajar_custom_audio_data') || null;
     customAudioName = localStorage.getItem('fajar_custom_audio_name') || null;
 
     selectAudioMode(currentAudioMode, false);
-    
-    const slider = document.getElementById('volumeSlider');
-    if (slider) {
-        slider.value = Math.round(currentVolume * 100);
-        updateVolumeLabel(slider.value);
-    }
 
     const fileLabel = document.getElementById('customFileName');
     if (fileLabel) {
@@ -458,9 +423,6 @@ function updateBadgeMode(mode) {
     } else if (mode === 'voice') {
         badge.innerText = 'Asisten Suara';
         badge.className = 'text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold';
-    } else if (mode === 'mute') {
-        badge.innerText = 'Senyap';
-        badge.className = 'text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded-full font-bold';
     } else {
         badge.innerText = 'Bel Kasir';
         badge.className = 'text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold';
@@ -470,7 +432,7 @@ function updateBadgeMode(mode) {
 function selectAudioMode(mode, saveImmediately = false) {
     currentAudioMode = mode;
     
-    ['custom', 'voice', 'chime', 'mute'].forEach(m => {
+    ['custom', 'voice', 'chime'].forEach(m => {
         const card = document.getElementById('cardMode' + capitalize(m));
         const circle = document.getElementById('radioCircle' + capitalize(m));
         const dot = document.getElementById('radioDot' + capitalize(m));
@@ -499,11 +461,6 @@ function selectAudioMode(mode, saveImmediately = false) {
 
 function capitalize(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-function updateVolumeLabel(val) {
-    document.getElementById('volumeLabel').innerText = val + '%';
-    currentVolume = val / 100;
 }
 
 function handleAudioUpload(event) {
@@ -539,7 +496,7 @@ function handleAudioUpload(event) {
     reader.readAsDataURL(file);
 }
 
-function playSynthesizedChime(vol = currentVolume) {
+function playSynthesizedChime() {
     try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const now = ctx.currentTime;
@@ -550,7 +507,7 @@ function playSynthesizedChime(vol = currentVolume) {
         osc1.type = 'sine';
         osc1.frequency.setValueAtTime(587.33, now);
         osc1.frequency.exponentialRampToValueAtTime(880, now + 0.1);
-        gain1.gain.setValueAtTime(0.35 * vol, now);
+        gain1.gain.setValueAtTime(0.35, now);
         gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
         osc1.connect(gain1);
         gain1.connect(ctx.destination);
@@ -562,7 +519,7 @@ function playSynthesizedChime(vol = currentVolume) {
         const gain2 = ctx.createGain();
         osc2.type = 'sine';
         osc2.frequency.setValueAtTime(1046.50, now + 0.12);
-        gain2.gain.setValueAtTime(0.45 * vol, now + 0.12);
+        gain2.gain.setValueAtTime(0.45, now + 0.12);
         gain2.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
         osc2.connect(gain2);
         gain2.connect(ctx.destination);
@@ -573,9 +530,9 @@ function playSynthesizedChime(vol = currentVolume) {
     }
 }
 
-function speakIndonesianText(text, vol = currentVolume) {
+function speakIndonesianText(text) {
     if (!('speechSynthesis' in window)) {
-        playSynthesizedChime(vol);
+        playSynthesizedChime();
         return;
     }
 
@@ -587,7 +544,7 @@ function speakIndonesianText(text, vol = currentVolume) {
             utterance.lang = 'id-ID';
             utterance.rate = 0.92;
             utterance.pitch = 1.0;
-            utterance.volume = Math.max(0.1, Math.min(1.0, vol));
+            utterance.volume = 1.0;
 
             // Cari suara bahasa Indonesia jika tersedia di browser
             const voices = window.speechSynthesis.getVoices();
@@ -600,7 +557,7 @@ function speakIndonesianText(text, vol = currentVolume) {
 
             utterance.onerror = function(err) {
                 console.warn('SpeechSynthesis error, fallback to chime', err);
-                playSynthesizedChime(vol);
+                playSynthesizedChime();
             };
 
             window.speechSynthesis.resume();
@@ -608,7 +565,7 @@ function speakIndonesianText(text, vol = currentVolume) {
         }, 60);
     } catch(e) {
         console.warn('Speech synthesis catch error', e);
-        playSynthesizedChime(vol);
+        playSynthesizedChime();
     }
 }
 
@@ -620,15 +577,12 @@ if ('speechSynthesis' in window) {
 }
 
 function testPlayMode(mode) {
-    const vol = parseFloat(document.getElementById('volumeSlider').value) / 100;
-    
     if (mode === 'custom') {
         if (customAudioData) {
             const audio = new Audio(customAudioData);
-            audio.volume = vol;
             audio.play().catch(e => {
                 console.warn('Audio play error', e);
-                playSynthesizedChime(vol);
+                playSynthesizedChime();
             });
         } else {
             if (typeof Swal !== 'undefined') {
@@ -643,41 +597,36 @@ function testPlayMode(mode) {
             }
         }
     } else if (mode === 'voice') {
-        speakIndonesianText("Pesanan Masuk! Budi Santoso, Badminton. Silakan periksa bukti pembayaran.", vol);
+        speakIndonesianText("Pesanan Masuk! Atas nama Budi Santoso, Badminton. Silakan periksa bukti pembayaran.");
     } else if (mode === 'chime') {
-        playSynthesizedChime(vol);
+        playSynthesizedChime();
     }
 }
 
 function playActiveNotification(customerName = 'Pelanggan', cabor = 'Badminton') {
     const mode = localStorage.getItem('fajar_notif_mode') || 'chime';
-    const vol = parseFloat(localStorage.getItem('fajar_notif_volume') || '0.8');
 
-    if (mode === 'mute') {
-        return;
-    } else if (mode === 'custom') {
+    if (mode === 'custom') {
         const audioData = localStorage.getItem('fajar_custom_audio_data');
         if (audioData) {
             const audio = new Audio(audioData);
-            audio.volume = vol;
             audio.play().catch(e => {
                 console.warn('Autoplay error', e);
-                playSynthesizedChime(vol);
+                playSynthesizedChime();
             });
         } else {
-            playSynthesizedChime(vol);
+            playSynthesizedChime();
         }
     } else if (mode === 'voice') {
-        const text = `Pesanan Masuk! ${customerName}, ${cabor}. Silakan periksa bukti pembayaran.`;
-        speakIndonesianText(text, vol);
+        const text = `Pesanan Masuk! Atas nama ${customerName}, ${cabor}. Silakan periksa bukti pembayaran.`;
+        speakIndonesianText(text);
     } else {
-        playSynthesizedChime(vol);
+        playSynthesizedChime();
     }
 }
 
 function saveAudioSettings() {
     localStorage.setItem('fajar_notif_mode', currentAudioMode);
-    localStorage.setItem('fajar_notif_volume', currentVolume.toString());
     updateBadgeMode(currentAudioMode);
     closeModalAudioSettings();
 
@@ -697,7 +646,6 @@ function resetDefaultAudioSettings() {
     localStorage.removeItem('fajar_custom_audio_data');
     localStorage.removeItem('fajar_custom_audio_name');
     localStorage.setItem('fajar_notif_mode', 'chime');
-    localStorage.setItem('fajar_notif_volume', '0.8');
     customAudioData = null;
     customAudioName = null;
     initAudioSettingsUI();
