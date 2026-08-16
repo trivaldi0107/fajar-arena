@@ -203,9 +203,10 @@
 
 </div>
 
+@push('modals')
 <!-- Modal Preview Bukti Transfer -->
-<div id="modalProof" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 text-center">
+<div id="modalProof" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-[9999] p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 text-center my-auto">
         <div class="flex justify-between items-center mb-4">
             <h4 class="font-bold text-gray-900 text-lg">Foto Bukti Transfer</h4>
             <button type="button" onclick="closeProof()" class="text-gray-400 hover:text-gray-600 p-1">
@@ -217,8 +218,8 @@
 </div>
 
 <!-- Modal Upload QRIS Statis -->
-<div id="modalQris" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 text-center">
+<div id="modalQris" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-[9999] p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 text-center my-auto">
         <div class="flex justify-between items-center mb-4">
             <h4 class="font-bold text-gray-900 text-lg">Upload Gambar QRIS Statis</h4>
             <button type="button" onclick="closeModalQris()" class="text-gray-400 hover:text-gray-600 p-1">
@@ -251,8 +252,8 @@
 </form>
 
 <!-- Modal Confirm Action -->
-<div id="modalConfirm" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4 transition-all duration-300">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center transform transition-all">
+<div id="modalConfirm" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-[9999] p-4 transition-all duration-300">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center transform transition-all my-auto">
         <div id="confirmIconBox" class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4">
             <!-- Icon diisi via JS -->
         </div>
@@ -271,8 +272,8 @@
 </div>
 
 <!-- Modal Setel Suara Notifikasi -->
-<div id="modalAudioSettings" class="fixed inset-0 hidden items-center justify-center bg-slate-900/60 backdrop-blur-md z-50 p-4 sm:p-6 transition-all duration-300">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-5 sm:p-7 text-left transform transition-all max-h-[90vh] overflow-y-auto border border-gray-100">
+<div id="modalAudioSettings" class="fixed inset-0 hidden items-center justify-center bg-slate-900/60 backdrop-blur-md z-[9999] p-4 sm:p-6 transition-all duration-300 overflow-y-auto">
+    <div class="relative my-auto bg-white rounded-3xl shadow-2xl max-w-lg w-full p-5 sm:p-7 text-left transform transition-all max-h-[85vh] overflow-y-auto border border-gray-100">
         
         <!-- Header Modal -->
         <div class="flex justify-between items-start pb-4 border-b border-gray-100 mb-5">
@@ -415,6 +416,7 @@
         </div>
     </div>
 </div>
+@endpush
 
 <script>
 // ==================== ENGINE SUARA NOTIFIKASI ====================
