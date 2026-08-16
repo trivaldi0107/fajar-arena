@@ -13,18 +13,7 @@
                 <div class="flex flex-col min-w-0">
                     <span class="hidden md:block text-[11px] font-bold text-slate-400 uppercase tracking-wider leading-none mb-1">Pilih Cabang</span>
                     <div class="flex items-center gap-1.5 min-w-0">
-                        <span class="text-xs md:text-sm font-bold text-slate-800 leading-none truncate max-w-[110px] sm:max-w-[160px] md:max-w-none">{{ active_arena()->nama_arena ?? 'Fajar Arena' }}</span>
-                        @php
-                            $activePendingCount = \App\Models\Pemesanan::whereIn('status', ['proses', 'pending'])
-                                ->whereHas('detail.lapangan', function($q) {
-                                    $q->where('pengaturan_id', active_arena()->id);
-                                })->count();
-                        @endphp
-                        @if($activePendingCount > 0)
-                            <span class="bg-amber-500 text-white text-[10px] md:text-[11px] font-black px-1.5 md:px-2 py-0.5 rounded-full animate-pulse shadow-sm flex-shrink-0">
-                                {{ $activePendingCount }}
-                            </span>
-                        @endif
+                        <span class="text-xs md:text-sm font-bold text-slate-800 leading-none truncate max-w-[130px] sm:max-w-[180px] md:max-w-none">{{ active_arena()->nama_arena ?? 'Fajar Arena' }}</span>
                     </div>
                 </div>
                 <svg :class="{'rotate-180': openCabang}" class="w-3.5 h-3.5 text-slate-400 ml-0.5 sm:ml-2 transition-transform duration-200 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
