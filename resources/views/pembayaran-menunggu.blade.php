@@ -204,17 +204,10 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
         </div>
-        <h4 class="font-extrabold text-gray-900 text-lg mb-1">Pemesanan Dibatalkan</h4>
-        <p class="text-xs text-gray-500 mb-4 leading-relaxed">
-            Maaf, pesanan Anda telah ditolak atau dibatalkan oleh pengelola. Slot jadwal yang Anda pilih telah dikembalikan.
-        </p>
-
-        <!-- Alasan Penolakan Box -->
-        <div class="bg-rose-50 border border-rose-200 rounded-2xl p-3.5 mb-5 text-left">
-            <span class="text-[11px] font-extrabold text-rose-900 block mb-1 uppercase tracking-wider">Alasan Penolakan:</span>
-            <p id="textAlasanPenolakan" class="text-xs text-rose-700 font-semibold leading-relaxed">
-                {{ $pemesanan->alasan_penolakan ?: 'Bukti transfer tidak valid atau pembayaran tidak sesuai.' }}
-            </p>
+        <h4 class="font-extrabold text-gray-900 text-lg mb-2">Pemesanan Dibatalkan</h4>
+        <div class="text-xs text-gray-500 mb-6 leading-relaxed space-y-2">
+            <p>Maaf, pesanan Anda telah ditolak atau dibatalkan oleh pengelola. Slot jadwal yang Anda pilih telah dikembalikan.</p>
+            <p id="textAlasanPenolakan" class="text-rose-600 font-bold text-xs">{{ $pemesanan->alasan_penolakan ?: '' }}</p>
         </div>
         
         <button type="button" onclick="redirectToReservasi()" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs transition shadow-md shadow-rose-600/20 cursor-pointer">

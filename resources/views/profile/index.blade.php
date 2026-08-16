@@ -154,12 +154,9 @@
                         </div>
                     @elseif($pesanan->status == 'batal' || $pesanan->status == 'dibatalkan')
                         @if($pesanan->alasan_penolakan)
-                        <div class="mt-4 p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-900 flex items-start gap-3">
+                        <div class="mt-4 p-3.5 bg-rose-50 border border-rose-200 rounded-2xl text-rose-900 flex items-start gap-3">
                             <svg class="w-5 h-5 text-rose-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                            <div class="text-xs">
-                                <span class="font-extrabold text-rose-900 block mb-0.5">Pemesanan Ditolak Pengelola:</span>
-                                <span class="text-rose-700 leading-relaxed">{{ $pesanan->alasan_penolakan }}</span>
-                            </div>
+                            <p class="text-xs text-rose-700 font-semibold leading-relaxed">{{ $pesanan->alasan_penolakan }}</p>
                         </div>
                         @endif
                         <div class="mt-4 pt-4 border-t-2 border-dashed border-gray-200 flex justify-center md:justify-end">
