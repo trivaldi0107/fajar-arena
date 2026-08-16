@@ -297,7 +297,7 @@ body{
             }
         @endphp
 
-        <div class="mb-6 sm:mb-8 w-full">
+        <div class="mb-0 w-full">
             <!-- ================= HEADLINE BANNER (IMAGE 1 TOP) ================= -->
             @if($headlineBerita)
             <div onclick="openBeritaModal('headline')" class="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl bg-gray-950 aspect-[16/10] sm:aspect-[21/9] md:aspect-[24/9] group cursor-pointer border border-gray-800 transition-all duration-300 hover:shadow-2xl mb-6 sm:mb-8">
@@ -596,7 +596,7 @@ body{
             }
         @endphp
         @if(!empty($ytData))
-        <div class="mb-8 sm:mb-12 flex flex-col gap-6 w-full">
+        <div class="mt-3 sm:mt-4 mb-8 sm:mb-12 flex flex-col gap-6 w-full">
             @foreach($ytData as $video)
                 @php
                     $link = $video['url'] ?? '';
