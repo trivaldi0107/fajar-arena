@@ -271,109 +271,122 @@
 </div>
 
 <!-- Modal Setel Suara Notifikasi -->
-<div id="modalAudioSettings" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4 transition-all duration-300">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 text-left transform transition-all max-h-[90vh] overflow-y-auto">
-        <div class="flex justify-between items-center pb-4 border-b border-gray-100 mb-5">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+<div id="modalAudioSettings" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-3 sm:p-4 transition-all duration-300">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-4 sm:p-6 text-left transform transition-all max-h-[90vh] overflow-y-auto">
+        
+        <!-- Header Modal -->
+        <div class="flex justify-between items-start pb-3.5 border-b border-gray-100 mb-4">
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
                 </div>
                 <div>
-                    <h4 class="font-extrabold text-gray-900 text-base sm:text-lg">Setel Suara Notifikasi</h4>
-                    <p class="text-xs text-gray-500">Pilih nada dering dari perangkat Anda atau asisten pintar</p>
+                    <h4 class="font-extrabold text-gray-900 text-sm sm:text-base">Setel Suara Notifikasi</h4>
+                    <p class="text-[11px] sm:text-xs text-gray-500 leading-tight mt-0.5">Pilih nada dari perangkat atau asisten suara pintar</p>
                 </div>
             </div>
-            <button type="button" onclick="closeModalAudioSettings()" class="text-gray-400 hover:text-gray-600 p-1.5 rounded-xl hover:bg-gray-100 transition cursor-pointer">
+            <button type="button" onclick="closeModalAudioSettings()" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition cursor-pointer shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
 
-        <div class="space-y-3.5">
+        <div class="space-y-3">
             <!-- OPSI 1: KUSTOM DARI PERANGKAT -->
-            <div class="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-gray-200" id="cardModeCustom" onclick="selectAudioMode('custom')">
-                <div class="flex items-start justify-between">
-                    <div class="flex items-start gap-3">
-                        <input type="radio" name="notif_sound_mode" id="modeCustom" value="custom" class="mt-1 text-blue-600 focus:ring-blue-500">
-                        <div>
-                            <label for="modeCustom" class="font-bold text-sm text-gray-900 cursor-pointer flex items-center gap-2">
-                                <span>📁 File Audio dari Perangkat</span>
-                                <span class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Kustom HP / Laptop</span>
-                            </label>
-                            <p class="text-xs text-gray-500 mt-1">Gunakan lagu atau ringtone favorit yang tersimpan di penyimpanan perangkat Anda.</p>
-                            <div class="mt-2.5 flex items-center gap-2">
+            <div class="p-3 sm:p-4 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-gray-200" id="cardModeCustom" onclick="selectAudioMode('custom')">
+                <div class="flex items-start justify-between gap-2">
+                    <div class="flex items-start gap-2.5 min-w-0 flex-1">
+                        <input type="radio" name="notif_sound_mode" id="modeCustom" value="custom" class="mt-1 text-blue-600 focus:ring-blue-500 shrink-0">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <label for="modeCustom" class="font-bold text-xs sm:text-sm text-gray-900 cursor-pointer">
+                                    File Audio Perangkat
+                                </label>
+                                <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Kustom</span>
+                            </div>
+                            <p class="text-[11px] sm:text-xs text-gray-500 mt-0.5 leading-snug">Gunakan nada atau lagu dari penyimpanan perangkat Anda.</p>
+                            
+                            <div class="mt-2.5 flex flex-col sm:flex-row items-start sm:items-center gap-2">
                                 <input type="file" id="customAudioInput" accept="audio/*" onchange="handleAudioUpload(event)" class="hidden">
-                                <button type="button" onclick="event.stopPropagation(); document.getElementById('customAudioInput').click()" class="px-3 py-1.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-xl transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+                                <button type="button" onclick="event.stopPropagation(); document.getElementById('customAudioInput').click()" class="px-2.5 py-1.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-[11px] sm:text-xs font-bold rounded-xl transition shadow-sm flex items-center gap-1.5 cursor-pointer shrink-0">
                                     <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                    Pilih File Audio
+                                    Pilih File
                                 </button>
-                                <span id="customFileName" class="text-xs text-gray-600 truncate max-w-[180px] italic">Belum ada file dipilih</span>
+                                <span id="customFileName" class="text-[11px] sm:text-xs text-gray-600 truncate max-w-full italic">Belum ada file dipilih</span>
                             </div>
                         </div>
                     </div>
-                    <button type="button" onclick="event.stopPropagation(); testPlayMode('custom')" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl transition flex items-center gap-1 shrink-0 cursor-pointer" title="Putar Pratinjau Suara">
-                        <span>▶️ Tes</span>
+                    <button type="button" onclick="event.stopPropagation(); testPlayMode('custom')" class="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[11px] sm:text-xs font-bold rounded-xl transition flex items-center gap-1 shrink-0 cursor-pointer" title="Putar Pratinjau Suara">
+                        <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <span>Tes</span>
                     </button>
                 </div>
             </div>
 
             <!-- OPSI 2: ASISTEN SUARA BICARA (VOICE) -->
-            <div class="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-gray-200" id="cardModeVoice" onclick="selectAudioMode('voice')">
-                <div class="flex items-start justify-between">
-                    <div class="flex items-start gap-3">
-                        <input type="radio" name="notif_sound_mode" id="modeVoice" value="voice" class="mt-1 text-blue-600 focus:ring-blue-500">
-                        <div>
-                            <label for="modeVoice" class="font-bold text-sm text-gray-900 cursor-pointer flex items-center gap-2">
-                                <span>🗣️ Asisten Suara Pintar (Voice)</span>
-                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Sebut Nama & Cabor</span>
-                            </label>
-                            <p class="text-xs text-gray-500 mt-1 leading-relaxed">
-                                Suara otomatis menyebutkan: <em>"Pesanan Masuk! [Nama Customer], [Cabor]. Silakan periksa bukti pembayaran."</em>
+            <div class="p-3 sm:p-4 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-gray-200" id="cardModeVoice" onclick="selectAudioMode('voice')">
+                <div class="flex items-start justify-between gap-2">
+                    <div class="flex items-start gap-2.5 min-w-0 flex-1">
+                        <input type="radio" name="notif_sound_mode" id="modeVoice" value="voice" class="mt-1 text-blue-600 focus:ring-blue-500 shrink-0">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <label for="modeVoice" class="font-bold text-xs sm:text-sm text-gray-900 cursor-pointer">
+                                    Asisten Suara Pintar
+                                </label>
+                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Sebut Nama & Cabor</span>
+                            </div>
+                            <p class="text-[11px] sm:text-xs text-gray-500 mt-0.5 leading-snug">
+                                Suara menyebutkan: <em>"Pesanan Masuk! [Nama Customer], [Cabor]. Silakan periksa bukti pembayaran."</em>
                             </p>
                         </div>
                     </div>
-                    <button type="button" onclick="event.stopPropagation(); testPlayMode('voice')" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-xl transition flex items-center gap-1 shrink-0 cursor-pointer" title="Putar Pratinjau Suara">
-                        <span>▶️ Tes</span>
+                    <button type="button" onclick="event.stopPropagation(); testPlayMode('voice')" class="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[11px] sm:text-xs font-bold rounded-xl transition flex items-center gap-1 shrink-0 cursor-pointer" title="Putar Pratinjau Suara">
+                        <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <span>Tes</span>
                     </button>
                 </div>
             </div>
 
             <!-- OPSI 3: NADA BEL TING KLASIK -->
-            <div class="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-gray-200" id="cardModeChime" onclick="selectAudioMode('chime')">
-                <div class="flex items-start justify-between">
-                    <div class="flex items-start gap-3">
-                        <input type="radio" name="notif_sound_mode" id="modeChime" value="chime" class="mt-1 text-blue-600 focus:ring-blue-500">
-                        <div>
-                            <label for="modeChime" class="font-bold text-sm text-gray-900 cursor-pointer flex items-center gap-2">
-                                <span>🔔 Nada Bel 'Ting' Kasir (Chime Bawaan)</span>
-                            </label>
-                            <p class="text-xs text-gray-500 mt-1">Denting bel kasir klasik yang lembut dan jernih.</p>
+            <div class="p-3 sm:p-4 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-gray-200" id="cardModeChime" onclick="selectAudioMode('chime')">
+                <div class="flex items-start justify-between gap-2">
+                    <div class="flex items-start gap-2.5 min-w-0 flex-1">
+                        <input type="radio" name="notif_sound_mode" id="modeChime" value="chime" class="mt-1 text-blue-600 focus:ring-blue-500 shrink-0">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <label for="modeChime" class="font-bold text-xs sm:text-sm text-gray-900 cursor-pointer">
+                                    Nada Bel Kasir
+                                </label>
+                                <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Bawaan</span>
+                            </div>
+                            <p class="text-[11px] sm:text-xs text-gray-500 mt-0.5 leading-snug">Denting bel kasir klasik yang lembut dan jernih.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="event.stopPropagation(); testPlayMode('chime')" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold rounded-xl transition flex items-center gap-1 shrink-0 cursor-pointer" title="Putar Pratinjau Suara">
-                        <span>▶️ Tes</span>
+                    <button type="button" onclick="event.stopPropagation(); testPlayMode('chime')" class="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-[11px] sm:text-xs font-bold rounded-xl transition flex items-center gap-1 shrink-0 cursor-pointer" title="Putar Pratinjau Suara">
+                        <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <span>Tes</span>
                     </button>
                 </div>
             </div>
 
             <!-- OPSI 4: SENYAP -->
-            <div class="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-gray-200" id="cardModeMute" onclick="selectAudioMode('mute')">
-                <div class="flex items-start gap-3">
-                    <input type="radio" name="notif_sound_mode" id="modeMute" value="mute" class="mt-1 text-blue-600 focus:ring-blue-500">
+            <div class="p-3 sm:p-4 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-gray-200" id="cardModeMute" onclick="selectAudioMode('mute')">
+                <div class="flex items-start gap-2.5">
+                    <input type="radio" name="notif_sound_mode" id="modeMute" value="mute" class="mt-1 text-blue-600 focus:ring-blue-500 shrink-0">
                     <div>
-                        <label for="modeMute" class="font-bold text-sm text-gray-900 cursor-pointer">
-                            🔇 Senyap (Mute)
+                        <label for="modeMute" class="font-bold text-xs sm:text-sm text-gray-900 cursor-pointer">
+                            Senyap / Nonaktif
                         </label>
-                        <p class="text-xs text-gray-500 mt-1">Matikan suara notifikasi (hanya menampilkan tanda visual lonceng).</p>
+                        <p class="text-[11px] sm:text-xs text-gray-500 mt-0.5 leading-snug">Hanya menampilkan tanda visual lonceng tanpa suara.</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Volume Slider -->
-        <div class="mt-5 pt-4 border-t border-gray-100">
+        <div class="mt-4 pt-3.5 border-t border-gray-100">
             <div class="flex items-center justify-between mb-1.5">
                 <label class="text-xs font-bold text-gray-700 flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
                     Volume Suara
                 </label>
                 <span id="volumeLabel" class="text-xs font-bold text-blue-600">80%</span>
@@ -381,9 +394,9 @@
             <input type="range" id="volumeSlider" min="10" max="100" value="80" oninput="updateVolumeLabel(this.value)" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
         </div>
 
-        <div class="flex gap-2.5 pt-6">
+        <div class="flex gap-2 pt-4 sm:pt-5">
             <button type="button" onclick="resetDefaultAudioSettings()" class="w-1/3 py-2.5 border border-gray-200 rounded-xl font-bold text-xs text-gray-600 hover:bg-gray-50 cursor-pointer transition">
-                Reset Bawaan
+                Reset
             </button>
             <button type="button" onclick="saveAudioSettings()" class="w-2/3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md shadow-blue-500/20 cursor-pointer transition">
                 Simpan Pengaturan
@@ -417,7 +430,7 @@ function initAudioSettingsUI() {
 
     const fileLabel = document.getElementById('customFileName');
     if (fileLabel) {
-        fileLabel.innerText = customAudioName ? ('🎵 ' + customAudioName) : 'Belum ada file dipilih';
+        fileLabel.innerText = customAudioName ? customAudioName : 'Belum ada file dipilih';
     }
 
     updateBadgeMode(currentAudioMode);
@@ -427,16 +440,16 @@ function updateBadgeMode(mode) {
     const badge = document.getElementById('badgeActiveMode');
     if (!badge) return;
     if (mode === 'custom') {
-        badge.innerText = '📁 File Perangkat';
+        badge.innerText = 'Kustom';
         badge.className = 'text-[10px] bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2 py-0.5 rounded-full font-bold';
     } else if (mode === 'voice') {
-        badge.innerText = '🗣️ Asisten Suara';
+        badge.innerText = 'Asisten Suara';
         badge.className = 'text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold';
     } else if (mode === 'mute') {
-        badge.innerText = '🔇 Senyap';
+        badge.innerText = 'Senyap';
         badge.className = 'text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded-full font-bold';
     } else {
-        badge.innerText = '🔔 Bel Ting';
+        badge.innerText = 'Bel Kasir';
         badge.className = 'text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold';
     }
 }
