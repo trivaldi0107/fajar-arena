@@ -80,7 +80,7 @@
     </div>
 
     <!-- Right Menu -->
-    <div class="flex items-center gap-2.5 sm:gap-4 md:gap-6 flex-shrink-0">
+    <div class="flex items-center gap-3 sm:gap-4 md:gap-6 flex-shrink-0" style="gap: 14px;">
         <!-- Tanggal -->
         <div class="text-right hidden sm:block">
             <p class="text-sm text-gray-400">
