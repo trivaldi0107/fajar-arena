@@ -792,13 +792,13 @@ body{
 </section>
 
 <!-- ================= FOOTER ================= -->
-<footer class="bg-blue-900 border-t border-blue-800 text-blue-100 py-6 md:py-8 relative z-10">
+<footer style="background: linear-gradient(135deg, #0a1c38 0%, #153a6d 100%); border-top: 1px solid rgba(59, 130, 246, 0.3); padding-top: 1.75rem; padding-bottom: 1.75rem;" class="relative z-10">
     <div class="max-w-7xl mx-auto px-6 lg:px-10 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
-            <h3 class="text-xl md:text-2xl font-black text-white tracking-tight">{{ active_arena()->navbar_name ?? 'Fajar Arena' }}</h3>
-            <p class="mt-1 text-xs md:text-sm text-blue-200">{{ $pengaturan->tagline ?? 'Pusat olahraga bulu tangkis terbaik dengan fasilitas premium' }}</p>
+            <h3 class="text-xl md:text-2xl font-black tracking-tight" style="color: #ffffff !important;">{{ active_arena()->navbar_name ?? 'Fajar Arena' }}</h3>
+            <p class="mt-1 text-xs md:text-sm font-medium" style="color: #93c5fd !important;">{{ $pengaturan->tagline ?? 'Pusat olahraga bulu tangkis terbaik dengan fasilitas premium' }}</p>
         </div>
-        <div class="text-xs md:text-sm font-medium text-blue-200">
+        <div class="text-xs md:text-sm font-medium" style="color: #93c5fd !important;">
             &copy; {{ date('Y') }} {{ active_arena()->navbar_name ?? 'Fajar Arena' }}. Hak cipta dilindungi.
         </div>
     </div>
