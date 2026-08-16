@@ -163,6 +163,21 @@
                         </div>
                     </div>
                 </div>
+                @elseif($pemesanan->status === 'batal' || $pemesanan->status === 'dibatalkan')
+                <div class="mb-6">
+                    <div class="bg-rose-50 border-2 border-rose-200 text-rose-900 p-4.5 rounded-2xl flex items-start gap-3.5 shadow-sm">
+                        <div class="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        </div>
+                        <div>
+                            <h5 class="font-extrabold text-sm text-rose-900">Pemesanan Ditolak oleh Pengelola</h5>
+                            <p class="text-xs mt-1 text-rose-700 leading-relaxed">
+                                <span class="font-bold">Alasan Penolakan:</span>
+                                {{ $pemesanan->alasan_penolakan ?: 'Bukti transfer tidak valid atau pembayaran tidak sesuai.' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 @endif
 
                 <!-- Card QRIS Statis (Exact same width & box style as Upload Box) -->

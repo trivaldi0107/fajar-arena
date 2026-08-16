@@ -24,7 +24,7 @@
                 <div class="p-8 md:p-12 bg-white rounded-b-3xl">
                     
                     <!-- // INFORMASI KODE RESERVASI & STATUS PEMBAYARAN -->
-                    <div class="flex flex-col sm:flex-row justify-between items-center bg-blue-50/50 rounded-2xl p-6 border border-blue-100 mb-8 gap-4 shadow-sm text-center sm:text-left">
+                    <div class="flex flex-col sm:flex-row justify-between items-center bg-blue-50/50 rounded-2xl p-6 border border-blue-100 mb-6 gap-4 shadow-sm text-center sm:text-left">
                         <div>
                             <p class="text-xs md:text-sm text-gray-500 font-semibold mb-1 uppercase tracking-wider">Kode Reservasi</p>
                             <p class="text-2xl md:text-3xl font-black text-blue-900 tracking-wider">{{ $pemesanan->kode_reservasi }}</p>
@@ -37,6 +37,16 @@
                             </span>
                         </div>
                     </div>
+
+                    @if($pemesanan->status == 'batal' && $pemesanan->alasan_penolakan)
+                    <div class="mb-6 bg-rose-50 border border-rose-200 text-rose-900 p-4 rounded-2xl flex items-start gap-3 text-left">
+                        <svg class="w-5 h-5 text-rose-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        <div class="text-xs">
+                            <span class="font-extrabold text-rose-900 block mb-0.5">Alasan Penolakan Pemesanan:</span>
+                            <span class="text-rose-700 leading-relaxed">{{ $pemesanan->alasan_penolakan }}</span>
+                        </div>
+                    </div>
+                    @endif
 
                     <!-- // INFORMASI PEMESAN & TIPE AKUN -->
                     <div class="mb-8 flex justify-between items-center bg-gray-50 p-5 rounded-2xl border border-gray-100 shadow-inner">

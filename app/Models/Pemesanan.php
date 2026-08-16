@@ -19,6 +19,7 @@ class Pemesanan extends Model
         'tanggal_mulai',
         'status',
         'bukti_transfer',
+        'alasan_penolakan',
         'is_used'
     ];
 

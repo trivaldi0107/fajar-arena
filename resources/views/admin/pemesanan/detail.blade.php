@@ -182,17 +182,39 @@
     <!-- Form untuk submit aksi konfirmasi/tolak -->
     <form id="formConfirmAction" method="POST" class="hidden">
         @csrf
+        <input type="hidden" name="alasan_penolakan" id="hiddenAlasanPenolakan" value="">
     </form>
 
     <!-- Modal Confirm Action -->
-    <div id="modalConfirm" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4 transition-all duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center transform transition-all">
+    <div id="modalConfirm" style="z-index: 99999 !important;" class="fixed inset-0 hidden items-center justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto transition-all duration-300">
+        <div id="confirmDialogBox" class="relative my-auto mx-auto bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center transform transition-all max-h-[88vh] overflow-y-auto">
             <div id="confirmIconBox" class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4">
                 <!-- Icon diisi via JS -->
             </div>
             <h4 id="confirmTitle" class="font-extrabold text-gray-900 text-lg mb-1">Konfirmasi</h4>
-            <p id="confirmMessage" class="text-xs text-gray-500 mb-6 leading-relaxed"></p>
+            <p id="confirmMessage" class="text-xs text-gray-500 mb-4 leading-relaxed"></p>
             
+            <!-- Box Alasan Penolakan (Hanya tampil jika tolak) -->
+            <div id="boxAlasanPenolakan" class="hidden text-left mb-5">
+                <label class="block text-xs font-bold text-gray-700 mb-2">Pilih Alasan Cepat:</label>
+                <div class="flex flex-wrap gap-1.5 mb-3">
+                    <button type="button" onclick="setPresetAlasan('Bukti transfer buram / tidak terbaca')" class="btn-preset-alasan text-[11px] font-semibold bg-gray-100 hover:bg-rose-50 hover:text-rose-700 text-gray-700 px-2.5 py-1 rounded-lg border border-gray-200 transition cursor-pointer">
+                        Bukti buram / tidak jelas
+                    </button>
+                    <button type="button" onclick="setPresetAlasan('Nominal transfer tidak sesuai dengan total tagihan')" class="btn-preset-alasan text-[11px] font-semibold bg-gray-100 hover:bg-rose-50 hover:text-rose-700 text-gray-700 px-2.5 py-1 rounded-lg border border-gray-200 transition cursor-pointer">
+                        Nominal tidak sesuai
+                    </button>
+                    <button type="button" onclick="setPresetAlasan('Bukti transfer tidak valid / dana belum masuk')" class="btn-preset-alasan text-[11px] font-semibold bg-gray-100 hover:bg-rose-50 hover:text-rose-700 text-gray-700 px-2.5 py-1 rounded-lg border border-gray-200 transition cursor-pointer">
+                        Bukti tidak valid
+                    </button>
+                    <button type="button" onclick="setPresetAlasan('Melewati batas waktu konfirmasi pembayaran')" class="btn-preset-alasan text-[11px] font-semibold bg-gray-100 hover:bg-rose-50 hover:text-rose-700 text-gray-700 px-2.5 py-1 rounded-lg border border-gray-200 transition cursor-pointer">
+                        Lewat batas waktu
+                    </button>
+                </div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Atau Tulis Alasan Manual:</label>
+                <textarea id="inputAlasanPenolakan" rows="2" placeholder="Tuliskan alasan penolakan yang jelas untuk pelanggan..." class="w-full text-xs p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-gray-800 transition"></textarea>
+            </div>
+
             <div class="flex gap-3">
                 <button type="button" onclick="closeConfirmModal()" class="w-1/2 py-2.5 border border-gray-200 rounded-xl font-bold text-xs text-gray-600 hover:bg-gray-50 transition cursor-pointer">
                     Batal
@@ -205,16 +227,37 @@
     </div>
 
     <script>
+    let currentConfirmType = 'setujui';
+
+    function setPresetAlasan(text) {
+        const input = document.getElementById('inputAlasanPenolakan');
+        if (input) {
+            input.value = text;
+            input.focus();
+        }
+    }
+
     function openConfirmModal(type, actionUrl, kode) {
+        currentConfirmType = type;
         const form = document.getElementById('formConfirmAction');
         form.action = actionUrl;
 
+        const dialogBox = document.getElementById('confirmDialogBox');
         const iconBox = document.getElementById('confirmIconBox');
         const title = document.getElementById('confirmTitle');
         const message = document.getElementById('confirmMessage');
+        const boxAlasan = document.getElementById('boxAlasanPenolakan');
+        const inputAlasan = document.getElementById('inputAlasanPenolakan');
         const btnSubmit = document.getElementById('btnSubmitConfirm');
 
+        if (inputAlasan) inputAlasan.value = '';
+
         if (type === 'setujui') {
+            if (dialogBox) {
+                dialogBox.classList.remove('max-w-md');
+                dialogBox.classList.add('max-w-sm');
+            }
+            if (boxAlasan) boxAlasan.classList.add('hidden');
             iconBox.className = 'w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-emerald-100 text-emerald-600';
             iconBox.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>';
             title.innerText = 'Setujui Pembayaran';
@@ -222,12 +265,17 @@
             btnSubmit.className = 'w-1/2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs transition shadow-md shadow-emerald-600/20 cursor-pointer';
             btnSubmit.innerText = 'Ya, Setujui';
         } else {
+            if (dialogBox) {
+                dialogBox.classList.remove('max-w-sm');
+                dialogBox.classList.add('max-w-md');
+            }
+            if (boxAlasan) boxAlasan.classList.remove('hidden');
             iconBox.className = 'w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-rose-100 text-rose-600';
             iconBox.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>';
-            title.innerText = 'Tolak Pemesanan';
-            message.innerText = 'Apakah Anda yakin ingin menolak pemesanan #' + kode + '? Status jadwal akan dikembalikan menjadi tersedia.';
+            title.innerText = 'Tolak Pemesanan #' + kode;
+            message.innerText = 'Pilih atau tulis alasan penolakan agar pelanggan dapat melihat penjelasannya.';
             btnSubmit.className = 'w-1/2 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs transition shadow-md shadow-rose-600/20 cursor-pointer';
-            btnSubmit.innerText = 'Ya, Tolak';
+            btnSubmit.innerText = 'Ya, Tolak Pemesanan';
         }
 
         const modal = document.getElementById('modalConfirm');
@@ -242,6 +290,13 @@
     }
 
     function submitConfirmModal() {
+        if (currentConfirmType === 'tolak') {
+            const inputAlasan = document.getElementById('inputAlasanPenolakan');
+            const hiddenAlasan = document.getElementById('hiddenAlasanPenolakan');
+            if (inputAlasan && hiddenAlasan) {
+                hiddenAlasan.value = inputAlasan.value.trim() || 'Bukti transfer tidak valid atau pembayaran tidak sesuai.';
+            }
+        }
         document.getElementById('formConfirmAction').submit();
     }
     </script>

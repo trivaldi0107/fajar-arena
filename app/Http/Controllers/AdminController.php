@@ -189,9 +189,11 @@ class AdminController extends Controller
         return back()->with('success', 'Pemesanan berhasil dikonfirmasi (Lunas).');
     }
 
-    public function tolakPemesanan($id)
+    public function tolakPemesanan(Request $request, $id)
     {
-        \Illuminate\Support\Facades\DB::transaction(function() use ($id) {
+        $alasan = $request->input('alasan_penolakan') ?: 'Bukti transfer tidak valid atau pembayaran tidak sesuai.';
+
+        \Illuminate\Support\Facades\DB::transaction(function() use ($id, $alasan) {
             $pemesanan = Pemesanan::with('detail.lapangan.pengaturan')->findOrFail($id);
 
             /* // KODE PHP: Otomatis alihkan cabang/arena aktif ke arena milik pemesanan ini */
@@ -201,6 +203,7 @@ class AdminController extends Controller
             }
 
             $pemesanan->status = 'batal';
+            $pemesanan->alasan_penolakan = $alasan;
             $pemesanan->save();
 
             foreach ($pemesanan->detail as $detail) {
@@ -210,7 +213,7 @@ class AdminController extends Controller
             }
         });
 
-        return back()->with('success', 'Pemesanan telah ditolak.');
+        return back()->with('success', 'Pemesanan telah ditolak dengan alasan yang tercatat.');
     }
 
     public function uploadQrisStatis(Request $request)
