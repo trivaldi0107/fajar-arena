@@ -197,7 +197,7 @@
 </div>
 
 <!-- Modern Rejection Modal -->
-<div id="modalRejected" class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4 transition-all duration-300">
+<div id="modalRejected" class="fixed inset-0 hidden items-center justify-center bg-black/70 backdrop-blur-sm z-50 p-4 transition-all duration-300">
     <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center transform transition-all border border-gray-100">
         <div class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-rose-100 text-rose-600">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,9 +205,17 @@
             </svg>
         </div>
         <h4 class="font-extrabold text-gray-900 text-lg mb-1">Pemesanan Dibatalkan</h4>
-        <p class="text-xs text-gray-500 mb-6 leading-relaxed">
+        <p class="text-xs text-gray-500 mb-4 leading-relaxed">
             Maaf, pesanan Anda telah ditolak atau dibatalkan oleh pengelola. Slot jadwal yang Anda pilih telah dikembalikan.
         </p>
+
+        <!-- Alasan Penolakan Box -->
+        <div class="bg-rose-50 border border-rose-200 rounded-2xl p-3.5 mb-5 text-left">
+            <span class="text-[11px] font-extrabold text-rose-900 block mb-1 uppercase tracking-wider">Alasan Penolakan:</span>
+            <p id="textAlasanPenolakan" class="text-xs text-rose-700 font-semibold leading-relaxed">
+                {{ $pemesanan->alasan_penolakan ?: 'Bukti transfer tidak valid atau pembayaran tidak sesuai.' }}
+            </p>
+        </div>
         
         <button type="button" onclick="redirectToReservasi()" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs transition shadow-md shadow-rose-600/20 cursor-pointer">
             Kembali ke Jadwal Reservasi
@@ -231,23 +239,35 @@
                 if (data.status === 'berhasil') {
                     // Redirect langsung ke halaman tiket!
                     window.location.href = ticketUrl;
-                } else if (data.status === 'batal') {
-                    showRejectionModal();
+                } else if (data.status === 'batal' || data.status === 'dibatalkan') {
+                    showRejectionModal(data.alasan_penolakan);
                 }
             })
             .catch(err => console.log('Polling status...', err));
     }
 
-    function showRejectionModal() {
+    function showRejectionModal(alasan) {
         isModalShown = true;
+        if (alasan) {
+            const txt = document.getElementById('textAlasanPenolakan');
+            if (txt) txt.innerText = alasan;
+        }
         const modal = document.getElementById('modalRejected');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
     }
 
     function redirectToReservasi() {
         window.location.href = "{{ route('reservasi') }}";
     }
+
+    @if($pemesanan->status === 'batal' || $pemesanan->status === 'dibatalkan')
+    document.addEventListener('DOMContentLoaded', () => {
+        showRejectionModal("{{ addslashes($pemesanan->alasan_penolakan ?? 'Bukti transfer tidak valid atau pembayaran tidak sesuai.') }}");
+    });
+    @endif
 
     // Polling setiap 3 detik
     setInterval(checkPaymentStatus, 3000);

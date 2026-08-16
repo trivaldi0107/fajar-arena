@@ -387,11 +387,11 @@ Route::get('/tiket/{id}', [ReservasiController::class, 'tiket'])
     ->name('tiket');
 
 Route::get('/pembayaran/status/{id}', function ($id) {
-
+    $pemesanan = \App\Models\Pemesanan::findOrFail($id);
     return [
-        'status' => \App\Models\Pemesanan::findOrFail($id)->status
+        'status' => $pemesanan->status,
+        'alasan_penolakan' => $pemesanan->alasan_penolakan,
     ];
-
 })->name('pembayaran.status');
 
 Route::get('/reservasi/pending', function () {
