@@ -1,19 +1,19 @@
-<header class="bg-white h-20 shadow-sm border-b flex items-center justify-between px-4 sm:px-6 md:px-8 sticky top-0 z-40">
-    <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-2">
+<header class="bg-white h-16 md:h-20 shadow-sm border-b flex items-center justify-between px-3.5 sm:px-6 md:px-8 sticky top-0 z-40">
+    <div class="flex items-center gap-2 sm:gap-4 min-w-0">
         <!-- Mobile Menu Toggle -->
         <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden p-2 text-gray-500 hover:bg-gray-100 rounded-xl flex-shrink-0">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
         </button>
 
         <!-- Cabang Olahraga Selector -->
         <div class="relative cursor-pointer z-30 flex-shrink min-w-0" x-data="{ openCabang: false }" @click.outside="openCabang = false">
-            <div @click="openCabang = !openCabang" class="flex items-center justify-between gap-2 px-3 sm:px-4 py-2 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-200 transition-colors">
+            <div @click="openCabang = !openCabang" class="flex items-center gap-2 px-3 sm:px-4 py-1.5 md:py-2 bg-slate-50 hover:bg-slate-100 rounded-xl md:rounded-2xl border border-slate-200 transition-colors">
                 <div class="flex flex-col min-w-0">
-                    <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider leading-none mb-1">Pilih Cabang</span>
-                    <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                        <span class="text-xs sm:text-sm font-bold text-slate-800 leading-none truncate max-w-[125px] sm:max-w-none">{{ active_arena()->nama_arena ?? 'Fajar Arena' }}</span>
+                    <span class="hidden md:block text-[11px] font-bold text-slate-400 uppercase tracking-wider leading-none mb-1">Pilih Cabang</span>
+                    <div class="flex items-center gap-1.5 min-w-0">
+                        <span class="text-xs md:text-sm font-bold text-slate-800 leading-none truncate max-w-[110px] sm:max-w-[160px] md:max-w-none">{{ active_arena()->nama_arena ?? 'Fajar Arena' }}</span>
                         @php
                             $activePendingCount = \App\Models\Pemesanan::whereIn('status', ['proses', 'pending'])
                                 ->whereHas('detail.lapangan', function($q) {
@@ -21,13 +21,13 @@
                                 })->count();
                         @endphp
                         @if($activePendingCount > 0)
-                            <span class="bg-amber-500 text-white text-[10px] sm:text-[11px] font-black px-1.5 sm:px-2 py-0.5 rounded-full animate-pulse shadow-sm flex-shrink-0">
+                            <span class="bg-amber-500 text-white text-[10px] md:text-[11px] font-black px-1.5 md:px-2 py-0.5 rounded-full animate-pulse shadow-sm flex-shrink-0">
                                 {{ $activePendingCount }}
                             </span>
                         @endif
                     </div>
                 </div>
-                <svg :class="{'rotate-180': openCabang}" class="w-4 h-4 text-slate-400 ml-1 sm:ml-3 transition-transform duration-200 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg :class="{'rotate-180': openCabang}" class="w-3.5 h-3.5 text-slate-400 ml-0.5 sm:ml-2 transition-transform duration-200 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
             </div>
@@ -80,7 +80,7 @@
     </div>
 
     <!-- Right Menu -->
-    <div class="flex items-center gap-3.5 sm:gap-4 md:gap-6 flex-shrink-0">
+    <div class="flex items-center gap-2.5 sm:gap-4 md:gap-6 flex-shrink-0">
         <!-- Tanggal -->
         <div class="text-right hidden sm:block">
             <p class="text-sm text-gray-400">
@@ -92,18 +92,18 @@
         </div>
 
         <!-- Notification Bell Button -->
-        <button type="button" onclick="enablePushNotificationManually()" title="Aktifkan Notifikasi HP / Push" style="width: 40px; height: 40px; min-width: 40px; min-height: 40px;" class="bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full transition-all relative border border-blue-200 cursor-pointer group flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button type="button" onclick="enablePushNotificationManually()" title="Aktifkan Notifikasi HP / Push" style="width: 38px; height: 38px; min-width: 38px; min-height: 38px; position: relative;" class="bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full transition-all border border-blue-200 cursor-pointer group flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
             </svg>
-            <span class="absolute top-1 right-1 flex h-2.5 w-2.5 pointer-events-none">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white"></span>
+            <span style="position: absolute; top: 3px; right: 3px; width: 9px; height: 9px; pointer-events: none;" class="flex">
+                <span style="position: absolute; inset: 0; width: 100%; height: 100%;" class="animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                <span style="position: relative; width: 9px; height: 9px; border: 1.5px solid #ffffff;" class="rounded-full bg-emerald-500"></span>
             </span>
         </button>
 
         <!-- Avatar -->
-        <a href="{{ route('profile.edit') }}" style="width: 40px; height: 40px; min-width: 40px; min-height: 40px;" class="rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-base cursor-pointer hover:bg-blue-700 hover:scale-105 transition-all shadow-sm flex-shrink-0">
+        <a href="{{ route('profile.edit') }}" style="width: 38px; height: 38px; min-width: 38px; min-height: 38px;" class="rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm sm:text-base cursor-pointer hover:bg-blue-700 hover:scale-105 transition-all shadow-sm flex-shrink-0">
             {{ strtoupper(substr(Auth::user()->name,0,1)) }}
         </a>
     </div>
