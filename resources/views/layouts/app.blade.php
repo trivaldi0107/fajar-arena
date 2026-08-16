@@ -8,13 +8,13 @@
         <meta http-equiv="Pragma" content="no-cache">
         <meta http-equiv="Expires" content="0">
 
-        <title>{{ config('app.name', 'Fajar Arena') }} — Reservasi & Sewa Lapangan Badminton Makassar Online</title>
+        <title>Fajar Arena Badminton — Reservasi & Sewa Lapangan Badminton Makassar Online</title>
 
         <!-- SEO Primary Meta Tags -->
-        <meta name="title" content="Fajar Arena — Reservasi & Sewa Lapangan Badminton Makassar Online">
-        <meta name="description" content="Website resmi Fajar Arena Badminton Makassar. Reservasi dan sewa lapangan badminton, padel, dan futsal di Lantai 2 Gedung Graha Pena Makassar secara online, mudah, dan real-time.">
+        <meta name="title" content="Fajar Arena Badminton — Reservasi & Sewa Lapangan Badminton Makassar Online">
+        <meta name="description" content="Website resmi Fajar Arena Badminton Makassar. Pusat reservasi dan sewa lapangan badminton dengan fasilitas premium di Gedung Graha Pena Makassar secara online, mudah, dan real-time.">
         <meta name="keywords" content="Fajar Arena, Fajar Arena Badminton, Graha Pena Makassar, Sewa Lapangan Badminton Makassar, Booking Lapangan Badminton, Fajar Arena Makassar, fajararena.cloud">
-        <meta name="author" content="Fajar Arena">
+        <meta name="author" content="Fajar Arena Badminton">
         <meta name="robots" content="index, follow">
         <link rel="canonical" href="{{ url()->current() }}">
 
@@ -22,15 +22,15 @@
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:site_name" content="Fajar Arena Badminton">
-        <meta property="og:title" content="Fajar Arena — Reservasi & Sewa Lapangan Badminton Makassar Online">
-        <meta property="og:description" content="Website resmi Fajar Arena Badminton Makassar. Pesan jadwal lapangan dan paket member online di Graha Pena Makassar secara real-time.">
+        <meta property="og:title" content="Fajar Arena Badminton — Reservasi & Sewa Lapangan Badminton Makassar Online">
+        <meta property="og:description" content="Website resmi Fajar Arena Badminton Makassar. Pusat reservasi dan sewa lapangan badminton dengan fasilitas premium di Gedung Graha Pena Makassar secara online, mudah, dan real-time.">
         <meta property="og:image" content="{{ asset('images/badminton.png') }}">
 
         <!-- Twitter Card -->
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:url" content="{{ url()->current() }}">
-        <meta name="twitter:title" content="Fajar Arena — Reservasi & Sewa Lapangan Badminton Makassar Online">
-        <meta name="twitter:description" content="Website resmi Fajar Arena Badminton Makassar. Pesan jadwal lapangan dan paket member online secara real-time.">
+        <meta name="twitter:title" content="Fajar Arena Badminton — Reservasi & Sewa Lapangan Badminton Makassar Online">
+        <meta name="twitter:description" content="Website resmi Fajar Arena Badminton Makassar. Pusat reservasi dan sewa lapangan badminton dengan fasilitas premium di Gedung Graha Pena Makassar secara online, mudah, dan real-time.">
         <meta name="twitter:image" content="{{ asset('images/badminton.png') }}">
 
         <!-- Schema.org JSON-LD Structured Data for Google -->
@@ -49,7 +49,7 @@
             "addressRegion": "Sulawesi Selatan",
             "addressCountry": "ID"
           },
-          "description": "Fasilitas olahraga bulu tangkis (badminton), padel, dan futsal indoor di Lantai 2 Gedung Graha Pena Makassar dengan sistem booking online real-time."
+          "description": "Fasilitas olahraga bulu tangkis (badminton) premium di Lantai 2 Gedung Graha Pena Makassar dengan sistem booking online real-time."
         }
         </script>
 
