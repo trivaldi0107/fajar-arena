@@ -10,6 +10,12 @@
 
         <title>Fajar Arena Badminton — Reservasi & Sewa Lapangan Badminton Makassar Online</title>
 
+        <!-- Favicon / Site Icon -->
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('images/logo.png') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+
         <!-- SEO Primary Meta Tags -->
         <meta name="title" content="Fajar Arena Badminton — Reservasi & Sewa Lapangan Badminton Makassar Online">
         <meta name="description" content="Website resmi Fajar Arena Badminton Makassar. Pusat reservasi dan sewa lapangan badminton dengan fasilitas premium di Gedung Graha Pena Makassar secara online, mudah, dan real-time.">
@@ -24,14 +30,14 @@
         <meta property="og:site_name" content="Fajar Arena Badminton">
         <meta property="og:title" content="Fajar Arena Badminton — Reservasi & Sewa Lapangan Badminton Makassar Online">
         <meta property="og:description" content="Website resmi Fajar Arena Badminton Makassar. Pusat reservasi dan sewa lapangan badminton dengan fasilitas premium di Gedung Graha Pena Makassar secara online, mudah, dan real-time.">
-        <meta property="og:image" content="{{ asset('images/badminton.png') }}">
+        <meta property="og:image" content="{{ asset('images/logo.png') }}">
 
         <!-- Twitter Card -->
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:url" content="{{ url()->current() }}">
         <meta name="twitter:title" content="Fajar Arena Badminton — Reservasi & Sewa Lapangan Badminton Makassar Online">
         <meta name="twitter:description" content="Website resmi Fajar Arena Badminton Makassar. Pusat reservasi dan sewa lapangan badminton dengan fasilitas premium di Gedung Graha Pena Makassar secara online, mudah, dan real-time.">
-        <meta name="twitter:image" content="{{ asset('images/badminton.png') }}">
+        <meta name="twitter:image" content="{{ asset('images/logo.png') }}">
 
         <!-- Schema.org JSON-LD Structured Data for Google -->
         <script type="application/ld+json">
@@ -40,7 +46,7 @@
           "{{ '@' }}type": "SportsActivityLocation",
           "name": "Fajar Arena Badminton",
           "alternateName": "Fajar Arena Graha Pena Makassar",
-          "image": "{{ asset('images/badminton.png') }}",
+          "image": "{{ asset('images/logo.png') }}",
           "url": "https://fajararena.cloud",
           "address": {
             "{{ '@' }}type": "PostalAddress",
