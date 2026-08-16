@@ -63,7 +63,7 @@
         <div class="flex items-center gap-3 shrink-0">
             <button type="button" onclick="openConfirmModal('setujui', '{{ route('admin.pemesanan.konfirmasi', $pemesanan->id) }}', '{{ $pemesanan->kode_reservasi }}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition-all flex items-center gap-2 cursor-pointer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                Setujui Pembayaran
+                Setujui
             </button>
 
             <button type="button" onclick="openConfirmModal('tolak', '{{ route('admin.pemesanan.tolak', $pemesanan->id) }}', '{{ $pemesanan->kode_reservasi }}')" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-md shadow-rose-600/20 transition-all flex items-center gap-2 cursor-pointer">
