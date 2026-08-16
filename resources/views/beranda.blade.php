@@ -792,14 +792,14 @@ body{
 </section>
 
 <!-- ================= FOOTER ================= -->
-<footer class="bg-gray-950 text-gray-400 py-12 border-t border-gray-900 relative z-10">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-6">
+<footer class="bg-blue-900 border-t border-blue-800 text-blue-100 py-6 md:py-8 relative z-10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
-            <h3 class="text-2xl font-black text-white tracking-tight">Fajar Arena</h3>
-            <p class="mt-2 text-sm text-gray-500">{{ $pengaturan->tagline ?? 'Pusat olahraga terbaik' }}</p>
+            <h3 class="text-xl md:text-2xl font-black text-white tracking-tight">{{ active_arena()->navbar_name ?? 'Fajar Arena' }}</h3>
+            <p class="mt-1 text-xs md:text-sm text-blue-200">{{ $pengaturan->tagline ?? 'Pusat olahraga bulu tangkis terbaik dengan fasilitas premium' }}</p>
         </div>
-        <div class="text-sm font-medium">
-            &copy; {{ date('Y') }} Fajar Arena. Hak cipta dilindungi.
+        <div class="text-xs md:text-sm font-medium text-blue-200">
+            &copy; {{ date('Y') }} {{ active_arena()->navbar_name ?? 'Fajar Arena' }}. Hak cipta dilindungi.
         </div>
     </div>
 </footer>
