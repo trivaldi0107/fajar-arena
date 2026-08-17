@@ -99,67 +99,18 @@ document.addEventListener('click', function unlockAudioOnPage() {
 }, { passive: true });
 
 function playNotificationSound(customerName = 'Pelanggan', caborName = 'Badminton') {
-    const mode = localStorage.getItem('fajar_notif_mode') || 'chime';
-    const vol = parseFloat(localStorage.getItem('fajar_notif_volume') || '0.8');
-
-    if (mode === 'mute') {
-        return;
-    }
-
-    if (mode === 'custom') {
-        const audioData = localStorage.getItem('fajar_custom_audio_data');
-        if (audioData) {
-            try {
-                const audio = new Audio(audioData);
-                audio.volume = vol;
-                audio.play().catch(function(e) {
-                    console.warn('Audio play error, fallback to chime:', e);
-                    playGlobalChime(vol);
-                });
-                return;
-            } catch(e) {
-                console.warn('Custom audio error:', e);
-            }
+    const audioData = localStorage.getItem('fajar_custom_audio_data');
+    if (audioData) {
+        try {
+            const audio = new Audio(audioData);
+            audio.play().catch(function(e) {
+                console.warn('Custom audio play error:', e);
+            });
+            return;
+        } catch(e) {
+            console.warn('Custom audio error:', e);
         }
-        playGlobalChime(vol);
-        return;
     }
-
-    if (mode === 'voice') {
-        if ('speechSynthesis' in window) {
-            try {
-                window.speechSynthesis.cancel();
-                setTimeout(function() {
-                    const text = "Pesanan Masuk! Atas nama " + (customerName || 'Pelanggan') + ", " + (caborName || 'Badminton') + ". Silakan periksa bukti pembayaran.";
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = 'id-ID';
-                    utterance.rate = 0.92;
-                    utterance.pitch = 1.0;
-                    utterance.volume = Math.max(0.1, Math.min(1.0, vol));
-
-                    const voices = window.speechSynthesis.getVoices();
-                    if (voices && voices.length > 0) {
-                        const idVoice = voices.find(function(v) {
-                            return (v.lang && v.lang.toLowerCase().includes('id')) || (v.name && v.name.toLowerCase().includes('indonesia'));
-                        });
-                        if (idVoice) utterance.voice = idVoice;
-                    }
-
-                    utterance.onerror = function() { playGlobalChime(vol); };
-                    window.speechSynthesis.resume();
-                    window.speechSynthesis.speak(utterance);
-                }, 60);
-                return;
-            } catch(e) {
-                console.warn('Speech error:', e);
-            }
-        }
-        playGlobalChime(vol);
-        return;
-    }
-
-    // Default: Chime
-    playGlobalChime(vol);
 }
 
 function playGlobalChime(vol = 0.8) {

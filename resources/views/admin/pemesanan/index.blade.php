@@ -38,11 +38,14 @@
                 <span class="whitespace-nowrap">Upload QRIS Statis</span>
             </button>
 
-            <!-- Tombol Setel Suara Notifikasi (di sebelah kanan tombol Upload QRIS) -->
-            <button type="button" onclick="openModalAudioSettings()" class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-sm shadow-md shadow-slate-900/20 transition flex items-center justify-center gap-2 cursor-pointer shrink-0 w-full sm:w-auto border border-slate-700/50" title="Atur Nada Dering / Suara Notifikasi Pesanan">
-                <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+            <!-- Input File Tersembunyi untuk Pilih Notifikasi Langsung dari Perangkat -->
+            <input type="file" id="customAudioDirectInput" accept="audio/*" class="hidden" onchange="handleDirectAudioUpload(event)">
+
+            <!-- Tombol Setel Suara Notifikasi (Warna Biru seperti Upload QRIS) -->
+            <button type="button" onclick="triggerDirectAudioPicker()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer shrink-0 w-full sm:w-auto" title="Pilih File Suara Notifikasi dari Perangkat">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
                 <span class="whitespace-nowrap">Setel Notifikasi</span>
-                <span id="badgeActiveMode" class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold">Default</span>
+                <span id="badgeActiveMode" class="text-[10px] bg-white/20 text-white border border-white/30 px-2 py-0.5 rounded-full font-bold truncate max-w-[130px]">Pilih File</span>
             </button>
         </div>
     </div>
@@ -198,7 +201,7 @@
     </div>
 
     <div class="mt-8">
-        {{ $pemesanan->links() }}
+        {{ $pemesanan->links('vendor.pagination.custom') }}
     </div>
 
 </div>
@@ -293,416 +296,97 @@
     </div>
 </div>
 
-<!-- Modal Setel Suara Notifikasi -->
-<div id="modalAudioSettings" style="z-index: 99999 !important;" class="fixed inset-0 hidden items-center justify-center bg-slate-900/70 backdrop-blur-md p-4 sm:p-6 overflow-y-auto transition-all duration-300">
-    <div class="relative my-auto mx-auto bg-white rounded-3xl shadow-2xl max-w-lg w-full p-5 sm:p-7 text-left border border-gray-100 max-h-[85vh] overflow-y-auto">
-        
-        <!-- Header Modal -->
-        <div class="flex justify-between items-start pb-4 border-b border-gray-100 mb-5">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
-                </div>
-                <div>
-                    <h4 class="font-extrabold text-gray-900 text-base sm:text-lg">Setel Suara Notifikasi</h4>
-                    <p class="text-xs text-gray-500 mt-0.5">Pilih nada dering dari perangkat Anda atau gunakan asisten suara pintar</p>
-                </div>
-            </div>
-            <button type="button" onclick="closeModalAudioSettings()" class="text-gray-400 hover:text-gray-600 p-1.5 rounded-xl hover:bg-gray-100 transition cursor-pointer shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-        </div>
-
-        <div class="space-y-3.5">
-            <!-- OPSI 1: KUSTOM DARI PERANGKAT -->
-            <div class="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-white hover:bg-slate-50 border-gray-200" id="cardModeCustom" onclick="selectAudioMode('custom')">
-                <div class="flex items-start gap-3">
-                    <!-- Custom Radio Circle -->
-                    <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center mt-0.5 shrink-0 transition-colors" id="radioCircleCustom">
-                        <div class="w-2.5 h-2.5 rounded-full bg-blue-600 hidden" id="radioDotCustom"></div>
-                    </div>
-                    
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-bold text-sm text-gray-900">File Audio Perangkat</span>
-                                <span class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Kustom</span>
-                            </div>
-                            <button type="button" onclick="event.stopPropagation(); testPlayMode('custom')" class="px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shrink-0 cursor-pointer shadow-sm" title="Putar Pratinjau Suara">
-                                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                <span>Tes</span>
-                            </button>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1 leading-relaxed">Gunakan nada dering atau lagu yang tersimpan di penyimpanan perangkat Anda.</p>
-                        
-                        <div class="mt-3 flex flex-col sm:flex-row sm:items-center gap-2">
-                            <input type="file" id="customAudioInput" accept="audio/*" onchange="handleAudioUpload(event)" class="hidden">
-                            <button type="button" onclick="event.stopPropagation(); document.getElementById('customAudioInput').click()" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition shadow-sm flex items-center justify-center gap-1.5 cursor-pointer w-full sm:w-auto shrink-0">
-                                <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                <span>Pilih File Audio</span>
-                            </button>
-                            <div class="bg-gray-100 px-3 py-1.5 rounded-xl text-xs text-gray-600 truncate flex items-center gap-2 max-w-full">
-                                <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
-                                <span id="customFileName" class="truncate font-medium">Belum ada file dipilih</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- OPSI 2: ASISTEN SUARA BICARA (VOICE) -->
-            <div class="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-white hover:bg-slate-50 border-gray-200" id="cardModeVoice" onclick="selectAudioMode('voice')">
-                <div class="flex items-start gap-3">
-                    <!-- Custom Radio Circle -->
-                    <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center mt-0.5 shrink-0 transition-colors" id="radioCircleVoice">
-                        <div class="w-2.5 h-2.5 rounded-full bg-blue-600 hidden" id="radioDotVoice"></div>
-                    </div>
-                    
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-bold text-sm text-gray-900">Asisten Suara Pintar</span>
-                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Sebut Nama & Cabor</span>
-                            </div>
-                            <button type="button" onclick="event.stopPropagation(); testPlayMode('voice')" class="px-3 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shrink-0 cursor-pointer shadow-sm" title="Putar Pratinjau Suara">
-                                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                <span>Tes</span>
-                            </button>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1 leading-relaxed">
-                            Suara otomatis menyebutkan: <em>"Pesanan Masuk! Atas nama [Nama Customer], [Cabor]. Silakan periksa bukti pembayaran."</em>
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- OPSI 3: NADA BEL TING KLASIK -->
-            <div class="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-white hover:bg-slate-50 border-gray-200" id="cardModeChime" onclick="selectAudioMode('chime')">
-                <div class="flex items-start gap-3">
-                    <!-- Custom Radio Circle -->
-                    <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center mt-0.5 shrink-0 transition-colors" id="radioCircleChime">
-                        <div class="w-2.5 h-2.5 rounded-full bg-blue-600 hidden" id="radioDotChime"></div>
-                    </div>
-                    
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-bold text-sm text-gray-900">Nada Bel Kasir</span>
-                                <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Bawaan</span>
-                            </div>
-                            <button type="button" onclick="event.stopPropagation(); testPlayMode('chime')" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shrink-0 cursor-pointer shadow-sm" title="Putar Pratinjau Suara">
-                                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                <span>Tes</span>
-                            </button>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1 leading-relaxed">Denting bel kasir klasik yang lembut dan jernih.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex gap-3 pt-6">
-            <button type="button" onclick="resetDefaultAudioSettings()" class="w-1/3 py-2.5 border border-gray-200 rounded-xl font-bold text-xs text-gray-600 hover:bg-gray-50 cursor-pointer transition">
-                Reset
-            </button>
-            <button type="button" onclick="saveAudioSettings()" class="w-2/3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md shadow-blue-500/20 cursor-pointer transition">
-                Simpan Pengaturan
-            </button>
-        </div>
-    </div>
-</div>
 @endpush
 
 <script>
-// ==================== ENGINE SUARA NOTIFIKASI ====================
-let currentAudioMode = localStorage.getItem('fajar_notif_mode') || 'chime';
-let customAudioData = localStorage.getItem('fajar_custom_audio_data') || null;
-let customAudioName = localStorage.getItem('fajar_custom_audio_name') || null;
+// ==================== ENGINE SUARA NOTIFIKASI KUSTOM ====================
 let lastKnownPendingCount = 0;
 let lastProcessedOrderId = null;
 
-function initAudioSettingsUI() {
-    currentAudioMode = localStorage.getItem('fajar_notif_mode') || 'chime';
-    customAudioData = localStorage.getItem('fajar_custom_audio_data') || null;
-    customAudioName = localStorage.getItem('fajar_custom_audio_name') || null;
-
-    selectAudioMode(currentAudioMode, false);
-
-    const fileLabel = document.getElementById('customFileName');
-    if (fileLabel) {
-        fileLabel.innerText = customAudioName ? customAudioName : 'Belum ada file dipilih';
-    }
-
-    updateBadgeMode(currentAudioMode);
-}
-
-function updateBadgeMode(mode) {
-    const badge = document.getElementById('badgeActiveMode');
-    if (!badge) return;
-    if (mode === 'custom') {
-        badge.innerText = 'Kustom';
-        badge.className = 'text-[10px] bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2 py-0.5 rounded-full font-bold';
-    } else if (mode === 'voice') {
-        badge.innerText = 'Asisten Suara';
-        badge.className = 'text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold';
-    } else {
-        badge.innerText = 'Bel Kasir';
-        badge.className = 'text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold';
+function triggerDirectAudioPicker() {
+    const fileInput = document.getElementById('customAudioDirectInput');
+    if (fileInput) {
+        fileInput.value = ''; // Reset input agar file yang sama bisa dipilih kembali jika diinginkan
+        fileInput.click();
     }
 }
 
-function selectAudioMode(mode, saveImmediately = false) {
-    currentAudioMode = mode;
-    
-    ['custom', 'voice', 'chime'].forEach(m => {
-        const card = document.getElementById('cardMode' + capitalize(m));
-        const circle = document.getElementById('radioCircle' + capitalize(m));
-        const dot = document.getElementById('radioDot' + capitalize(m));
-        if (card && circle && dot) {
-            if (m === mode) {
-                card.classList.add('border-blue-600', 'bg-blue-50/40', 'shadow-md', 'shadow-blue-500/5');
-                card.classList.remove('border-gray-200', 'bg-white');
-                circle.classList.add('border-blue-600');
-                circle.classList.remove('border-gray-300');
-                dot.classList.remove('hidden');
-            } else {
-                card.classList.remove('border-blue-600', 'bg-blue-50/40', 'shadow-md', 'shadow-blue-500/5');
-                card.classList.add('border-gray-200', 'bg-white');
-                circle.classList.remove('border-blue-600');
-                circle.classList.add('border-gray-300');
-                dot.classList.add('hidden');
-            }
-        }
-    });
-
-    if (saveImmediately) {
-        localStorage.setItem('fajar_notif_mode', mode);
-        updateBadgeMode(mode);
-    }
-}
-
-function capitalize(s) {
-    return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-function handleAudioUpload(event) {
+function handleDirectAudioUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
 
-    if (file.size > 8 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) {
         if (typeof Swal !== 'undefined') {
             Swal.fire({
                 icon: 'warning',
                 title: 'Ukuran File Terlalu Besar',
-                text: 'Maksimal ukuran file audio adalah 8MB agar sistem tetap cepat.',
+                text: 'Maksimal ukuran file audio adalah 10MB.',
                 confirmButtonColor: '#2563eb'
             });
         } else {
-            alert('Maksimal ukuran file audio adalah 8MB.');
+            alert('Maksimal ukuran file audio adalah 10MB.');
         }
         return;
     }
 
     const reader = new FileReader();
     reader.onload = function(e) {
-        customAudioData = e.target.result;
-        customAudioName = file.name;
-        localStorage.setItem('fajar_custom_audio_data', customAudioData);
-        localStorage.setItem('fajar_custom_audio_name', customAudioName);
-        
-        document.getElementById('customFileName').innerText = '🎵 ' + customAudioName;
-        selectAudioMode('custom', true);
+        const audioData = e.target.result;
+        const audioName = file.name;
 
-        testPlayMode('custom');
+        localStorage.setItem('fajar_custom_audio_data', audioData);
+        localStorage.setItem('fajar_custom_audio_name', audioName);
+        localStorage.setItem('fajar_notif_mode', 'custom');
+
+        updateAudioBadgeUI();
+
+        // Putar tes suara pratinjau
+        try {
+            const testAudio = new Audio(audioData);
+            testAudio.play().catch(err => console.warn('Audio preview error:', err));
+        } catch(err) {
+            console.warn('Audio play exception:', err);
+        }
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Nada Notifikasi Berhasil Disetel!',
+                text: audioName,
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true
+            });
+        }
     };
     reader.readAsDataURL(file);
 }
 
-function playSynthesizedChime() {
-    try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        if (ctx.state === 'suspended') {
-            ctx.resume().then(() => makeCleanChime(ctx));
-        } else {
-            makeCleanChime(ctx);
-        }
-    } catch(e) {
-        console.warn('Web Audio error', e);
-    }
-}
-
-function makeCleanChime(ctx) {
-    try {
-        const now = ctx.currentTime;
-        // Tone 1: E5 (659.25 Hz)
-        const osc1 = ctx.createOscillator();
-        const gain1 = ctx.createGain();
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(659.25, now);
-        gain1.gain.setValueAtTime(0.5, now);
-        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-        osc1.connect(gain1);
-        gain1.connect(ctx.destination);
-        osc1.start(now);
-        osc1.stop(now + 0.35);
-
-        // Tone 2: A5 (880 Hz)
-        const osc2 = ctx.createOscillator();
-        const gain2 = ctx.createGain();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(880, now + 0.15);
-        gain2.gain.setValueAtTime(0.6, now + 0.15);
-        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-        osc2.connect(gain2);
-        gain2.connect(ctx.destination);
-        osc2.start(now + 0.15);
-        osc2.stop(now + 0.7);
-    } catch(e) {}
-}
-
-function speakIndonesianText(text) {
-    if (!('speechSynthesis' in window)) {
-        playSynthesizedChime();
-        return;
-    }
-
-    try {
-        window.speechSynthesis.cancel();
-        
-        setTimeout(() => {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'id-ID';
-            utterance.rate = 0.92;
-            utterance.pitch = 1.0;
-            utterance.volume = 1.0;
-
-            // Cari suara bahasa Indonesia jika tersedia di browser
-            const voices = window.speechSynthesis.getVoices();
-            if (voices && voices.length > 0) {
-                const idVoice = voices.find(v => (v.lang && v.lang.toLowerCase().includes('id')) || (v.name && v.name.toLowerCase().includes('indonesia')));
-                if (idVoice) {
-                    utterance.voice = idVoice;
-                }
-            }
-
-            utterance.onerror = function(err) {
-                console.warn('SpeechSynthesis error, fallback to chime', err);
-                playSynthesizedChime();
-            };
-
-            window.speechSynthesis.resume();
-            window.speechSynthesis.speak(utterance);
-        }, 60);
-    } catch(e) {
-        console.warn('Speech synthesis catch error', e);
-        playSynthesizedChime();
-    }
-}
-
-// Muat daftar suara browser secara asinkron
-if ('speechSynthesis' in window) {
-    window.speechSynthesis.onvoiceschanged = () => {
-        window.speechSynthesis.getVoices();
-    };
-}
-
-function testPlayMode(mode) {
-    if (mode === 'custom') {
-        if (customAudioData) {
-            const audio = new Audio(customAudioData);
-            audio.play().catch(e => {
-                console.warn('Audio play error', e);
-                playSynthesizedChime();
-            });
-        } else {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Pilih File Terlebih Dahulu',
-                    text: 'Silakan klik tombol "Pilih File Audio" untuk mengambil lagu/ringtone dari perangkat Anda.',
-                    confirmButtonColor: '#2563eb'
-                });
-            } else {
-                alert('Silakan pilih file audio dari perangkat terlebih dahulu.');
-            }
-        }
-    } else if (mode === 'voice') {
-        speakIndonesianText("Pesanan Masuk! Atas nama Budi Santoso, Badminton. Silakan periksa bukti pembayaran.");
-    } else if (mode === 'chime') {
-        playSynthesizedChime();
+function updateAudioBadgeUI() {
+    const badge = document.getElementById('badgeActiveMode');
+    if (!badge) return;
+    const name = localStorage.getItem('fajar_custom_audio_name');
+    if (name) {
+        badge.innerText = '🎵 ' + name;
+        badge.title = 'File aktif: ' + name + ' (Klik tombol untuk mengganti)';
+    } else {
+        badge.innerText = 'Pilih File';
+        badge.title = 'Klik untuk memilih file nada notifikasi dari perangkat';
     }
 }
 
 function playActiveNotification(customerName = 'Pelanggan', cabor = 'Badminton') {
-    const mode = localStorage.getItem('fajar_notif_mode') || 'chime';
-
-    if (mode === 'custom') {
-        const audioData = localStorage.getItem('fajar_custom_audio_data');
-        if (audioData) {
+    const audioData = localStorage.getItem('fajar_custom_audio_data');
+    if (audioData) {
+        try {
             const audio = new Audio(audioData);
-            audio.play().catch(e => {
-                console.warn('Autoplay error', e);
-                playSynthesizedChime();
-            });
-        } else {
-            playSynthesizedChime();
+            audio.play().catch(e => console.warn('Autoplay error', e));
+        } catch(e) {
+            console.warn('Audio exception', e);
         }
-    } else if (mode === 'voice') {
-        const text = `Pesanan Masuk! Atas nama ${customerName}, ${cabor}. Silakan periksa bukti pembayaran.`;
-        speakIndonesianText(text);
-    } else {
-        playSynthesizedChime();
     }
-}
-
-function saveAudioSettings() {
-    localStorage.setItem('fajar_notif_mode', currentAudioMode);
-    updateBadgeMode(currentAudioMode);
-    closeModalAudioSettings();
-
-    if (typeof Swal !== 'undefined') {
-        Swal.fire({
-            icon: 'success',
-            title: 'Pengaturan Tersimpan!',
-            text: 'Suara notifikasi pesanan berhasil diperbarui.',
-            timer: 2000,
-            showConfirmButton: false,
-            customClass: { popup: 'rounded-3xl' }
-        });
-    }
-}
-
-function resetDefaultAudioSettings() {
-    localStorage.removeItem('fajar_custom_audio_data');
-    localStorage.removeItem('fajar_custom_audio_name');
-    localStorage.setItem('fajar_notif_mode', 'chime');
-    customAudioData = null;
-    customAudioName = null;
-    initAudioSettingsUI();
-
-    if (typeof Swal !== 'undefined') {
-        Swal.fire({
-            icon: 'info',
-            title: 'Reset Selesai',
-            text: 'Suara notifikasi dikembalikan ke nada bel bawaan.',
-            timer: 1800,
-            showConfirmButton: false,
-            customClass: { popup: 'rounded-3xl' }
-        });
-    }
-}
-
-function openModalAudioSettings() {
-    initAudioSettingsUI();
-    const modal = document.getElementById('modalAudioSettings');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-}
-
-function closeModalAudioSettings() {
-    const modal = document.getElementById('modalAudioSettings');
-    modal.classList.remove('flex');
-    modal.classList.add('hidden');
 }
 
 // ==================== REAL-TIME BACKGROUND CHECK ====================
@@ -758,7 +442,7 @@ function startRealtimeNotificationWatcher() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    initAudioSettingsUI();
+    updateAudioBadgeUI();
     startRealtimeNotificationWatcher();
 });
 
