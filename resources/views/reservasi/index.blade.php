@@ -149,8 +149,7 @@
         </h2>
 
         <p class="text-sm mt-2 opacity-90 max-w-xl mb-6">
-            Nikmati harga spesial dengan berlangganan paket Member. Pilih jadwal rutin mingguan Anda 
-            selama {{ active_arena()->member_jumlah_pekan ?? 4 }} pekan berturut turut.
+            Nikmati harga spesial dengan berlangganan paket Member.
         </p>
 
     @else
