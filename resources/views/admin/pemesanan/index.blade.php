@@ -16,9 +16,9 @@
             <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">Data Pemesanan</h2>
             <p class="text-gray-500 mt-1 text-sm">Daftar seluruh reservasi dan verifikasi pembayaran</p>
         </div>
-        <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full xl:w-auto">
             <!-- Search Bar khusus Data Pemesanan Admin (Server-Side Search Meliputi Seluruh Halaman Database) -->
-            <form id="searchAdminForm" method="GET" action="{{ route('admin.pemesanan') }}" class="relative w-full sm:w-72 flex-1 sm:flex-initial min-w-[220px]">
+            <form id="searchAdminForm" method="GET" action="{{ route('admin.pemesanan') }}" class="relative w-full sm:w-72">
                 @if(request('status'))
                     <input type="hidden" name="status" value="{{ request('status') }}">
                 @endif
@@ -33,20 +33,22 @@
                 @endif
             </form>
 
-            <button type="button" onclick="openModalQris()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                <span class="whitespace-nowrap">Upload QRIS Statis</span>
-            </button>
+            <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                <button type="button" onclick="openModalQris()" class="w-full sm:w-auto h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span class="whitespace-nowrap">Upload QRIS Statis</span>
+                </button>
 
-            <!-- Input File Tersembunyi untuk Pilih Notifikasi Langsung dari Perangkat -->
-            <input type="file" id="customAudioDirectInput" accept="audio/*" class="hidden" onchange="handleDirectAudioUpload(event)">
+                <!-- Input File Tersembunyi untuk Pilih Notifikasi Langsung dari Perangkat -->
+                <input type="file" id="customAudioDirectInput" accept="audio/*" class="hidden" onchange="handleDirectAudioUpload(event)">
 
-            <!-- Tombol Setel Suara Notifikasi (Warna Biru seperti Upload QRIS) -->
-            <button type="button" onclick="triggerDirectAudioPicker()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer shrink-0" title="Pilih File Suara Notifikasi dari Perangkat">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
-                <span class="whitespace-nowrap">Setel Notifikasi</span>
-                <span id="badgeActiveMode" class="text-[10px] bg-white/20 text-white border border-white/30 px-2 py-0.5 rounded-full font-bold truncate max-w-[130px]">Pilih File</span>
-            </button>
+                <!-- Tombol Setel Suara Notifikasi (Warna Biru seperti Upload QRIS) -->
+                <button type="button" onclick="triggerDirectAudioPicker()" class="w-full sm:w-auto h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer shrink-0" title="Pilih File Suara Notifikasi dari Perangkat">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                    <span class="whitespace-nowrap">Setel Notifikasi</span>
+                    <span id="badgeActiveMode" class="text-[10px] bg-white/20 text-white border border-white/30 px-2 py-0.5 rounded-full font-bold truncate max-w-[130px]">Pilih File</span>
+                </button>
+            </div>
         </div>
     </div>
 
