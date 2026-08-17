@@ -211,8 +211,9 @@ function triggerNativeOSNotification(title, body, targetUrl) {
         const origin = window.location.origin;
         const iconUrl = origin + '/images/logo.png';
         const badgeUrl = origin + '/favicon.png';
+        const urlToOpen = targetUrl || "{{ route('admin.pemesanan') }}";
 
-        if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
             navigator.serviceWorker.ready.then(function(reg) {
                 reg.showNotification(title, {
                     body: body,
@@ -222,23 +223,33 @@ function triggerNativeOSNotification(title, body, targetUrl) {
                     renotify: true,
                     requireInteraction: true,
                     vibrate: [300, 150, 300],
-                    data: { url: targetUrl || "{{ route('admin.pemesanan') }}" }
+                    data: { url: urlToOpen }
                 });
             }).catch(function() {
-                new Notification(title, { 
+                const notif = new Notification(title, { 
                     body: body, 
-                    icon: iconUrl,
-                    badge: badgeUrl,
-                    tag: 'fajar-order-' + Date.now()
+                    icon: iconUrl, 
+                    badge: badgeUrl, 
+                    tag: 'fajar-order-' + Date.now(),
+                    requireInteraction: true 
                 });
+                notif.onclick = function() {
+                    window.focus();
+                    window.location.href = urlToOpen;
+                };
             });
         } else {
-            new Notification(title, { 
+            const notif = new Notification(title, { 
                 body: body, 
-                icon: iconUrl,
-                badge: badgeUrl,
-                tag: 'fajar-order-' + Date.now()
+                icon: iconUrl, 
+                badge: badgeUrl, 
+                tag: 'fajar-order-' + Date.now(),
+                requireInteraction: true 
             });
+            notif.onclick = function() {
+                window.focus();
+                window.location.href = urlToOpen;
+            };
         }
     } catch(e) {
         console.log('Native notification error:', e);
