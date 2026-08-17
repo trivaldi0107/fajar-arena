@@ -86,21 +86,32 @@ body{
     width:58px;
     height:58px;
     border-radius:9999px;
-    background:rgba(255,255,255,.14);
+    background:rgba(255,255,255,.2);
     backdrop-filter:blur(12px);
-    border:1px solid rgba(255,255,255,.25);
+    -webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.3);
     color:white;
     display:flex;
     align-items:center;
     justify-content:center;
-    transition:.25s ease;
-    box-shadow:0 10px 25px rgba(0,0,0,.12);
+    transition:all .2s ease;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
 }
 
-.nav-btn:hover{
-    background:white;
-    color:#2563eb;
-    transform:scale(1.08);
+@media (hover: hover) and (pointer: fine) {
+    .nav-btn:hover{
+        background:white;
+        color:#2563eb;
+        transform:scale(1.08);
+    }
+}
+
+.nav-btn:active{
+    background:rgba(255,255,255,.45);
+    color:white;
+    transform:scale(0.92);
 }
 
 /* ================= CARD ================= */
