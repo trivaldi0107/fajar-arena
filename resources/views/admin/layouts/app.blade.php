@@ -161,24 +161,45 @@ function autoInitPush() {
 }
 
 function triggerNativeOSNotification(title, body, targetUrl) {
-    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    if (!('Notification' in window)) return;
+
+    if (Notification.permission !== 'granted') {
+        Notification.requestPermission();
+        return;
+    }
 
     try {
+        const origin = window.location.origin;
+        const iconUrl = origin + '/images/logo.png';
+        const badgeUrl = origin + '/favicon.png';
+
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.ready.then(function(reg) {
                 reg.showNotification(title, {
                     body: body,
-                    icon: '/favicon.ico',
-                    badge: '/favicon.ico',
-                    silent: true, // Mencegah bunyi bawaan sistem HP/Laptop agar hanya audio kustom yang bersuara
-                    vibrate: [200, 100, 200],
+                    icon: iconUrl,
+                    badge: badgeUrl,
+                    tag: 'fajar-order-' + Date.now(),
+                    renotify: true,
+                    requireInteraction: true,
+                    vibrate: [300, 150, 300],
                     data: { url: targetUrl || "{{ route('admin.pemesanan') }}" }
                 });
             }).catch(function() {
-                new Notification(title, { body: body, icon: '/favicon.ico', silent: true });
+                new Notification(title, { 
+                    body: body, 
+                    icon: iconUrl,
+                    badge: badgeUrl,
+                    tag: 'fajar-order-' + Date.now()
+                });
             });
         } else {
-            new Notification(title, { body: body, icon: '/favicon.ico', silent: true });
+            new Notification(title, { 
+                body: body, 
+                icon: iconUrl,
+                badge: badgeUrl,
+                tag: 'fajar-order-' + Date.now()
+            });
         }
     } catch(e) {
         console.log('Native notification error:', e);

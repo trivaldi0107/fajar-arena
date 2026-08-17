@@ -731,7 +731,21 @@
 
         @php
             $memberByDate = collect($memberSlots)->groupBy('tanggal_member');
+            $isFilterMember = request()->filled('tanggal_mulai') || request()->filled('tanggal_akhir') || request()->filled('jam_mulai') || request()->filled('jam_akhir');
         @endphp
+
+        @if($memberByDate->isEmpty())
+            <div class="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-50/50 p-8 text-center my-6">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h4 class="font-bold text-gray-800 text-lg mb-1">Tidak Ada Jadwal Member Tersedia</h4>
+                <p class="text-sm text-gray-500 max-w-md mx-auto mb-5">Tidak ditemukan paket member yang tersedia pada rentang waktu filter yang dipilih. Silakan coba atur jam atau rentang tanggal lainnya.</p>
+                <a href="{{ route('reservasi', ['member' => 1]) }}" class="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-semibold text-sm shadow-md hover:bg-blue-700 transition">
+                    Reset Filter
+                </a>
+            </div>
+        @endif
 
         @foreach($memberByDate as $tglMember => $slotsPerTgl)
 

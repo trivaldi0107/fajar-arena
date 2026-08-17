@@ -15,12 +15,15 @@ self.addEventListener('push', function (event) {
     }
 
     const title = data.title || 'Fajar Arena';
+    const origin = self.location.origin;
     const options = {
         body: data.body || 'Ada notifikasi baru dari Fajar Arena.',
-        icon: data.icon || '/favicon.ico',
-        badge: data.icon || '/favicon.ico',
-        silent: true,
-        vibrate: [200, 100, 200, 100, 200],
+        icon: data.icon || (origin + '/images/logo.png'),
+        badge: data.badge || (origin + '/favicon.png'),
+        tag: 'fajar-order-' + Date.now(),
+        renotify: true,
+        requireInteraction: true,
+        vibrate: [300, 150, 300],
         data: {
             url: data.url || '/admin/pemesanan'
         },

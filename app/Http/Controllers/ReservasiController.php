@@ -158,6 +158,14 @@ class ReservasiController extends Controller
                 $memberSlots = array_merge($memberSlots, $slots);
                 $currentDate->addDay();
             }
+
+            // Jika pengguna melakukan filter: HANYA tampilkan slot yang statusnya 'tersedia'
+            $isFilterMember = $request->filled('tanggal_mulai') || $request->filled('tanggal_akhir') || $request->filled('jam_mulai') || $request->filled('jam_akhir');
+            if ($isFilterMember) {
+                $memberSlots = array_values(array_filter($memberSlots, function($s) {
+                    return isset($s['status']) && $s['status'] === 'tersedia';
+                }));
+            }
         }
 
         $tanggalList = [];
