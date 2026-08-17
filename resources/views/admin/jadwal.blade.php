@@ -65,21 +65,18 @@
 </div>
 
 <!-- Floating Action Bar for Bulk Update (Date) -->
-<div id="bulk-action-bar" class="fixed bottom-5 left-1/2 lg:left-[calc(50%+9rem)] -translate-x-1/2 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-200 px-4 py-3 flex-col sm:flex-row items-center justify-between gap-3 z-30 transition-all duration-200 w-[calc(100%-2rem)] max-w-lg hidden">
-    <div class="flex items-center justify-between w-full sm:w-auto gap-2">
-        <span id="bulk-action-text" class="font-bold text-blue-600 text-sm md:text-base">0 Tanggal Terpilih</span>
-        <button type="button" onclick="window.clearDateSelection()" class="text-xs font-semibold text-gray-500 hover:text-red-600 px-2 py-1 bg-gray-100 hover:bg-red-50 rounded-lg transition-colors">Batal</button>
-    </div>
-    
-    <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+<div id="bulk-action-bar" class="fixed bottom-5 left-1/2 lg:left-[calc(50%+9rem)] -translate-x-1/2 bg-white/95 backdrop-blur-md rounded-2xl md:rounded-full shadow-[0_10px_35px_rgba(0,0,0,0.15)] border border-gray-200 px-4 sm:px-6 py-3 flex flex-row items-center justify-between gap-2 sm:gap-4 z-30 transition-all duration-200 w-[94%] max-w-2xl hidden">
+    <span id="bulk-action-text" class="font-extrabold text-blue-600 text-sm sm:text-base whitespace-nowrap truncate">1 Tanggal Terpilih</span>
+    <div class="hidden md:block w-px h-6 bg-gray-200"></div>
+    <div class="flex items-center gap-2 flex-shrink-0">
         <label class="text-xs font-bold text-gray-500 whitespace-nowrap hidden sm:inline">UBAH SEMUA :</label>
         
-        <div class="relative w-full sm:w-auto">
-            <button id="bulk-action-btn" type="button" onclick="document.getElementById('bulk-action-menu').classList.toggle('hidden');" class="flex items-center justify-between w-full sm:w-48 px-3.5 py-2 text-sm bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors shadow-sm font-semibold text-gray-700">
-                <span>Pilih Status...</span>
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        <div class="relative">
+            <button id="bulk-action-btn" type="button" onclick="document.getElementById('bulk-action-menu').classList.toggle('hidden');" class="flex items-center justify-between w-36 sm:w-48 px-3.5 py-2 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors shadow-sm font-semibold text-gray-700">
+                <span class="truncate">Pilih Status...</span>
+                <svg class="w-4 h-4 text-gray-400 ml-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div id="bulk-action-menu" class="absolute bottom-full right-0 mb-3 w-64 max-w-[90vw] bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden flex-col z-50 p-2 origin-bottom hidden transition-all">
+            <div id="bulk-action-menu" class="absolute bottom-full right-0 mb-3 w-60 bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden flex-col z-50 p-2 origin-bottom hidden transition-all">
                 <button type="button" onclick="window.updateAllStatus('tersedia'); document.getElementById('bulk-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm flex-shrink-0"></div>Tersedia</button>
                 <button type="button" onclick="window.updateAllStatus('proses'); document.getElementById('bulk-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-sm flex-shrink-0"></div>Menunggu Pembayaran</button>
                 <button type="button" onclick="window.updateAllStatus('berhasil'); document.getElementById('bulk-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-gray-500 shadow-sm flex-shrink-0"></div>Sudah Dipesan</button>
@@ -92,21 +89,21 @@
 </div>
 
 <!-- Floating Action Bar for Slot Bulk Update (Slot Individual) -->
-<div id="bulk-slot-action-bar" class="fixed bottom-5 left-1/2 lg:left-[calc(50%+9rem)] -translate-x-1/2 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-blue-200 px-4 py-3 flex-col sm:flex-row items-center justify-between gap-3 z-30 transition-all duration-200 w-[calc(100%-2rem)] max-w-lg hidden ring-4 ring-blue-50">
-    <div class="flex items-center justify-between w-full sm:w-auto gap-2">
-        <span id="bulk-slot-action-text" class="font-bold text-blue-600 text-sm md:text-base">0 Jadwal Terpilih</span>
-        <button type="button" onclick="window.clearSlotSelection()" class="text-xs font-semibold text-gray-500 hover:text-red-600 px-2 py-1 bg-gray-100 hover:bg-red-50 rounded-lg transition-colors">Batal</button>
+<div id="bulk-slot-action-bar" class="fixed bottom-5 left-1/2 lg:left-[calc(50%+9rem)] -translate-x-1/2 bg-white/95 backdrop-blur-md rounded-2xl md:rounded-full shadow-[0_10px_35px_rgba(59,130,246,0.25)] border border-blue-200 px-4 sm:px-6 py-3 flex flex-row items-center justify-between gap-2 sm:gap-4 z-30 transition-all duration-200 w-[94%] max-w-2xl hidden ring-4 ring-blue-50">
+    <div class="flex items-center gap-2 truncate">
+        <span id="bulk-slot-action-text" class="font-extrabold text-blue-600 text-sm sm:text-base whitespace-nowrap truncate">0 Jadwal Terpilih</span>
+        <button type="button" onclick="window.clearSlotSelection()" class="text-xs font-semibold text-gray-500 hover:text-red-600 px-2 py-0.5 bg-gray-100 hover:bg-red-50 rounded-md transition-colors">Batal</button>
     </div>
     
-    <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+    <div class="flex items-center gap-2 flex-shrink-0">
         <label class="text-xs font-bold text-blue-500 whitespace-nowrap hidden sm:inline">UBAH JADWAL :</label>
         
-        <div class="relative w-full sm:w-auto">
-            <button id="bulk-slot-action-btn" type="button" onclick="document.getElementById('bulk-slot-action-menu').classList.toggle('hidden');" class="flex items-center justify-between w-full sm:w-48 px-3.5 py-2 text-sm bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-100 transition-colors shadow-sm font-semibold text-blue-700">
-                <span>Pilih Status...</span>
-                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        <div class="relative">
+            <button id="bulk-slot-action-btn" type="button" onclick="document.getElementById('bulk-slot-action-menu').classList.toggle('hidden');" class="flex items-center justify-between w-36 sm:w-48 px-3.5 py-2 text-xs sm:text-sm bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-100 transition-colors shadow-sm font-semibold text-blue-700">
+                <span class="truncate">Pilih Status...</span>
+                <svg class="w-4 h-4 text-blue-400 ml-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div id="bulk-slot-action-menu" class="absolute bottom-full right-0 mb-3 w-64 max-w-[90vw] bg-white border border-blue-100 rounded-2xl shadow-2xl overflow-hidden flex-col z-50 p-2 origin-bottom hidden transition-all">
+            <div id="bulk-slot-action-menu" class="absolute bottom-full right-0 mb-3 w-60 bg-white border border-blue-100 rounded-2xl shadow-2xl overflow-hidden flex-col z-50 p-2 origin-bottom hidden transition-all">
                 <button type="button" onclick="window.updateSlotsStatus('tersedia'); document.getElementById('bulk-slot-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm flex-shrink-0"></div>Tersedia</button>
                 <button type="button" onclick="window.updateSlotsStatus('proses'); document.getElementById('bulk-slot-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-sm flex-shrink-0"></div>Menunggu Pembayaran</button>
                 <button type="button" onclick="window.updateSlotsStatus('berhasil'); document.getElementById('bulk-slot-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-gray-500 shadow-sm flex-shrink-0"></div>Sudah Dipesan</button>
@@ -246,9 +243,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const bar = document.getElementById('bulk-action-bar');
         const text = document.getElementById('bulk-action-text');
         
-        // HANYA MUNCUL JIKA LEBIH DARI 1 TANGGAL TERPILIH (PILIH BANYAK TANGGAL)
-        if (selectedDates.length > 1 && selectedSlots.length === 0) {
-            text.innerText = selectedDates.length + ' Tanggal Terpilih';
+        // MUNCUL KETIKA 1 ATAU LEBIH TANGGAL TERPILIH
+        if (selectedDates.length > 0 && selectedSlots.length === 0) {
+            if (selectedDates.length === 1) {
+                text.innerText = formatDateForDisplay(selectedDates[0]);
+            } else {
+                text.innerText = selectedDates.length + ' Tanggal Terpilih';
+            }
             bar.classList.remove('hidden');
             bar.classList.add('flex');
         } else {
