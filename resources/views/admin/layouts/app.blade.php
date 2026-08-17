@@ -98,18 +98,57 @@ document.addEventListener('click', function unlockAudioOnPage() {
     } catch(e) {}
 }, { passive: true });
 
+function playDefaultChime() {
+    try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        
+        const now = ctx.currentTime;
+        // Tone 1: 659.25 Hz (E5)
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(659.25, now);
+        gain1.gain.setValueAtTime(0.5, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.5);
+
+        // Tone 2: 880 Hz (A5)
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(880, now + 0.18);
+        gain2.gain.setValueAtTime(0.6, now + 0.18);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(now + 0.18);
+        osc2.stop(now + 0.8);
+    } catch(e) {
+        console.log('Default chime error:', e);
+    }
+}
+
 function playNotificationSound(customerName = 'Pelanggan', caborName = 'Badminton') {
     const audioData = localStorage.getItem('fajar_custom_audio_data');
     if (audioData) {
         try {
             const audio = new Audio(audioData);
             audio.play().catch(function(e) {
-                console.warn('Custom audio play error:', e);
+                console.warn('Custom audio play error, fallback to chime:', e);
+                playDefaultChime();
             });
             return;
         } catch(e) {
-            console.warn('Custom audio error:', e);
+            console.warn('Custom audio error, fallback to chime:', e);
+            playDefaultChime();
         }
+    } else {
+        // Fallback default chime jika device belum disetel ringtone kustom
+        playDefaultChime();
     }
 }
 
