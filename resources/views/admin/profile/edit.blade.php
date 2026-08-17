@@ -65,7 +65,7 @@
             <!-- Password Saat Ini -->
             <div>
                 <label for="current_password" class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Kata Sandi Saat Ini</label>
-                <input id="current_password" name="current_password" type="password" class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-sm text-gray-900" placeholder="Masukkan kata sandi saat ini jika mau ganti">
+                <input id="current_password" name="current_password" type="password" class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-sm text-gray-900" placeholder="Masukkan kata sandi saat ini">
                 <x-input-error class="mt-1 text-xs text-rose-500 font-semibold" :messages="$errors->get('current_password')" />
             </div>
 
