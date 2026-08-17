@@ -220,7 +220,7 @@
                             <div id="uploadPlaceholder" class="space-y-2">
                                 <svg class="w-10 h-10 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 <p class="text-sm font-semibold text-gray-700">Klik atau seret file foto resi transfer ke sini</p>
-                                <p class="text-xs text-gray-400">Format: JPG, PNG, WEBP (Maksimal 5MB)</p>
+                                <p class="text-xs text-gray-400">Format: JPG, PNG, WEBP (Mendukung Foto Kamera HP)</p>
                             </div>
 
                             <div id="imagePreviewContainer" class="hidden text-center">
@@ -281,18 +281,75 @@ function copyText(id) {
     });
 }
 
-function previewImage(event) {
+function compressImage(file, maxDimension, quality, callback) {
     const reader = new FileReader();
-    reader.onload = function(){
-        const output = document.getElementById('imagePreview');
-        output.src = reader.result;
-        document.getElementById('uploadPlaceholder').classList.add('hidden');
-        document.getElementById('imagePreviewContainer').classList.remove('hidden');
-        document.getElementById('fileName').innerText = event.target.files[0].name;
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxDimension || height > maxDimension) {
+                if (width > height) {
+                    height = Math.round((height * maxDimension) / width);
+                    width = maxDimension;
+                } else {
+                    width = Math.round((width * maxDimension) / height);
+                    height = maxDimension;
+                }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(function(blob) {
+                callback(blob || file);
+            }, 'image/jpeg', quality);
+        };
+        img.onerror = function() {
+            callback(file);
+        };
+        img.src = e.target.result;
     };
-    if (event.target.files[0]) {
-        reader.readAsDataURL(event.target.files[0]);
-    }
+    reader.readAsDataURL(file);
+}
+
+function previewImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    document.getElementById('uploadPlaceholder').classList.add('hidden');
+    document.getElementById('imagePreviewContainer').classList.remove('hidden');
+    document.getElementById('fileName').innerText = 'Mengoptimasi gambar: ' + file.name + '...';
+
+    // Kompresi otomatis di sisi browser (bahkan file kamera HP 30MB menjadi ~400KB yang tajam & cepat diupload)
+    compressImage(file, 1600, 0.82, function(compressedBlob) {
+        try {
+            const compressedFile = new File([compressedBlob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+                type: "image/jpeg",
+                lastModified: Date.now()
+            });
+
+            if (window.DataTransfer) {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(compressedFile);
+                document.getElementById('buktiInput').files = dataTransfer.files;
+            }
+        } catch(e) {}
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').src = e.target.result;
+            const sizeKB = Math.round(compressedBlob.size / 1024);
+            const sizeLabel = sizeKB > 1024 ? (sizeKB/1024).toFixed(1) + ' MB' : sizeKB + ' KB';
+            document.getElementById('fileName').innerText = file.name + ' (Siap diunggah - ' + sizeLabel + ')';
+        };
+        reader.readAsDataURL(compressedBlob);
+    });
 }
 
 // Countdown timer (10 menit)
