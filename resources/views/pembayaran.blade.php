@@ -8,20 +8,43 @@
     </div>
 
     @if(session('success'))
-    <div class="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-4 rounded-2xl flex items-center gap-3">
-        <svg class="w-6 h-6 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <span class="font-medium text-sm sm:text-base">{{ session('success') }}</span>
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#2563eb'
+            });
+        });
+    </script>
+    @endif
+
+    @if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Terjadi Kesalahan',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#2563eb'
+            });
+        });
+    </script>
     @endif
 
     @if($errors->any())
-    <div class="mb-6 bg-rose-50 border border-rose-200 text-rose-800 px-5 py-4 rounded-2xl">
-        <ul class="list-disc list-inside text-sm font-medium space-y-1">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Peringatan Bukti Transfer',
+                html: '<div class="text-left text-sm space-y-2 mt-2">@foreach($errors->all() as $error)<div class="flex items-center gap-2 text-rose-600 font-medium"><svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg><span>{{ $error }}</span></div>@endforeach</div>',
+                confirmButtonText: 'Saya Mengerti',
+                confirmButtonColor: '#2563eb'
+            });
+        });
+    </script>
     @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -193,7 +216,7 @@
                 </div>
 
                 <!-- Form Upload Bukti Transfer -->
-                <form action="{{ route('pembayaran.upload', $pemesanan->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                <form id="formUploadBukti" action="{{ route('pembayaran.upload', $pemesanan->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
                     @csrf
 
                     <div>
@@ -322,6 +345,26 @@ function previewImage(event) {
     const file = event.target.files[0];
     if (!file) return;
 
+    // VALIDASI FORMAT GAMBAR (JPG, JPEG, PNG, WEBP)
+    const allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+    const ext = file.name.split('.').pop().toLowerCase();
+    const isImageMime = file.type ? file.type.startsWith('image/') : false;
+
+    if (!isImageMime && !allowedExts.includes(ext)) {
+        event.target.value = '';
+        document.getElementById('uploadPlaceholder').classList.remove('hidden');
+        document.getElementById('imagePreviewContainer').classList.add('hidden');
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Format File Tidak Didukung',
+            text: 'File yang Anda pilih bukan format gambar yang valid. Silakan pilih foto dengan format JPG, PNG, atau WEBP.',
+            confirmButtonText: 'Pilih Ulang',
+            confirmButtonColor: '#2563eb'
+        });
+        return;
+    }
+
     // VALIDASI MAKSIMAL 5 MB
     const MAX_SIZE_MB = 5;
     const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
@@ -333,16 +376,13 @@ function previewImage(event) {
         document.getElementById('uploadPlaceholder').classList.remove('hidden');
         document.getElementById('imagePreviewContainer').classList.add('hidden');
 
-        if (window.Swal) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Ukuran File Terlalu Besar',
-                text: `Ukuran file Anda ${fileSizeMB} MB. Maksimal ukuran file yang diperbolehkan adalah ${MAX_SIZE_MB} MB. Silakan pilih foto lain atau screenshot resi tersebut.`,
-                confirmButtonColor: '#2563eb'
-            });
-        } else {
-            alert(`Ukuran file Anda ${fileSizeMB} MB. Maksimal ukuran file yang diperbolehkan adalah ${MAX_SIZE_MB} MB.`);
-        }
+        Swal.fire({
+            icon: 'error',
+            title: 'Ukuran File Terlalu Besar',
+            text: `Ukuran file Anda ${fileSizeMB} MB. Maksimal ukuran file yang diperbolehkan adalah ${MAX_SIZE_MB} MB. Silakan pilih foto lain atau screenshot resi tersebut.`,
+            confirmButtonText: 'Pilih Ulang',
+            confirmButtonColor: '#2563eb'
+        });
         return;
     }
 
@@ -375,6 +415,26 @@ function previewImage(event) {
         reader.readAsDataURL(compressedBlob);
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const formUpload = document.getElementById('formUploadBukti');
+    if (formUpload) {
+        formUpload.addEventListener('submit', function(e) {
+            const input = document.getElementById('buktiInput');
+            const hasExisting = {{ $pemesanan->bukti_transfer ? 'true' : 'false' }};
+            if (!hasExisting && (!input.files || input.files.length === 0)) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Bukti Pembayaran Belum Dipilih',
+                    text: 'Silakan pilih foto resi / bukti transfer terlebih dahulu sebelum menekan tombol kirim.',
+                    confirmButtonText: 'Pilih Foto',
+                    confirmButtonColor: '#2563eb'
+                });
+            }
+        });
+    }
+});
 
 // Countdown timer (10 menit)
 let createdAtMs = {{ strtotime($pemesanan->created_at) * 1000 }};
