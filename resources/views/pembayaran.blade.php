@@ -220,7 +220,7 @@
                             <div id="uploadPlaceholder" class="space-y-2">
                                 <svg class="w-10 h-10 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 <p class="text-sm font-semibold text-gray-700">Klik atau seret file foto resi transfer ke sini</p>
-                                <p class="text-xs text-gray-400">Format: JPG, PNG, WEBP (Mendukung Foto Kamera HP)</p>
+                                <p class="text-xs text-gray-400">Format: JPG, PNG, WEBP (Maksimal 5MB)</p>
                             </div>
 
                             <div id="imagePreviewContainer" class="hidden text-center">
@@ -322,12 +322,36 @@ function previewImage(event) {
     const file = event.target.files[0];
     if (!file) return;
 
+    // VALIDASI MAKSIMAL 5 MB
+    const MAX_SIZE_MB = 5;
+    const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
+    if (file.size > MAX_SIZE_BYTES) {
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+        event.target.value = ''; // Reset input file
+        
+        document.getElementById('uploadPlaceholder').classList.remove('hidden');
+        document.getElementById('imagePreviewContainer').classList.add('hidden');
+
+        if (window.Swal) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran File Terlalu Besar',
+                text: `Ukuran file Anda ${fileSizeMB} MB. Maksimal ukuran file yang diperbolehkan adalah ${MAX_SIZE_MB} MB. Silakan pilih foto lain atau screenshot resi tersebut.`,
+                confirmButtonColor: '#2563eb'
+            });
+        } else {
+            alert(`Ukuran file Anda ${fileSizeMB} MB. Maksimal ukuran file yang diperbolehkan adalah ${MAX_SIZE_MB} MB.`);
+        }
+        return;
+    }
+
     document.getElementById('uploadPlaceholder').classList.add('hidden');
     document.getElementById('imagePreviewContainer').classList.remove('hidden');
     document.getElementById('fileName').innerText = 'Mengoptimasi gambar: ' + file.name + '...';
 
-    // Kompresi otomatis di sisi browser (bahkan file kamera HP 30MB menjadi ~400KB yang tajam & cepat diupload)
-    compressImage(file, 1600, 0.82, function(compressedBlob) {
+    // Kompresi ringan agar upload cepat & hemat kuota
+    compressImage(file, 1600, 0.85, function(compressedBlob) {
         try {
             const compressedFile = new File([compressedBlob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
                 type: "image/jpeg",
@@ -346,7 +370,7 @@ function previewImage(event) {
             document.getElementById('imagePreview').src = e.target.result;
             const sizeKB = Math.round(compressedBlob.size / 1024);
             const sizeLabel = sizeKB > 1024 ? (sizeKB/1024).toFixed(1) + ' MB' : sizeKB + ' KB';
-            document.getElementById('fileName').innerText = file.name + ' (Siap diunggah - ' + sizeLabel + ')';
+            document.getElementById('fileName').innerText = file.name + ' (' + sizeLabel + ')';
         };
         reader.readAsDataURL(compressedBlob);
     });

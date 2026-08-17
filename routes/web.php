@@ -86,12 +86,12 @@ Route::post('/pembayaran/upload/{id}', function (\Illuminate\Http\Request $reque
     $pemesanan = Pemesanan::with('detail')->findOrFail($id);
 
     $request->validate([
-        'bukti_transfer' => 'required|image|mimes:jpeg,png,jpg,webp|max:25600'
+        'bukti_transfer' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120'
     ], [
         'bukti_transfer.required' => 'Silakan pilih foto bukti transfer terlebih dahulu.',
         'bukti_transfer.image' => 'File harus berupa gambar.',
         'bukti_transfer.mimes' => 'Format gambar yang diperbolehkan: JPG, PNG, WEBP.',
-        'bukti_transfer.max' => 'Ukuran file maksimal 25MB.'
+        'bukti_transfer.max' => 'Ukuran file bukti pembayaran maksimal 5MB.'
     ]);
 
     if ($request->hasFile('bukti_transfer')) {
