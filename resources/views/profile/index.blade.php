@@ -160,7 +160,7 @@
                         </div>
                         @endif
                         <div class="mt-4 pt-4 border-t-2 border-dashed border-gray-200 flex justify-center md:justify-end">
-                            <form id="delete-form-{{ $pesanan->id }}" action="{{ route('pemesanan.destroy', $pesanan->id) }}" method="POST">
+                            <form id="delete-form-{{ $pesanan->id }}" action="{{ route('pemesanan.destroy', $pesanan->id) }}" method="POST" class="w-full md:w-auto">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" onclick="confirmDeleteTicket('delete-form-{{ $pesanan->id }}')" class="w-full md:w-auto justify-center bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-6 py-2.5 rounded-xl font-bold text-sm inline-flex items-center gap-2 transition-all cursor-pointer">
