@@ -37,9 +37,9 @@
 
 </head>
 
-<body class="font-sans antialiased bg-slate-100" x-data="{ sidebarOpen: false }">
+<body class="font-sans antialiased bg-slate-100 overflow-x-hidden" x-data="{ sidebarOpen: false }">
 
-<div class="flex min-h-screen relative">
+<div class="flex min-h-screen relative overflow-x-hidden">
 
     <!-- Mobile sidebar backdrop -->
     <div x-show="sidebarOpen" class="fixed inset-0 z-40 bg-gray-900/50 lg:hidden" @click="sidebarOpen = false" x-transition.opacity></div>
@@ -49,13 +49,13 @@
         @include('admin.partials.sidebar')
     </div>
 
-    <div class="flex-1 flex flex-col min-w-0 w-full lg:ml-72">
+    <div class="flex-1 flex flex-col min-w-0 w-full lg:ml-72 overflow-x-hidden">
 
         {{-- Topbar --}}
         @include('admin.partials.topbar')
 
         {{-- Content --}}
-        <main class="p-4 md:p-8 pb-12 animate-page-fade-up">
+        <main class="p-4 sm:p-6 md:p-8 pb-12 animate-page-fade-up min-w-0 max-w-full">
 
             @yield('content')
 
