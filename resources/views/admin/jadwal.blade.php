@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="w-full">
+<div class="w-full pb-36">
 
     <!-- Header -->
     <div class="mb-6 flex justify-between items-end">
@@ -26,14 +26,14 @@
     </div>
 
     <!-- Box Jadwal -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 md:p-8 relative min-h-[400px]">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 md:p-8 relative min-h-[400px] mb-8">
         <h3 class="text-lg font-bold text-gray-800 mb-6" id="table-title">Jadwal Lapangan</h3>
         
         <div id="loading-indicator" class="absolute inset-0 bg-white/70 flex items-center justify-center z-10 rounded-2xl">
             <div class="text-blue-600 font-bold">Memuat data...</div>
         </div>
 
-        <div class="overflow-x-auto pb-6">
+        <div class="overflow-x-auto pb-16">
             <table class="w-full text-sm text-left whitespace-nowrap">
                 <thead id="table-head"></thead>
                 <tbody id="table-body" class="divide-y divide-gray-100 text-gray-700"></tbody>
@@ -61,12 +61,11 @@
             <button id="custom-confirm-cancel" class="px-6 py-2.5 rounded-xl font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">Batal</button>
             <button id="custom-confirm-ok" class="px-6 py-2.5 rounded-xl font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5">Ya, Ubah Status</button>
         </div>
-        </div>
     </div>
 </div>
 
-<!-- Floating Action Bar for Bulk Update -->
-<div id="bulk-action-bar" class="fixed bottom-6 left-1/2 lg:left-[calc(50%+9rem)] -translate-x-1/2 bg-white rounded-2xl md:rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-gray-100 px-4 md:px-6 py-3 flex flex-col md:flex-row items-center gap-2 md:gap-4 z-[90] transition-all duration-300 translate-y-24 opacity-0 pointer-events-none w-[90%] md:w-auto">
+<!-- Floating Action Bar for Bulk Update (Date) -->
+<div id="bulk-action-bar" class="fixed bottom-6 left-1/2 lg:left-[calc(50%+9rem)] -translate-x-1/2 bg-white rounded-2xl md:rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.18)] border border-gray-200 px-4 md:px-6 py-3 flex-col md:flex-row items-center gap-2 md:gap-4 z-[90] transition-all duration-200 w-[92%] max-w-lg md:w-auto hidden">
     <span id="bulk-action-text" class="font-bold text-blue-600 text-sm md:text-base text-center">0 Tanggal Terpilih</span>
     <div class="hidden md:block w-px h-6 bg-gray-200"></div>
     <div class="flex items-center gap-2 w-full md:w-auto justify-center">
@@ -89,8 +88,8 @@
     </div>
 </div>
 
-<!-- Floating Action Bar for Slot Bulk Update -->
-<div id="bulk-slot-action-bar" class="fixed bottom-6 left-1/2 lg:left-[calc(50%+9rem)] -translate-x-1/2 bg-white rounded-2xl md:rounded-full shadow-[0_10px_40px_rgba(59,130,246,0.2)] border border-blue-200 px-4 md:px-6 py-3 flex flex-col md:flex-row items-center gap-2 md:gap-4 z-[95] transition-all duration-300 translate-y-24 opacity-0 pointer-events-none ring-4 ring-blue-50 w-[90%] md:w-auto">
+<!-- Floating Action Bar for Slot Bulk Update (Slot Individual) -->
+<div id="bulk-slot-action-bar" class="fixed bottom-6 left-1/2 lg:left-[calc(50%+9rem)] -translate-x-1/2 bg-white rounded-2xl md:rounded-full shadow-[0_10px_40px_rgba(59,130,246,0.25)] border border-blue-200 px-4 md:px-6 py-3 flex-col md:flex-row items-center gap-2 md:gap-4 z-[95] transition-all duration-200 w-[92%] max-w-lg md:w-auto hidden">
     <span id="bulk-slot-action-text" class="font-bold text-blue-600 text-sm md:text-base text-center">0 Jadwal Terpilih</span>
     <div class="hidden md:block w-px h-6 bg-blue-200"></div>
     <div class="flex items-center gap-2 w-full md:w-auto justify-center">
@@ -241,17 +240,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const bar = document.getElementById('bulk-action-bar');
         const text = document.getElementById('bulk-action-text');
         
-        if (selectedDates.length > 0) {
+        if (selectedDates.length > 0 && selectedSlots.length === 0) {
             if (selectedDates.length === 1) {
                 text.innerText = formatDateForDisplay(selectedDates[0]);
             } else {
                 text.innerText = selectedDates.length + ' Tanggal Terpilih';
             }
-            bar.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
-            bar.classList.add('translate-y-0', 'opacity-100');
+            bar.classList.remove('hidden');
+            bar.classList.add('flex');
         } else {
-            bar.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
-            bar.classList.remove('translate-y-0', 'opacity-100');
+            bar.classList.add('hidden');
+            bar.classList.remove('flex');
         }
     }
 
@@ -386,14 +385,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (selectedSlots.length > 0) {
             text.innerText = selectedSlots.length + ' Jadwal Terpilih';
-            bar.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
-            bar.classList.add('translate-y-0', 'opacity-100');
+            bar.classList.remove('hidden');
+            bar.classList.add('flex');
+            
             // Hide the date action bar if it's visible, to prevent overlap
-            document.getElementById('bulk-action-bar').classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
-            document.getElementById('bulk-action-bar').classList.remove('translate-y-0', 'opacity-100');
+            const dateBar = document.getElementById('bulk-action-bar');
+            dateBar.classList.add('hidden');
+            dateBar.classList.remove('flex');
         } else {
-            bar.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
-            bar.classList.remove('translate-y-0', 'opacity-100');
+            bar.classList.add('hidden');
+            bar.classList.remove('flex');
             // Restore date action bar if needed
             window.updateFloatingBar();
         }
