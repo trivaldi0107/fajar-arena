@@ -65,48 +65,54 @@
 </div>
 
 <!-- Floating Action Bar for Bulk Update (Date) -->
-<div id="bulk-action-bar" class="fixed bottom-6 left-1/2 lg:left-[calc(50%+9rem)] -translate-x-1/2 bg-white rounded-2xl md:rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.18)] border border-gray-200 px-4 md:px-6 py-3 flex-col md:flex-row items-center gap-2 md:gap-4 z-[90] transition-all duration-200 w-[92%] max-w-lg md:w-auto hidden">
-    <span id="bulk-action-text" class="font-bold text-blue-600 text-sm md:text-base text-center">0 Tanggal Terpilih</span>
-    <div class="hidden md:block w-px h-6 bg-gray-200"></div>
-    <div class="flex items-center gap-2 w-full md:w-auto justify-center">
-        <label class="text-xs font-bold text-gray-500 whitespace-nowrap">UBAH SEMUA :</label>
+<div id="bulk-action-bar" class="fixed bottom-5 left-1/2 lg:left-[calc(50%+9rem)] -translate-x-1/2 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-200 px-4 py-3 flex-col sm:flex-row items-center justify-between gap-3 z-30 transition-all duration-200 w-[calc(100%-2rem)] max-w-lg hidden">
+    <div class="flex items-center justify-between w-full sm:w-auto gap-2">
+        <span id="bulk-action-text" class="font-bold text-blue-600 text-sm md:text-base">0 Tanggal Terpilih</span>
+        <button type="button" onclick="window.clearDateSelection()" class="text-xs font-semibold text-gray-500 hover:text-red-600 px-2 py-1 bg-gray-100 hover:bg-red-50 rounded-lg transition-colors">Batal</button>
+    </div>
+    
+    <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+        <label class="text-xs font-bold text-gray-500 whitespace-nowrap hidden sm:inline">UBAH SEMUA :</label>
         
-        <div class="relative w-full md:w-auto">
-            <button id="bulk-action-btn" type="button" onclick="document.getElementById('bulk-action-menu').classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180');" class="flex items-center justify-between w-full md:w-48 px-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors shadow-sm hover:shadow">
-                <span class="font-semibold text-gray-700">Pilih Status...</span>
-                <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        <div class="relative w-full sm:w-auto">
+            <button id="bulk-action-btn" type="button" onclick="document.getElementById('bulk-action-menu').classList.toggle('hidden');" class="flex items-center justify-between w-full sm:w-48 px-3.5 py-2 text-sm bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors shadow-sm font-semibold text-gray-700">
+                <span>Pilih Status...</span>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div id="bulk-action-menu" class="absolute bottom-full left-0 mb-3 w-full md:w-56 bg-white border border-gray-100 rounded-xl shadow-2xl overflow-hidden flex-col z-[100] p-1.5 origin-bottom hidden transition-all">
-                <button type="button" onclick="window.updateAllStatus('tersedia'); document.getElementById('bulk-action-menu').classList.add('hidden'); document.getElementById('bulk-action-btn').querySelector('svg').classList.remove('rotate-180');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm"></div>Tersedia</button>
-                <button type="button" onclick="window.updateAllStatus('proses'); document.getElementById('bulk-action-menu').classList.add('hidden'); document.getElementById('bulk-action-btn').querySelector('svg').classList.remove('rotate-180');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-700 rounded-lg transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-sm"></div>Menunggu Pembayaran</button>
-                <button type="button" onclick="window.updateAllStatus('berhasil'); document.getElementById('bulk-action-menu').classList.add('hidden'); document.getElementById('bulk-action-btn').querySelector('svg').classList.remove('rotate-180');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-700 rounded-lg transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-gray-500 shadow-sm"></div>Sudah Dipesan</button>
-                <button type="button" onclick="window.updateAllStatus('diperbaiki'); document.getElementById('bulk-action-menu').classList.add('hidden'); document.getElementById('bulk-action-btn').querySelector('svg').classList.remove('rotate-180');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm"></div>Diperbaiki</button>
-                <button type="button" onclick="window.updateAllStatus('event'); document.getElementById('bulk-action-menu').classList.add('hidden'); document.getElementById('bulk-action-btn').querySelector('svg').classList.remove('rotate-180');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-purple-50 hover:text-purple-700 rounded-lg transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-sm"></div>Berlangsung Event</button>
-                <button type="button" onclick="window.updateAllStatus('tutup'); document.getElementById('bulk-action-menu').classList.add('hidden'); document.getElementById('bulk-action-btn').querySelector('svg').classList.remove('rotate-180');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-200 hover:text-gray-800 rounded-lg transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-black shadow-sm"></div>Tutup</button>
+            <div id="bulk-action-menu" class="absolute bottom-full right-0 mb-3 w-64 max-w-[90vw] bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden flex-col z-50 p-2 origin-bottom hidden transition-all">
+                <button type="button" onclick="window.updateAllStatus('tersedia'); document.getElementById('bulk-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm flex-shrink-0"></div>Tersedia</button>
+                <button type="button" onclick="window.updateAllStatus('proses'); document.getElementById('bulk-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-sm flex-shrink-0"></div>Menunggu Pembayaran</button>
+                <button type="button" onclick="window.updateAllStatus('berhasil'); document.getElementById('bulk-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-gray-500 shadow-sm flex-shrink-0"></div>Sudah Dipesan</button>
+                <button type="button" onclick="window.updateAllStatus('diperbaiki'); document.getElementById('bulk-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm flex-shrink-0"></div>Diperbaiki</button>
+                <button type="button" onclick="window.updateAllStatus('event'); document.getElementById('bulk-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-purple-50 hover:text-purple-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-sm flex-shrink-0"></div>Berlangsung Event</button>
+                <button type="button" onclick="window.updateAllStatus('tutup'); document.getElementById('bulk-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-200 hover:text-gray-800 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-black shadow-sm flex-shrink-0"></div>Tutup</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Floating Action Bar for Slot Bulk Update (Slot Individual) -->
-<div id="bulk-slot-action-bar" class="fixed bottom-6 left-1/2 lg:left-[calc(50%+9rem)] -translate-x-1/2 bg-white rounded-2xl md:rounded-full shadow-[0_10px_40px_rgba(59,130,246,0.25)] border border-blue-200 px-4 md:px-6 py-3 flex-col md:flex-row items-center gap-2 md:gap-4 z-[95] transition-all duration-200 w-[92%] max-w-lg md:w-auto hidden">
-    <span id="bulk-slot-action-text" class="font-bold text-blue-600 text-sm md:text-base text-center">0 Jadwal Terpilih</span>
-    <div class="hidden md:block w-px h-6 bg-blue-200"></div>
-    <div class="flex items-center gap-2 w-full md:w-auto justify-center">
-        <label class="text-xs font-bold text-blue-500 whitespace-nowrap">UBAH JADWAL :</label>
+<div id="bulk-slot-action-bar" class="fixed bottom-5 left-1/2 lg:left-[calc(50%+9rem)] -translate-x-1/2 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-blue-200 px-4 py-3 flex-col sm:flex-row items-center justify-between gap-3 z-30 transition-all duration-200 w-[calc(100%-2rem)] max-w-lg hidden ring-4 ring-blue-50">
+    <div class="flex items-center justify-between w-full sm:w-auto gap-2">
+        <span id="bulk-slot-action-text" class="font-bold text-blue-600 text-sm md:text-base">0 Jadwal Terpilih</span>
+        <button type="button" onclick="window.clearSlotSelection()" class="text-xs font-semibold text-gray-500 hover:text-red-600 px-2 py-1 bg-gray-100 hover:bg-red-50 rounded-lg transition-colors">Batal</button>
+    </div>
+    
+    <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+        <label class="text-xs font-bold text-blue-500 whitespace-nowrap hidden sm:inline">UBAH JADWAL :</label>
         
-        <div class="relative w-full md:w-auto">
-            <button id="bulk-slot-action-btn" type="button" onclick="document.getElementById('bulk-slot-action-menu').classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180');" class="flex items-center justify-between w-full md:w-48 px-4 py-2 text-sm bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-100 transition-colors shadow-sm hover:shadow text-blue-700">
-                <span class="font-semibold">Pilih Status...</span>
-                <svg class="w-4 h-4 text-blue-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        <div class="relative w-full sm:w-auto">
+            <button id="bulk-slot-action-btn" type="button" onclick="document.getElementById('bulk-slot-action-menu').classList.toggle('hidden');" class="flex items-center justify-between w-full sm:w-48 px-3.5 py-2 text-sm bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-100 transition-colors shadow-sm font-semibold text-blue-700">
+                <span>Pilih Status...</span>
+                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div id="bulk-slot-action-menu" class="absolute bottom-full left-0 mb-3 w-full md:w-56 bg-white border border-blue-100 rounded-xl shadow-2xl overflow-hidden flex-col z-[100] p-1.5 origin-bottom hidden transition-all">
-                <button type="button" onclick="window.updateSlotsStatus('tersedia'); document.getElementById('bulk-slot-action-menu').classList.add('hidden'); document.getElementById('bulk-slot-action-btn').querySelector('svg').classList.remove('rotate-180');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm"></div>Tersedia</button>
-                <button type="button" onclick="window.updateSlotsStatus('proses'); document.getElementById('bulk-slot-action-menu').classList.add('hidden'); document.getElementById('bulk-slot-action-btn').querySelector('svg').classList.remove('rotate-180');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-700 rounded-lg transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-sm"></div>Menunggu Pembayaran</button>
-                <button type="button" onclick="window.updateSlotsStatus('berhasil'); document.getElementById('bulk-slot-action-menu').classList.add('hidden'); document.getElementById('bulk-slot-action-btn').querySelector('svg').classList.remove('rotate-180');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-700 rounded-lg transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-gray-500 shadow-sm"></div>Sudah Dipesan</button>
-                <button type="button" onclick="window.updateSlotsStatus('diperbaiki'); document.getElementById('bulk-slot-action-menu').classList.add('hidden'); document.getElementById('bulk-slot-action-btn').querySelector('svg').classList.remove('rotate-180');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm"></div>Diperbaiki</button>
-                <button type="button" onclick="window.updateSlotsStatus('event'); document.getElementById('bulk-slot-action-menu').classList.add('hidden'); document.getElementById('bulk-slot-action-btn').querySelector('svg').classList.remove('rotate-180');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-purple-50 hover:text-purple-700 rounded-lg transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-sm"></div>Berlangsung Event</button>
-                <button type="button" onclick="window.updateSlotsStatus('tutup'); document.getElementById('bulk-slot-action-menu').classList.add('hidden'); document.getElementById('bulk-slot-action-btn').querySelector('svg').classList.remove('rotate-180');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-200 hover:text-gray-800 rounded-lg transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-black shadow-sm"></div>Tutup</button>
+            <div id="bulk-slot-action-menu" class="absolute bottom-full right-0 mb-3 w-64 max-w-[90vw] bg-white border border-blue-100 rounded-2xl shadow-2xl overflow-hidden flex-col z-50 p-2 origin-bottom hidden transition-all">
+                <button type="button" onclick="window.updateSlotsStatus('tersedia'); document.getElementById('bulk-slot-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm flex-shrink-0"></div>Tersedia</button>
+                <button type="button" onclick="window.updateSlotsStatus('proses'); document.getElementById('bulk-slot-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-sm flex-shrink-0"></div>Menunggu Pembayaran</button>
+                <button type="button" onclick="window.updateSlotsStatus('berhasil'); document.getElementById('bulk-slot-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-gray-500 shadow-sm flex-shrink-0"></div>Sudah Dipesan</button>
+                <button type="button" onclick="window.updateSlotsStatus('diperbaiki'); document.getElementById('bulk-slot-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm flex-shrink-0"></div>Diperbaiki</button>
+                <button type="button" onclick="window.updateSlotsStatus('event'); document.getElementById('bulk-slot-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-purple-50 hover:text-purple-700 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-sm flex-shrink-0"></div>Berlangsung Event</button>
+                <button type="button" onclick="window.updateSlotsStatus('tutup'); document.getElementById('bulk-slot-action-menu').classList.add('hidden');" class="text-left w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-200 hover:text-gray-800 rounded-xl transition-colors flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-black shadow-sm flex-shrink-0"></div>Tutup</button>
             </div>
         </div>
     </div>
@@ -240,18 +246,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const bar = document.getElementById('bulk-action-bar');
         const text = document.getElementById('bulk-action-text');
         
-        if (selectedDates.length > 0 && selectedSlots.length === 0) {
-            if (selectedDates.length === 1) {
-                text.innerText = formatDateForDisplay(selectedDates[0]);
-            } else {
-                text.innerText = selectedDates.length + ' Tanggal Terpilih';
-            }
+        // HANYA MUNCUL JIKA LEBIH DARI 1 TANGGAL TERPILIH (PILIH BANYAK TANGGAL)
+        if (selectedDates.length > 1 && selectedSlots.length === 0) {
+            text.innerText = selectedDates.length + ' Tanggal Terpilih';
             bar.classList.remove('hidden');
             bar.classList.add('flex');
         } else {
             bar.classList.add('hidden');
             bar.classList.remove('flex');
+            const menu = document.getElementById('bulk-action-menu');
+            if (menu) menu.classList.add('hidden');
         }
+    }
+
+    window.clearDateSelection = function() {
+        if (activeDate) {
+            selectedDates = [activeDate];
+        } else {
+            selectedDates = ['{{ date("Y-m-d") }}'];
+            activeDate = selectedDates[0];
+        }
+        window.generateCalendar();
+        window.updateFloatingBar();
     }
 
     window.fetchJadwal = function() {
@@ -390,14 +406,24 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Hide the date action bar if it's visible, to prevent overlap
             const dateBar = document.getElementById('bulk-action-bar');
-            dateBar.classList.add('hidden');
-            dateBar.classList.remove('flex');
+            if (dateBar) {
+                dateBar.classList.add('hidden');
+                dateBar.classList.remove('flex');
+            }
         } else {
             bar.classList.add('hidden');
             bar.classList.remove('flex');
+            const menu = document.getElementById('bulk-slot-action-menu');
+            if (menu) menu.classList.add('hidden');
             // Restore date action bar if needed
             window.updateFloatingBar();
         }
+    }
+
+    window.clearSlotSelection = function() {
+        selectedSlots = [];
+        window.renderTable();
+        window.updateFloatingBarSlots();
     }
 
     window.confirmModal = function(message, onConfirm, onCancel) {
