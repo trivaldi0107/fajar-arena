@@ -606,7 +606,9 @@ body{
                     if(empty($link)) continue;
 
                     $embedUrl = $link;
-                    if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $link, $match)) {
+                    if (preg_match('/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/|live\/))([a-zA-Z0-9_-]{11})/i', $link, $match)) {
+                        $embedUrl = "https://www.youtube.com/embed/" . $match[1];
+                    } elseif (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $link, $match)) {
                         $embedUrl = "https://www.youtube.com/embed/" . $match[1];
                     }
                 @endphp
