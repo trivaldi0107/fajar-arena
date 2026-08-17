@@ -19,6 +19,7 @@ self.addEventListener('push', function (event) {
         body: data.body || 'Ada notifikasi baru dari Fajar Arena.',
         icon: data.icon || '/favicon.ico',
         badge: data.icon || '/favicon.ico',
+        silent: true,
         vibrate: [200, 100, 200, 100, 200],
         data: {
             url: data.url || '/admin/pemesanan'

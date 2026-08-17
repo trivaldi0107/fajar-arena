@@ -113,48 +113,6 @@ function playNotificationSound(customerName = 'Pelanggan', caborName = 'Badminto
     }
 }
 
-function playGlobalChime(vol = 0.8) {
-    try {
-        const ctx = getAudioContext();
-        if (!ctx) return;
-        if (ctx.state === 'suspended') {
-            ctx.resume().then(function() { makeTwoToneChime(ctx, vol); });
-        } else {
-            makeTwoToneChime(ctx, vol);
-        }
-    } catch(e) {
-        console.log('Audio error:', e);
-    }
-}
-
-function makeTwoToneChime(ctx, vol = 0.8) {
-    try {
-        // Tone 1: E5 (659.25 Hz)
-        const osc1 = ctx.createOscillator();
-        const gain1 = ctx.createGain();
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(659.25, ctx.currentTime);
-        gain1.gain.setValueAtTime(0.6 * vol, ctx.currentTime);
-        gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-        osc1.connect(gain1);
-        gain1.connect(ctx.destination);
-        osc1.start(ctx.currentTime);
-        osc1.stop(ctx.currentTime + 0.3);
-
-        // Tone 2: A5 (880 Hz)
-        const osc2 = ctx.createOscillator();
-        const gain2 = ctx.createGain();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
-        gain2.gain.setValueAtTime(0.7 * vol, ctx.currentTime + 0.15);
-        gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-        osc2.connect(gain2);
-        gain2.connect(ctx.destination);
-        osc2.start(ctx.currentTime + 0.15);
-        osc2.stop(ctx.currentTime + 0.6);
-    } catch(e) {}
-}
-
 // Service Worker Registration & Auto-Init
 if ('serviceWorker' in navigator && 'PushManager' in window) {
     window.addEventListener('load', function () {
@@ -212,14 +170,15 @@ function triggerNativeOSNotification(title, body, targetUrl) {
                     body: body,
                     icon: '/favicon.ico',
                     badge: '/favicon.ico',
+                    silent: true, // Mencegah bunyi bawaan sistem HP/Laptop agar hanya audio kustom yang bersuara
                     vibrate: [200, 100, 200],
                     data: { url: targetUrl || "{{ route('admin.pemesanan') }}" }
                 });
             }).catch(function() {
-                new Notification(title, { body: body, icon: '/favicon.ico' });
+                new Notification(title, { body: body, icon: '/favicon.ico', silent: true });
             });
         } else {
-            new Notification(title, { body: body, icon: '/favicon.ico' });
+            new Notification(title, { body: body, icon: '/favicon.ico', silent: true });
         }
     } catch(e) {
         console.log('Native notification error:', e);

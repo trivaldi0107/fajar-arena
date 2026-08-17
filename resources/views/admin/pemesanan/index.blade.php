@@ -377,73 +377,8 @@ function updateAudioBadgeUI() {
     }
 }
 
-function playActiveNotification(customerName = 'Pelanggan', cabor = 'Badminton') {
-    const audioData = localStorage.getItem('fajar_custom_audio_data');
-    if (audioData) {
-        try {
-            const audio = new Audio(audioData);
-            audio.play().catch(e => console.warn('Autoplay error', e));
-        } catch(e) {
-            console.warn('Audio exception', e);
-        }
-    }
-}
-
-// ==================== REAL-TIME BACKGROUND CHECK ====================
-function startRealtimeNotificationWatcher() {
-    setInterval(() => {
-        fetch("{{ route('admin.pemesanan.latest_check') }}", {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data && typeof data.count !== 'undefined') {
-                if (lastKnownPendingCount === 0) {
-                    lastKnownPendingCount = data.count;
-                    lastProcessedOrderId = data.latest_id;
-                    return;
-                }
-
-                if (data.count > lastKnownPendingCount || (data.latest_id && data.latest_id !== lastProcessedOrderId && data.count > 0)) {
-                    lastKnownPendingCount = data.count;
-                    lastProcessedOrderId = data.latest_id;
-
-                    playActiveNotification(data.customer_name, data.cabor);
-
-                    if (typeof Swal !== 'undefined') {
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: true,
-                            confirmButtonText: 'Segarkan Tabel',
-                            confirmButtonColor: '#2563eb',
-                            timer: 10000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.onmouseenter = Swal.stopTimer;
-                                toast.onmouseleave = Swal.resumeTimer;
-                            }
-                        });
-                        Toast.fire({
-                            icon: 'info',
-                            title: `🔔 Pesanan Masuk: ${data.customer_name}`,
-                            text: `${data.cabor} (Menunggu Verifikasi)`
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.reload();
-                            }
-                        });
-                    }
-                }
-            }
-        })
-        .catch(err => console.debug('Watcher quiet check', err));
-    }, 8000);
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     updateAudioBadgeUI();
-    startRealtimeNotificationWatcher();
 });
 
 // ==================== MODAL KONFIRMASI & QRIS ====================
