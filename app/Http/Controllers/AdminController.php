@@ -216,6 +216,45 @@ class AdminController extends Controller
         return back()->with('success', 'Pemesanan telah ditolak dengan alasan yang tercatat.');
     }
 
+    public function destroyPemesanan($id)
+    {
+        $pemesanan = Pemesanan::with('detail')->findOrFail($id);
+
+        if (!$pemesanan->canBeDeleted()) {
+            return back()->with('error', 'Pemesanan #' . $pemesanan->kode_reservasi . ' belum dapat dihapus karena belum melewati batas 24 jam setelah waktu main selesai.');
+        }
+
+        $kodeReservasi = $pemesanan->kode_reservasi;
+
+        \Illuminate\Support\Facades\DB::transaction(function() use ($pemesanan) {
+            // Hapus file bukti transfer jika ada
+            if ($pemesanan->bukti_transfer && file_exists(public_path($pemesanan->bukti_transfer))) {
+                @unlink(public_path($pemesanan->bukti_transfer));
+            }
+
+            // Lepas status jadwal jika statusnya belum batal
+            if ($pemesanan->status !== 'batal') {
+                foreach ($pemesanan->detail as $detail) {
+                    if ($detail->jadwal_id) {
+                        \App\Models\Jadwal::where('id', $detail->jadwal_id)->update(['status' => 'tersedia']);
+                    }
+                }
+            }
+
+            // Hapus relasi tiket, pembayaran, detail, lalu pemesanan
+            $pemesanan->tiket()->delete();
+            $pemesanan->pembayaran()->delete();
+            $pemesanan->detail()->delete();
+            $pemesanan->delete();
+        });
+
+        if (url()->previous() === route('admin.pemesanan.detail', $id)) {
+            return redirect()->route('admin.pemesanan')->with('success', 'Data pemesanan #' . $kodeReservasi . ' berhasil dihapus permanen.');
+        }
+
+        return back()->with('success', 'Data pemesanan #' . $kodeReservasi . ' berhasil dihapus permanen.');
+    }
+
     public function uploadQrisStatis(Request $request)
     {
         $request->validate([

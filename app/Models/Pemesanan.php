@@ -42,4 +42,37 @@ class Pemesanan extends Model
     {
         return $this->hasOne(Tiket::class);
     }
+
+    public function getWaktuSelesaiMainAttribute()
+    {
+        $details = $this->relationLoaded('detail') ? $this->detail : $this->detail()->get();
+        if ($details->isNotEmpty()) {
+            $latestDetail = $details->sortByDesc(function ($d) {
+                return ($d->tanggal ?? '') . ' ' . ($d->jam_selesai ?? '');
+            })->first();
+
+            if ($latestDetail && $latestDetail->tanggal && $latestDetail->jam_selesai) {
+                try {
+                    return \Carbon\Carbon::parse($latestDetail->tanggal . ' ' . $latestDetail->jam_selesai);
+                } catch (\Exception $e) {}
+            }
+        }
+
+        if ($this->tanggal_mulai) {
+            try {
+                return \Carbon\Carbon::parse($this->tanggal_mulai)->endOfDay();
+            } catch (\Exception $e) {}
+        }
+
+        return $this->created_at ? \Carbon\Carbon::parse($this->created_at) : now();
+    }
+
+    public function canBeDeleted()
+    {
+        $waktuSelesai = $this->waktu_selesai_main;
+        if (!$waktuSelesai) {
+            return true;
+        }
+        return $waktuSelesai->copy()->addHours(24)->isPast();
+    }
 }

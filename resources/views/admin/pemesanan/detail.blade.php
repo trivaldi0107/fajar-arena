@@ -23,7 +23,14 @@
             </div>
         </div>
 
-        <div>
+        <div class="flex items-center gap-3">
+            @if($pemesanan->canBeDeleted())
+                <button type="button" onclick="openDeleteModal('{{ route('admin.pemesanan.destroy', $pemesanan->id) }}', '{{ $pemesanan->kode_reservasi }}')" class="px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-xl text-xs font-bold transition border border-rose-200 hover:border-rose-600 flex items-center gap-1.5 cursor-pointer shadow-sm" title="Hapus Pemesanan (Sudah lewat 24 jam dari waktu main)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    <span>Hapus Pemesanan</span>
+                </button>
+            @endif
+
             @if($pemesanan->status === 'berhasil')
                 <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 px-4 py-2 rounded-xl text-xs font-extrabold uppercase tracking-wider">
                     ✓ Lunas
@@ -226,6 +233,31 @@
         </div>
     </div>
 
+    <!-- Form untuk submit aksi hapus pemesanan -->
+    <form id="formDeletePemesanan" method="POST" class="hidden">
+        @csrf
+        @method('DELETE')
+    </form>
+
+    <!-- Modal Hapus Pemesanan -->
+    <div id="modalDelete" style="z-index: 99999 !important;" class="fixed inset-0 hidden items-center justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto transition-all duration-300">
+        <div class="relative my-auto mx-auto bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center transform transition-all max-h-[88vh] overflow-y-auto">
+            <div class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-rose-100 text-rose-600">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </div>
+            <h4 class="font-extrabold text-gray-900 text-lg mb-1">Hapus Pemesanan</h4>
+            <p id="deleteModalMessage" class="text-xs text-gray-500 mb-5 leading-relaxed">Apakah Anda yakin ingin menghapus data pemesanan ini secara permanen?</p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeDeleteModal()" class="w-1/2 py-2.5 border border-gray-200 rounded-xl font-bold text-xs text-gray-600 hover:bg-gray-50 transition cursor-pointer">
+                    Batal
+                </button>
+                <button type="button" onclick="submitDeleteModal()" class="w-1/2 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs transition shadow-md shadow-rose-600/20 cursor-pointer">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
     let currentConfirmType = 'setujui';
 
@@ -298,6 +330,36 @@
             }
         }
         document.getElementById('formConfirmAction').submit();
+    }
+
+    // ==================== MODAL HAPUS PEMESANAN ====================
+    function openDeleteModal(actionUrl, kode) {
+        const form = document.getElementById('formDeletePemesanan');
+        if (form) form.action = actionUrl;
+
+        const msg = document.getElementById('deleteModalMessage');
+        if (msg) {
+            msg.innerText = 'Apakah Anda yakin ingin menghapus data pemesanan #' + kode + ' secara permanen dari database? Data yang dihapus tidak dapat dikembalikan.';
+        }
+
+        const modal = document.getElementById('modalDelete');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+    }
+
+    function closeDeleteModal() {
+        const modal = document.getElementById('modalDelete');
+        if (modal) {
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+    }
+
+    function submitDeleteModal() {
+        const form = document.getElementById('formDeletePemesanan');
+        if (form) form.submit();
     }
     </script>
 

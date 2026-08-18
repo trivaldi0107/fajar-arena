@@ -267,6 +267,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         ->name('admin.pemesanan.konfirmasi');
     Route::post('/pemesanan/tolak/{id}', [AdminController::class, 'tolakPemesanan'])
         ->name('admin.pemesanan.tolak');
+    Route::delete('/pemesanan/hapus/{id}', [AdminController::class, 'destroyPemesanan'])
+        ->name('admin.pemesanan.destroy');
     Route::post('/qris/upload', [AdminController::class, 'uploadQrisStatis'])
         ->name('admin.qris.upload');
 
