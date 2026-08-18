@@ -1105,21 +1105,13 @@
                         @endphp
 
                         <div class="mt-4 pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-50/80 p-4 rounded-2xl border border-gray-200/60">
-                            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-6 text-center sm:text-left">
-                                <div class="text-xs text-gray-500 font-medium">
-                                    Jumlah Jam: <span class="font-bold text-gray-900 text-sm">{{ $blockDurasi }} Jam</span>
-                                </div>
-                                <div class="text-xs text-gray-500 font-medium">
-                                    Total Harga: <span class="font-bold text-blue-600 text-base">Rp {{ number_format($blockTotal, 0, ',', '.') }}</span>
-                                </div>
+                            <div class="text-xs sm:text-sm text-gray-600 font-medium">
+                                Total Harga: <span class="font-bold text-blue-600 text-base sm:text-lg">Rp {{ number_format($blockTotal, 0, ',', '.') }}</span>
                             </div>
 
                             <button type="submit"
-                                class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-7 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer">
-                                <span>Pesan Sekarang</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                                </svg>
+                                class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-full font-bold text-sm shadow-md shadow-blue-500/20 hover:shadow-blue-500/40 transition-all flex items-center justify-center cursor-pointer">
+                                Pesan
                             </button>
                         </div>
 
@@ -1259,8 +1251,6 @@
 
             </div>
         </div>
-
-        @endif
 
         
         <!-- LEGENDA WARNA (KHUSUS MOBILE) -->
