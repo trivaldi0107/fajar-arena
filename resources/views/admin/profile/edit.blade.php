@@ -5,19 +5,19 @@
 @section('content')
 
 <!-- Header -->
-<div class="mb-8">
+<div class="max-w-4xl mx-auto mb-8">
     <h2 class="text-3xl font-bold text-gray-800">Pengaturan Profil</h2>
     <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola data informasi akun dan kata sandi Anda dalam satu tempat.</p>
 </div>
 
 @if(session('success'))
-<div class="mb-6 max-w-4xl bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-4 rounded-2xl flex items-center gap-3">
+<div class="mb-6 max-w-4xl mx-auto bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-4 rounded-2xl flex items-center gap-3">
     <svg class="w-6 h-6 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
     <span class="font-semibold text-sm">{{ session('success') }}</span>
 </div>
 @endif
 
-<div class="max-w-4xl pb-12">
+<div class="max-w-4xl mx-auto pb-12">
     <!-- Single Combined Card Box & Form -->
     <form method="post" action="{{ route('profile.update') }}" class="p-8 sm:p-10 bg-white shadow-sm rounded-3xl border border-slate-100 space-y-8">
         @csrf
