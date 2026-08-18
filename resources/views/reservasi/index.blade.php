@@ -703,19 +703,34 @@
         </div>
 
         <!-- GRID TANGGAL -->
+        @php
+            $tglMulaiFilter = request('tanggal_mulai') ?: (isset($tanggalMulai) ? $tanggalMulai : null);
+            $tglAkhirFilter = request('tanggal_akhir') ?: (isset($tanggalAkhir) ? $tanggalAkhir : null);
+            $isRangeFilter = !empty($tglMulaiFilter) && !empty($tglAkhirFilter);
+        @endphp
         <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-4">
             @foreach($tanggalList as $tgl)
+            @php
+                $tglStr = $tgl->format('Y-m-d');
+                if ($isRangeFilter) {
+                    $isSelected = ($tglStr >= $tglMulaiFilter && $tglStr <= $tglAkhirFilter);
+                } elseif (!empty($tglMulaiFilter)) {
+                    $isSelected = ($tglStr == $tglMulaiFilter);
+                } else {
+                    $isSelected = ($tanggal == $tglStr);
+                }
+            @endphp
             <a href="{{ route('reservasi', [
                 'tanggal' => $tgl->format('Y-m-d'),
                 'member' => $isMember ? 1 : null
             ]) }}" class="group block stagger-item" style="animation-delay: {{ $loop->index * 0.03 }}s;">
                 <div class="p-3 md:p-4 rounded-2xl text-center text-sm md:text-base transition-all duration-300 border
-                {{ $tanggal == $tgl->format('Y-m-d') 
+                {{ $isSelected 
                     ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white border-transparent shadow-lg shadow-blue-500/30 scale-[1.02]' 
                     : 'bg-white border-gray-100 text-gray-700 shadow-sm group-hover:shadow-md group-hover:-translate-y-1 group-hover:border-blue-200' }}">
 
-                    <div class="font-bold text-lg md:text-xl {{ $tanggal == $tgl->format('Y-m-d') ? 'text-white' : 'text-gray-800' }}">{{ $tgl->format('j') }}</div>
-                    <div class="text-xs font-medium uppercase tracking-wider mt-0.5 {{ $tanggal == $tgl->format('Y-m-d') ? 'text-blue-100' : 'text-gray-400' }}">{{ $tgl->format('M') }}</div>
+                    <div class="font-bold text-lg md:text-xl {{ $isSelected ? 'text-white' : 'text-gray-800' }}">{{ $tgl->format('j') }}</div>
+                    <div class="text-xs font-medium uppercase tracking-wider mt-0.5 {{ $isSelected ? 'text-blue-100' : 'text-gray-400' }}">{{ $tgl->format('M') }}</div>
 
                 </div>
             </a>
