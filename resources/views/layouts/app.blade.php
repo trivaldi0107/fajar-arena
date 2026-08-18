@@ -11,10 +11,11 @@
         <title>Fajar Arena Badminton — Reservasi & Sewa Lapangan Badminton Makassar Online</title>
 
         <!-- Favicon / Site Icon -->
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}?v=2">
-        <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('images/logo.png') }}?v=2">
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v=2">
-        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=2">
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=3">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v=3">
+        <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v=3">
+        <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('images/logo.png') }}?v=3">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v=3">
 
         <!-- SEO Primary Meta Tags -->
         <meta name="title" content="Fajar Arena Badminton — Reservasi & Sewa Lapangan Badminton Makassar Online">
