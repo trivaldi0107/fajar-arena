@@ -86,7 +86,7 @@
                     </div>
                     @else
                     <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                        <span class="text-gray-500 font-medium">Tanggal Tanggal</span>
+                        <span class="text-gray-500 font-medium">Tanggal Main</span>
                         <span class="font-bold text-gray-900">{{ \Carbon\Carbon::parse($pemesanan->tanggal_mulai)->translatedFormat('d M Y') }}</span>
                     </div>
                     <div class="flex justify-between items-center py-2 border-b border-gray-100">
@@ -95,9 +95,9 @@
                     </div>
                     @endif
 
-                    <!-- Detail Lapangan & Jam (Grouped Per Tanggal) -->
+                    <!-- Detail Lapangan & Jam -->
                     <div class="py-3 border-b border-gray-100 space-y-3">
-                        <span class="text-gray-700 font-bold block text-sm">Rincian Jadwal Bermain (Per Tanggal):</span>
+                        <span class="text-gray-700 font-bold block text-sm">Rincian Jadwal Bermain:</span>
                         
                         @php
                             $groupedByDate = $pemesanan->detail->groupBy(function($item) {
@@ -133,19 +133,42 @@
                                     @foreach($itemsByLapangan as $lapId => $lapItems)
                                         @php
                                             $lapNama = $lapItems->first()->lapangan->nama_lapangan ?? 'Lapangan';
-                                            $minTime = \Carbon\Carbon::parse($lapItems->min('jam_mulai'))->format('H:i');
-                                            $maxTime = \Carbon\Carbon::parse($lapItems->max('jam_selesai'))->format('H:i');
-                                            $durasiJam = $lapItems->count();
+                                            $sortedItems = $lapItems->sortBy('jam_mulai')->values();
+                                            $intervals = [];
+                                            $currInterval = null;
+
+                                            foreach ($sortedItems as $slot) {
+                                                $start = \Carbon\Carbon::parse($slot->jam_mulai)->format('H:i');
+                                                $end = \Carbon\Carbon::parse($slot->jam_selesai)->format('H:i');
+
+                                                if (!$currInterval) {
+                                                    $currInterval = ['start' => $start, 'end' => $end, 'hours' => 1];
+                                                } else {
+                                                    if ($currInterval['end'] === $start) {
+                                                        $currInterval['end'] = $end;
+                                                        $currInterval['hours'] += 1;
+                                                    } else {
+                                                        $intervals[] = $currInterval;
+                                                        $currInterval = ['start' => $start, 'end' => $end, 'hours' => 1];
+                                                    }
+                                                }
+                                            }
+                                            if ($currInterval) {
+                                                $intervals[] = $currInterval;
+                                            }
                                         @endphp
+
+                                        @foreach($intervals as $interval)
                                         <div class="flex justify-between items-center bg-white px-3.5 py-2 rounded-xl border border-gray-200/70 shadow-2xs">
                                             <span class="font-bold text-gray-800 text-xs flex items-center gap-1.5">
                                                 <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
                                                 {{ $lapNama }}
                                             </span>
                                             <span class="font-bold text-blue-600 text-xs font-mono">
-                                                {{ $minTime }} - {{ $maxTime }} <span class="text-[10px] font-medium text-gray-400 font-sans">({{ $durasiJam }} Jam)</span>
+                                                {{ $interval['start'] }} - {{ $interval['end'] }} <span class="text-[10px] font-medium text-gray-400 font-sans">({{ $interval['hours'] }} Jam)</span>
                                             </span>
                                         </div>
+                                        @endforeach
                                     @endforeach
                                 </div>
                             </div>

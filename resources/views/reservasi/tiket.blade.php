@@ -70,20 +70,49 @@
                     <!-- // DAFTAR JADWAL BERMAIN -->
                     <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Detail Jadwal Bermain</h3>
                     <div class="space-y-4 mb-10">
-                        <!-- // KODE PHP: Pengelompokan detail jadwal berdasarkan tanggal & lapangan -->
+                        <!-- // KODE PHP: Pengelompokan detail jadwal berdasarkan tanggal & lapangan (Menangani slot terpisah) -->
                         @php
-                            $groupedDetails = collect($pemesanan->detail)->groupBy(function($d) {
+                            $groupedDetails = collect();
+                            $byDateAndLap = collect($pemesanan->detail)->groupBy(function($d) {
                                 return $d->tanggal . '|' . $d->lapangan_id;
-                            })->map(function($group) {
-                                $sorted = $group->sortBy('jam_mulai');
-                                return (object)[
-                                    'tanggal' => $sorted->first()->tanggal,
-                                    'lapangan_id' => $sorted->first()->lapangan_id,
-                                    'lapangan' => $sorted->first()->lapangan,
-                                    'jam_mulai' => $sorted->first()->jam_mulai,
-                                    'jam_selesai' => $sorted->last()->jam_selesai,
-                                ];
-                            })->sortBy('tanggal')->values();
+                            });
+
+                            foreach ($byDateAndLap as $group) {
+                                $sorted = $group->sortBy('jam_mulai')->values();
+                                $curr = null;
+
+                                foreach ($sorted as $slot) {
+                                    $sStart = $slot->jam_mulai;
+                                    $sEnd = $slot->jam_selesai;
+
+                                    if (!$curr) {
+                                        $curr = (object)[
+                                            'tanggal' => $slot->tanggal,
+                                            'lapangan_id' => $slot->lapangan_id,
+                                            'lapangan' => $slot->lapangan,
+                                            'jam_mulai' => $sStart,
+                                            'jam_selesai' => $sEnd,
+                                        ];
+                                    } else {
+                                        if (substr($curr->jam_selesai, 0, 5) === substr($sStart, 0, 5)) {
+                                            $curr->jam_selesai = $sEnd;
+                                        } else {
+                                            $groupedDetails->push($curr);
+                                            $curr = (object)[
+                                                'tanggal' => $slot->tanggal,
+                                                'lapangan_id' => $slot->lapangan_id,
+                                                'lapangan' => $slot->lapangan,
+                                                'jam_mulai' => $sStart,
+                                                'jam_selesai' => $sEnd,
+                                            ];
+                                        }
+                                    }
+                                }
+                                if ($curr) {
+                                    $groupedDetails->push($curr);
+                                }
+                            }
+                            $groupedDetails = $groupedDetails->sortBy('tanggal')->values();
                         @endphp
                         @foreach($groupedDetails as $d)
                         <div class="flex items-center justify-between p-3 md:p-4 bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-300">
