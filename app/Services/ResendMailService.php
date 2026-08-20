@@ -13,8 +13,12 @@ class ResendMailService
     public static function send(string $to, string $subject, string $htmlContent): bool
     {
         try {
-            $defaultKey = base64_decode('cmVfRFN5REpydUVfSGtxdzZ0ZGNSc3pUeDNvOGZjeldwR29r');
-            $apiKey = env('RESEND_API_KEY', $defaultKey);
+            $apiKey = env('RESEND_API_KEY');
+
+            if (empty($apiKey)) {
+                Log::warning("RESEND_API_KEY belum disetel di file .env");
+                return false;
+            }
 
             $response = Http::withToken($apiKey)
                 ->timeout(10)
