@@ -26,25 +26,5 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production') || (config('app.url') && str_starts_with(config('app.url'), 'https://'))) {
             URL::forceScheme('https');
         }
-
-        // Override SMTP transport to disable SSL/STARTTLS peer certificate checks on cPanel
-        Mail::extend('smtp', function (array $config = []) {
-            $transport = new EsmtpTransport('smtp.gmail.com', 587, false);
-            $transport->setUsername('fajararenabadminton@gmail.com');
-            $transport->setPassword('kczztgbfghwfqafa');
-
-            $stream = $transport->getStream();
-            if ($stream instanceof SocketStream) {
-                $stream->setStreamOptions([
-                    'ssl' => [
-                        'allow_self_signed' => true,
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                    ],
-                ]);
-            }
-
-            return $transport;
-        });
     }
 }
