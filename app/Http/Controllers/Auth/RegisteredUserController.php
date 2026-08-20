@@ -84,6 +84,6 @@ class RegisteredUserController extends Controller
 
         session(['pending_otp_user_id' => $user->id]);
 
-        return redirect()->route('register.verify_otp')->with('success', 'Kode OTP verifikasi telah dikirimkan ke email Anda. Silakan periksa kotak masuk/spam email.');
+        return redirect()->route('register.verify_otp')->with('success', 'Kode OTP verifikasi telah dikirimkan ke email Anda. Silakan Periksa Kotak Masuk Email Anda.');
     }
 }

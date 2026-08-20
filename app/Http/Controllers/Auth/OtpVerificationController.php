@@ -114,6 +114,6 @@ class OtpVerificationController extends Controller
             return back()->with('error', 'Gagal mengirim email OTP: ' . $e->getMessage());
         }
 
-        return back()->with('success', 'Kode OTP baru telah berhasil dikirimkan ke email Anda.');
+        return back()->with('success', 'Kode OTP baru telah berhasil dikirimkan ke email Anda. Silakan Periksa Kotak Masuk Email Anda.');
     }
 }
