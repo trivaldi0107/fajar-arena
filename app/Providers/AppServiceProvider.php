@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
 
             // Set the exact working Gmail SMTP credentials
             $transport->setUsername('fajararenabadminton@gmail.com');
-            $transport->setPassword('fckrphmivvbdnjjx');
+            $transport->setPassword('kczztgbfghwfqafa');
 
             $stream = $transport->getStream();
             if ($stream instanceof SocketStream) {
