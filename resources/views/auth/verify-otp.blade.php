@@ -33,7 +33,7 @@
     <div class="relative z-10 w-full max-w-md bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.45)] p-8 sm:p-10 text-white">
         
         <!-- Header -->
-        <div class="text-center mb-6">
+        <div class="text-center mb-8">
             <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Verifikasi Kode OTP</h2>
             <p class="mt-2 text-sm text-slate-300">
                 Kami telah mengirimkan 6 digit kode OTP ke email:
@@ -41,15 +41,6 @@
             <p class="mt-2 text-sm font-semibold text-blue-300 bg-blue-500/20 border border-blue-400/30 py-1.5 px-4 rounded-full inline-block">
                 {{ substr($user->email, 0, 3) . '***' . strstr($user->email, '@') }}
             </p>
-            @if($user->otp_code)
-            <div class="mt-3 py-2 px-3.5 bg-white/10 border border-white/20 rounded-2xl inline-flex items-center gap-2 text-xs text-slate-200 shadow-sm backdrop-blur-md">
-                <span>Kode OTP Anda:</span>
-                <span class="font-mono font-black text-amber-300 text-sm tracking-widest select-all">{{ $user->otp_code }}</span>
-                <button type="button" onclick="autoFillOtp('{{ $user->otp_code }}')" class="ml-1.5 px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[11px] font-bold shadow transition-all cursor-pointer">
-                    Isi Otomatis
-                </button>
-            </div>
-            @endif
         </div>
 
         <!-- Alert Error / Success -->

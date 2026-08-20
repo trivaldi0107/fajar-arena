@@ -77,7 +77,7 @@ class RegisteredUserController extends Controller
         }
 
         try {
-            OtpVerificationMail::sendOtpDirect($user, $otpCode);
+            Mail::to($user->email)->send(new OtpVerificationMail($user, $otpCode));
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Failed sending OTP email: ' . $e->getMessage());
         }
