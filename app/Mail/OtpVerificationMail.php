@@ -30,7 +30,7 @@ class OtpVerificationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new \Illuminate\Mail\Mailables\Address(env('MAIL_FROM_ADDRESS', 'no-reply@fajararena.cloud'), env('MAIL_FROM_NAME', 'Fajar Arena')),
+            from: new \Illuminate\Mail\Mailables\Address('fajararenabadminton@gmail.com', 'Fajar Arena Badminton'),
             subject: 'Kode OTP Verifikasi Akun Fajar Arena: ' . $this->otpCode,
         );
     }

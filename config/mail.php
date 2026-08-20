@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => 'sendmail',
+    'default' => 'smtp',
 
     /*
     |--------------------------------------------------------------------------
@@ -34,21 +34,21 @@ return [
     */
 
     'mailers' => [
-        'sendmail' => [
-            'transport' => 'sendmail',
-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs'),
-        ],
-
         'smtp' => [
             'transport' => 'smtp',
             'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', 'smtp.gmail.com'),
-            'port' => (int) env('MAIL_PORT', 587),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
-            'username' => env('MAIL_USERNAME', 'fajararenabadminton@gmail.com'),
-            'password' => env('MAIL_PASSWORD', 'kczztgbfghwfqafa'),
+            'host' => 'smtp.gmail.com',
+            'port' => 587,
+            'encryption' => 'tls',
+            'username' => 'fajararenabadminton@gmail.com',
+            'password' => 'kczztgbfghwfqafa',
             'timeout' => 30,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
+        ],
+
+        'sendmail' => [
+            'transport' => 'sendmail',
+            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
         ],
 
         'ses' => [
@@ -113,8 +113,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'fajararenabadminton@gmail.com'),
+        'name' => env('MAIL_FROM_NAME', 'Fajar Arena Badminton'),
     ],
 
     /*
