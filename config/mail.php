@@ -41,7 +41,7 @@ return [
             'port' => 587,
             'encryption' => 'tls',
             'username' => 'fajararenabadminton@gmail.com',
-            'password' => 'kczztgbfghwfqafa',
+            'password' => 'ksctiprgzwcrxuol',
             'timeout' => 30,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
         ],
