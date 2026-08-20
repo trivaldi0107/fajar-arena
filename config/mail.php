@@ -37,7 +37,7 @@ return [
         'smtp' => [
             'transport' => 'smtp',
             'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+            'host' => env('MAIL_HOST', 'smtp.gmail.com'),
             'port' => env('MAIL_PORT', 587),
             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
             'username' => env('MAIL_USERNAME'),
@@ -46,6 +46,13 @@ return [
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
             'scheme' => null,
             'stream' => [
+                'ssl' => [
+                    'allow_self_signed' => true,
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ],
+            ],
+            'context' => [
                 'ssl' => [
                     'allow_self_signed' => true,
                     'verify_peer' => false,

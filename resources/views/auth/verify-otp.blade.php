@@ -34,9 +34,6 @@
         
         <!-- Header -->
         <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-blue-500/20 border border-blue-400/30 text-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
-                🔑
-            </div>
             <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Verifikasi Kode OTP</h2>
             <p class="mt-2 text-sm text-slate-300">
                 Kami telah mengirimkan 6 digit kode OTP ke email:
