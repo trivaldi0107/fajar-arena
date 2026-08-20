@@ -20,10 +20,11 @@ class ResendMailService
                 return false;
             }
 
+            // 1. Kirim via domain resmi fajararena.cloud
             $response = Http::withToken($apiKey)
                 ->timeout(10)
                 ->post('https://api.resend.com/emails', [
-                    'from' => 'Fajar Arena <onboarding@resend.dev>',
+                    'from' => 'Fajar Arena <no-reply@fajararena.cloud>',
                     'to' => [$to],
                     'subject' => $subject,
                     'html' => $htmlContent,
@@ -34,7 +35,22 @@ class ResendMailService
                 return true;
             }
 
-            Log::error("Resend API returned non-200: " . $response->body());
+            // 2. Fallback sementara jika domain fajararena.cloud masih dalam antrean pengecekan DNS
+            $fallbackResponse = Http::withToken($apiKey)
+                ->timeout(10)
+                ->post('https://api.resend.com/emails', [
+                    'from' => 'Fajar Arena <onboarding@resend.dev>',
+                    'to' => [$to],
+                    'subject' => $subject,
+                    'html' => $htmlContent,
+                ]);
+
+            if ($fallbackResponse->successful()) {
+                Log::info("Resend fallback email sent to {$to}. ID: " . ($fallbackResponse->json('id') ?? ''));
+                return true;
+            }
+
+            Log::error("Resend API returned error: " . $response->body());
             return false;
         } catch (\Throwable $e) {
             Log::error("Resend send exception: " . $e->getMessage());
