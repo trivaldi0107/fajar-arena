@@ -108,7 +108,7 @@ class OtpVerificationController extends Controller
         $user->save();
 
         try {
-            Mail::to($user->email)->send(new OtpVerificationMail($user, $otpCode));
+            OtpVerificationMail::sendToUser($user, $otpCode);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Failed resending OTP email: ' . $e->getMessage());
             return back()->with('error', 'Gagal mengirim email OTP: ' . $e->getMessage());

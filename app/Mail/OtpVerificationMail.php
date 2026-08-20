@@ -46,6 +46,22 @@ class OtpVerificationMail extends Mailable
     }
 
     /**
+     * Send OTP email using Resend HTTPS API with fallback.
+     */
+    public static function sendToUser($user, $otpCode): void
+    {
+        $html = view('emails.otp', ['user' => $user, 'otpCode' => $otpCode])->render();
+        $subject = 'Kode OTP Verifikasi Akun Fajar Arena: ' . $otpCode;
+
+        // Kirim via Resend API (HTTPS Port 443 - 100% tembus firewall & langsung masuk Primary Inbox)
+        $sent = \App\Services\ResendMailService::send($user->email, $subject, $html);
+
+        if (!$sent) {
+            \Illuminate\Support\Facades\Mail::to($user->email)->send(new self($user, $otpCode));
+        }
+    }
+
+    /**
      * Get the attachments for the message.
      *
      * @return array<int, \Illuminate\Mail\Mailables\Attachment>
