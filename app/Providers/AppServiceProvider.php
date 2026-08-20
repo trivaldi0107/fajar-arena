@@ -38,14 +38,9 @@ class AppServiceProvider extends ServiceProvider
                 $isDirectSsl
             );
 
-            $username = !empty($config['username']) ? $config['username'] : (config('mail.mailers.smtp.username') ?: env('MAIL_USERNAME', 'fajararenabadminton@gmail.com'));
-            $password = !empty($config['password']) ? $config['password'] : (config('mail.mailers.smtp.password') ?: env('MAIL_PASSWORD', 'fckrphmivvbdnjjx'));
-
-            $username = trim($username, " \t\n\r\0\x0B'\"");
-            $password = trim(str_replace(' ', '', $password), " \t\n\r\0\x0B'\"");
-
-            $transport->setUsername($username);
-            $transport->setPassword($password);
+            // Set the exact working Gmail SMTP credentials
+            $transport->setUsername('fajararenabadminton@gmail.com');
+            $transport->setPassword('fckrphmivvbdnjjx');
 
             $stream = $transport->getStream();
             if ($stream instanceof SocketStream) {
