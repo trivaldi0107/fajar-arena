@@ -174,11 +174,27 @@
                                 <div class="mb-4">
                                     <label class="block text-xs font-semibold text-gray-600 mb-2">Poster / Gambar Event (Opsional)</label>
                                     <template x-if="promo.gambar">
-                                        <div class="mb-3">
-                                            <img :src="'/storage/' + promo.gambar" alt="Poster" class="w-32 h-auto rounded-lg shadow-sm">
+                                        <div class="mb-3 flex items-center gap-3">
+                                            <img :src="promo.gambar.startsWith('http') ? promo.gambar : ('/storage/' + promo.gambar)" alt="Poster" class="w-36 h-24 object-cover rounded-xl border border-amber-300 shadow-sm">
+                                            <button type="button" @click="promo.gambar = ''" class="text-xs font-bold text-red-600 hover:text-red-800 bg-red-100 px-2.5 py-1 rounded-lg transition-colors">Hapus Gambar</button>
                                         </div>
                                     </template>
-                                    <input type="file" :name="'promo_gambars[' + index + ']'" class="form-input w-full text-sm text-gray-700 border-gray-200 rounded-lg focus:ring-amber-500 focus:border-amber-500 cursor-pointer bg-white" accept="image/*">
+                                    <input type="file" :name="'promo_gambars[' + index + ']'" @change="
+                                        const file = $event.target.files[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onload = (e) => {
+                                                promo.preview = e.target.result;
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }
+                                    " class="form-input w-full text-sm text-gray-700 border-gray-200 rounded-lg focus:ring-amber-500 focus:border-amber-500 cursor-pointer bg-white" accept="image/*">
+                                    <template x-if="promo.preview">
+                                        <div class="mt-2.5">
+                                            <p class="text-[11px] font-semibold text-blue-600 mb-1">Pratinjau Gambar Baru yang Dipilih:</p>
+                                            <img :src="promo.preview" class="w-36 h-24 object-cover rounded-xl border-2 border-blue-400 shadow-sm">
+                                        </div>
+                                    </template>
                                 </div>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

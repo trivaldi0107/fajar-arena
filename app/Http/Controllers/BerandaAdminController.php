@@ -71,6 +71,8 @@ class BerandaAdminController extends Controller
                     $gambarPath = $oldGambars[$i] ?? null;
                     if ($request->hasFile("promo_gambars.{$i}")) {
                         $gambarPath = $request->file("promo_gambars.{$i}")->store('pengaturan', 'public');
+                    } elseif ($request->hasFile('promo_gambars') && isset($request->file('promo_gambars')[$i])) {
+                        $gambarPath = $request->file('promo_gambars')[$i]->store('pengaturan', 'public');
                     }
                     $promosList[] = [
                         'gambar' => $gambarPath,
