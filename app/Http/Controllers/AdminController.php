@@ -216,23 +216,29 @@ class AdminController extends Controller
         return back()->with('success', 'Pemesanan telah ditolak dengan alasan yang tercatat.');
     }
 
+    // =========================================================================
+    // FITUR: HAPUS RIWAYAT PEMESANAN PERMANEN (ADMIN)
+    // Fungsi: Menghapus data reservasi, tiket, pembayaran, dan mengembalikan status jadwal
+    // =========================================================================
     public function destroyPemesanan($id)
     {
         $pemesanan = Pemesanan::with('detail')->findOrFail($id);
 
+        // Validasi aturan keamanan: hanya data yang telah lewat 24 jam yang boleh dihapus
         if (!$pemesanan->canBeDeleted()) {
             return back()->with('error', 'Pemesanan #' . $pemesanan->kode_reservasi . ' belum dapat dihapus karena belum melewati batas 24 jam setelah waktu main selesai.');
         }
 
         $kodeReservasi = $pemesanan->kode_reservasi;
 
+        // Menggunakan Database Transaction untuk menjamin integritas data saat penghapusan bertingkat
         \Illuminate\Support\Facades\DB::transaction(function() use ($pemesanan) {
-            // Hapus file bukti transfer jika ada
+            // 1. Hapus file fisik bukti transfer dari penyimpanan server jika ada
             if ($pemesanan->bukti_transfer && file_exists(public_path($pemesanan->bukti_transfer))) {
                 @unlink(public_path($pemesanan->bukti_transfer));
             }
 
-            // Lepas status jadwal jika statusnya belum batal
+            // 2. Kembalikan status jadwal menjadi 'tersedia' jika pemesanan belum berstatus batal
             if ($pemesanan->status !== 'batal') {
                 foreach ($pemesanan->detail as $detail) {
                     if ($detail->jadwal_id) {
@@ -241,7 +247,7 @@ class AdminController extends Controller
                 }
             }
 
-            // Hapus relasi tiket, pembayaran, detail, lalu pemesanan
+            // 3. Hapus seluruh data relasi (tiket QR Code, catatan pembayaran, detail slot, dan master pemesanan)
             $pemesanan->tiket()->delete();
             $pemesanan->pembayaran()->delete();
             $pemesanan->detail()->delete();
@@ -255,8 +261,13 @@ class AdminController extends Controller
         return back()->with('success', 'Data pemesanan #' . $kodeReservasi . ' berhasil dihapus permanen.');
     }
 
+    // =========================================================================
+    // FITUR: KELOLA & UNGGAH GAMBAR QRIS STATIS ARENA (ADMIN)
+    // Fungsi: Menyimpan gambar barcode QRIS pembayaran yang akan ditampilkan kepada pelanggan
+    // =========================================================================
     public function uploadQrisStatis(Request $request)
     {
+        // 1. Validasi format file gambar dan batas ukuran maksimal 5MB
         $request->validate([
             'qris_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5048'
         ], [
@@ -268,12 +279,13 @@ class AdminController extends Controller
 
         $arena = active_arena();
 
+        // 2. Simpan file gambar ke direktori storage/pengaturan publik
         if ($request->hasFile('qris_image')) {
             $file = $request->file('qris_image');
             $filename = 'qris_' . $arena->id . '_' . time() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('pengaturan', $filename, 'public');
             $arena->qris_image = 'storage/' . $path;
-            $arena->save();
+            $arena->save(); // Simpan path gambar ke database pengaturan arena
         }
 
         return back()->with('success', 'Gambar QRIS Statis berhasil diperbarui!');
