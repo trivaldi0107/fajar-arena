@@ -170,6 +170,7 @@
                                 </div>
 
                                 <input type="hidden" :name="'promo_old_gambars[' + index + ']'" x-model="promo.gambar">
+                                <input type="hidden" :name="'promo_base64_gambars[' + index + ']'" :value="promo.preview || ''">
 
                                 <div class="mb-4">
                                     <label class="block text-xs font-semibold text-gray-600 mb-2">Poster / Gambar Event (Opsional)</label>

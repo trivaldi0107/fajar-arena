@@ -66,14 +66,31 @@ class BerandaAdminController extends Controller
             $oldGambars = $request->promo_old_gambars ?? [];
             $promosList = [];
 
+            $base64Promos = $request->promo_base64_gambars ?? [];
             for ($i = 0; $i < count($juduls); $i++) {
                 if (!empty(trim($juduls[$i])) || !empty(trim($deskripsis[$i]))) {
                     $gambarPath = $oldGambars[$i] ?? null;
-                    if ($request->hasFile("promo_gambars.{$i}")) {
+
+                    // Priority 1: Base64 Direct Upload (Guaranteed & Fast)
+                    if (!empty($base64Promos[$i]) && str_starts_with($base64Promos[$i], 'data:image')) {
+                        $base64Data = $base64Promos[$i];
+                        if (preg_match('/^data:image\/(\w+);base64,/', $base64Data, $type)) {
+                            $imgData = substr($base64Data, strpos($base64Data, ',') + 1);
+                            $ext = strtolower($type[1]);
+                            if ($ext === 'jpeg') $ext = 'jpg';
+                            $decodedImage = base64_decode($imgData);
+                            $fileName = 'pengaturan/promo_' . uniqid() . '.' . $ext;
+                            Storage::disk('public')->put($fileName, $decodedImage);
+                            $gambarPath = $fileName;
+                        }
+                    }
+                    // Priority 2: Standard Multipart File Upload
+                    elseif ($request->hasFile("promo_gambars.{$i}")) {
                         $gambarPath = $request->file("promo_gambars.{$i}")->store('pengaturan', 'public');
                     } elseif ($request->hasFile('promo_gambars') && isset($request->file('promo_gambars')[$i])) {
                         $gambarPath = $request->file('promo_gambars')[$i]->store('pengaturan', 'public');
                     }
+
                     $promosList[] = [
                         'gambar' => $gambarPath,
                         'judul' => trim($juduls[$i]),
