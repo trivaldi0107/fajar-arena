@@ -22,18 +22,24 @@ Route::get('/sitemap.xml', function () {
     ]);
 });
 
+// =========================================================================
+// FITUR USER 6: HALAMAN INSTRUKSI PEMBAYARAN QRIS STATIS
+// Fungsi: Menampilkan total tagihan, countdown waktu pembayaran, barcode QRIS, dan no rekening
+// =========================================================================
 Route::get('/pembayaran/{id}', function ($id) {
 
-    $pemesanan = Pemesanan::with('detail')->findOrFail($id);
+    $pemesanan = Pemesanan::with('detail')->findOrFail($id); // Mengambil data transaksi pemesanan
 
+    // Validasi pengalihan otomatis sesuai status pembayaran terkini
     if ($pemesanan->status === 'berhasil') {
-        return redirect()->route('tiket', $id);
+        return redirect()->route('tiket', $id); // Jika sudah lunas, langsung arahkan ke tiket
     } elseif ($pemesanan->status === 'batal') {
-        return redirect()->route('reservasi');
+        return redirect()->route('reservasi'); // Jika dibatalkan, arahkan kembali ke jadwal
     } elseif ($pemesanan->status === 'proses') {
-        return redirect()->route('pembayaran.menunggu', $id);
+        return redirect()->route('pembayaran.menunggu', $id); // Jika bukti sudah diunggah, arahkan ke antrian konfirmasi
     }
 
+    // Menghitung total tagihan berdasarkan jenis pengguna (Member / Reguler)
     if ($pemesanan->jenis_user == 'member') {
         $hargaPerJam = null;
         $total = active_arena()->member_harga ?? 1000000;
@@ -43,9 +49,10 @@ Route::get('/pembayaran/{id}', function ($id) {
         $total = $jumlahJam * $hargaPerJam;
     }
 
-    $qrisImage = active_arena()->qris_image ?? null;
-    $rekeningBank = active_arena()->rekening_bank ?? null;
+    $qrisImage = active_arena()->qris_image ?? null; // Mengambil gambar barcode QRIS cabang aktif
+    $rekeningBank = active_arena()->rekening_bank ?? null; // Mengambil informasi rekening bank arena
 
+    // Menampilkan halaman pembayaran dengan proteksi anti-cache
     return response()->view('pembayaran', [
         'pemesanan' => $pemesanan,
         'harga' => $hargaPerJam,
@@ -57,11 +64,16 @@ Route::get('/pembayaran/{id}', function ($id) {
       ->header('Expires', '0');
 });
 
+// =========================================================================
+// FITUR USER 7: HALAMAN MENUNGGU VERIFIKASI ADMIN (LIVE POLLING)
+// Fungsi: Menampilkan animasi status tunggu yang otomatis refresh saat admin menyetujui transaksi
+// =========================================================================
 Route::get('/pembayaran/menunggu/{id}', function ($id) {
     $pemesanan = Pemesanan::with('detail')->findOrFail($id);
 
+    // Pengalihan otomatis saat status berubah
     if ($pemesanan->status === 'berhasil') {
-        return redirect()->route('tiket', $id);
+        return redirect()->route('tiket', $id); // Pembayaran diterima admin -> langsung buka tiket
     } elseif ($pemesanan->status === 'batal') {
         return redirect()->route('reservasi')->with('error', 'Pemesanan Anda telah dibatalkan.');
     } elseif ($pemesanan->status === 'pending') {
@@ -82,9 +94,14 @@ Route::get('/pembayaran/menunggu/{id}', function ($id) {
       ->header('Expires', '0');
 })->name('pembayaran.menunggu');
 
+// =========================================================================
+// FITUR USER 8: UNGGAH BUKTI TRANSFER & NOTIFIKASI REAL-TIME (WEB PUSH)
+// Fungsi: Menyimpan gambar struk transfer, mengunci status ke 'proses', dan kirim notifikasi ke admin
+// =========================================================================
 Route::post('/pembayaran/upload/{id}', function (\Illuminate\Http\Request $request, $id) {
     $pemesanan = Pemesanan::with('detail')->findOrFail($id);
 
+    // 1. Validasi format file foto bukti pembayaran (maksimal 5MB)
     $request->validate([
         'bukti_transfer' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120'
     ], [
@@ -94,6 +111,7 @@ Route::post('/pembayaran/upload/{id}', function (\Illuminate\Http\Request $reque
         'bukti_transfer.max' => 'Ukuran file bukti pembayaran maksimal 5MB.'
     ]);
 
+    // 2. Simpan file gambar bukti transfer ke folder storage publik
     if ($request->hasFile('bukti_transfer')) {
         $file = $request->file('bukti_transfer');
         $filename = 'bukti_' . $pemesanan->kode_reservasi . '_' . time() . '.' . $file->getClientOriginalExtension();
@@ -101,9 +119,11 @@ Route::post('/pembayaran/upload/{id}', function (\Illuminate\Http\Request $reque
         $pemesanan->bukti_transfer = 'storage/' . $path;
     }
 
+    // 3. Ubah status transaksi menjadi 'proses' (menunggu verifikasi admin)
     $pemesanan->status = 'proses';
     $pemesanan->save();
 
+    // 4. Kunci seluruh slot jadwal terkait agar statusnya tetap 'proses' di tabel beranda
     foreach ($pemesanan->detail as $d) {
         if ($d->jadwal_id) {
             \App\Models\Jadwal::where('id', $d->jadwal_id)->update(['status' => 'proses']);
@@ -115,6 +135,7 @@ Route::post('/pembayaran/upload/{id}', function (\Illuminate\Http\Request $reque
     $namaArena = $arena ? $arena->nama_arena : 'Fajar Arena';
     $caborName = $arena ? ($arena->jenis_olahraga ?: $arena->nama_arena) : '';
 
+    // 5. Kirim Web Push Notification langsung ke HP/Laptop seluruh Admin yang sedang bertugas
     try {
         \App\Helpers\WebPushHelper::sendToAdmins(
             $namaArena . ' 💳',
@@ -125,6 +146,7 @@ Route::post('/pembayaran/upload/{id}', function (\Illuminate\Http\Request $reque
         \Illuminate\Support\Facades\Log::warning('Push notification trigger error: ' . $e->getMessage());
     }
 
+    // 6. Arahkan pengguna ke layar tunggu konfirmasi admin
     return redirect()->route('pembayaran.menunggu', $pemesanan->id);
 })->name('pembayaran.upload');
 

@@ -12,12 +12,13 @@ use Illuminate\Support\Facades\DB;
 
 class ReservasiController extends Controller
 {
-    // =========================
-    // HALAMAN RESERVASI
-    // =========================
+    // =========================================================================
+    // FITUR USER 1: HALAMAN PEMILIHAN JADWAL & MATRIKS KETERSEDIAAN LAPANGAN
+    // Fungsi: Menampilkan tabel jadwal harian/member, status slot, dan auto-generate slot 60 hari
+    // =========================================================================
     public function index(Request $request)
     {
-        // Auto-Cancel Reservasi Pending yang lewat 10 menit
+        // 1. Auto-Cancel otomatis: Batalkan pemesanan pending yang tidak dibayar dalam 10 menit
         $expiredPemesanans = Pemesanan::where('status', 'pending')
             ->where('created_at', '<', now()->subMinutes(10))
             ->with('detail')
@@ -27,31 +28,32 @@ class ReservasiController extends Controller
             $p->update(['status' => 'batal']);
             foreach ($p->detail as $detail) {
                 if ($detail->jadwal_id) {
-                    Jadwal::where('id', $detail->jadwal_id)->update(['status' => 'tersedia']);
+                    Jadwal::where('id', $detail->jadwal_id)->update(['status' => 'tersedia']); // Kembalikan slot jadi tersedia
                 }
             }
         }
 
-        $isMember = $request->member == 1;
+        $isMember = $request->member == 1; // Memeriksa apakah user memilih mode paket member atau reguler
         
-        $tanggal = $request->tanggal ?? now()->format('Y-m-d');
+        $tanggal = $request->tanggal ?? now()->format('Y-m-d'); // Mengambil tanggal pilihan user (default: hari ini)
 
-        $pengaturan = active_arena();
+        $pengaturan = active_arena(); // Mengambil konfigurasi cabang arena olahraga yang sedang aktif
 
-        $lapangan = Lapangan::where('pengaturan_id', $pengaturan->id)->get();
+        $lapangan = Lapangan::where('pengaturan_id', $pengaturan->id)->get(); // Mengambil daftar lapangan di cabang ini
         if (!$pengaturan?->is_member_active) {
-            $isMember = false;
+            $isMember = false; // Nonaktifkan mode member jika cabang tidak membuka paket member
         }
-        $jamBuka = $pengaturan ? (int) substr($pengaturan->jam_buka, 0, 2) : 8;
-        $jamTutup = $pengaturan ? (int) substr($pengaturan->jam_tutup, 0, 2) : 23;
+        $jamBuka = $pengaturan ? (int) substr($pengaturan->jam_buka, 0, 2) : 8; // Jam buka arena (contoh: 08.00)
+        $jamTutup = $pengaturan ? (int) substr($pengaturan->jam_tutup, 0, 2) : 23; // Jam tutup arena (contoh: 23.00)
 
         $effectiveTutup = $jamTutup;
         if ($effectiveTutup <= $jamBuka) {
-            $effectiveTutup += 24;
+            $effectiveTutup += 24; // Penyesuaian batas jam jika operasional melewati tengah malam
         }
 
-        $hargaPerJamDefault = $pengaturan ? $pengaturan->harga_per_jam : 80000;
+        $hargaPerJamDefault = $pengaturan ? $pengaturan->harga_per_jam : 80000; // Harga dasar per jam
 
+        // 2. Menyusun daftar rentang jam operasional (misal: 08:00 - 09:00, 09:00 - 10:00)
         $jamList = [];
         for ($i = $jamBuka; $i < $effectiveTutup; $i++) {
             $startHour = $i % 24;
@@ -64,6 +66,7 @@ class ReservasiController extends Controller
         $startDate = Carbon::today()->format('Y-m-d');
         $endDate = Carbon::today()->addDays(59)->format('Y-m-d');
         
+        // 3. Mengambil jadwal yang sudah ada di database untuk mencegah pembuatan slot duplikat
         $existingJadwal = Jadwal::whereBetween('tanggal', [$startDate, $endDate])
             ->select('tanggal', 'lapangan_id', 'jam_mulai')
             ->get()
@@ -72,6 +75,7 @@ class ReservasiController extends Controller
                 return $item->tanggal . '_' . $item->lapangan_id . '_' . $jamMulai;
             })->toArray();
             
+        // 4. Auto-generate otomatis seluruh slot jadwal 60 hari ke depan jika belum tersedia di database
         $newSchedules = [];
         $now = now();
         for ($d = 0; $d < 60; $d++) {
@@ -94,6 +98,7 @@ class ReservasiController extends Controller
             }
         }
         
+        // Insert massal per 500 baris agar performa database tetap cepat dan ringan
         if (count($newSchedules) > 0) {
             foreach (array_chunk($newSchedules, 500) as $chunk) {
                 Jadwal::insert($chunk);
@@ -103,6 +108,7 @@ class ReservasiController extends Controller
         $jamBukaStr = sprintf('%02d:00:00', $jamBuka);
         $jamTutupStr = sprintf('%02d:00:00', $jamTutup);
 
+        // 5. Query data slot jadwal pada tanggal yang sedang dibuka oleh user
         $jadwalQuery = Jadwal::where('tanggal', $tanggal)
             ->whereIn('lapangan_id', $lapangan->pluck('id'));
 
@@ -118,6 +124,7 @@ class ReservasiController extends Controller
 
         $jadwalRaw = $jadwalQuery->get();
 
+        // 6. Menyusun kamus jadwal dan memprioritaskan status terkini
         $jadwalDict = [];
         foreach ($jadwalRaw as $j) {
             $key = $j->jam_mulai . '_' . $j->lapangan_id;
@@ -200,11 +207,13 @@ class ReservasiController extends Controller
         ));
     }
 
-    // =========================
-    // PESAN (ANTI DOUBLE BOOKING)
-    // =========================
+    // =========================================================================
+    // FITUR USER 2: PROSES CHECKOUT & PENCEGAHAN DOUBLE BOOKING (ROW-LEVEL LOCKING)
+    // Fungsi: Mengunci baris data di database untuk mencegah 2 user memesan di detik yang sama
+    // =========================================================================
     public function pesan(Request $request)
     {
+        // 1. Cek apakah user masih memiliki tagihan pending/proses sebelumnya
         if (auth()->check()) {
             $existingPending = Pemesanan::where('user_id', auth()->id())
                 ->whereIn('status', ['pending', 'proses'])
@@ -213,59 +222,65 @@ class ReservasiController extends Controller
 
             if ($existingPending) {
                 if ($existingPending->status === 'pending') {
-                    return redirect('/pembayaran/' . $existingPending->id);
+                    return redirect('/pembayaran/' . $existingPending->id); // Arahkan ke tagihan aktif
                 } else {
-                    return redirect()->route('pembayaran.menunggu', $existingPending->id);
+                    return redirect()->route('pembayaran.menunggu', $existingPending->id); // Arahkan ke status menunggu
                 }
             }
         }
 
-        $jadwalDipilih = $request->jadwal;
+        $jadwalDipilih = $request->jadwal; // Mengambil array ID jadwal yang diklik oleh user
 
         if (!$jadwalDipilih) {
             return back()->with('error', 'Pilih jadwal terlebih dahulu');
         }
 
+        // 2. Memulai Transaksi Database (ACID Compliance)
         DB::beginTransaction();
 
         try {
 
+            // 3. PENCEGAHAN DOUBLE BOOKING UTAMA: lockForUpdate() mengunci baris data di MySQL
             foreach ($jadwalDipilih as $idJadwal) {
 
-                $jadwal = Jadwal::lockForUpdate()->find($idJadwal);
+                $jadwal = Jadwal::lockForUpdate()->find($idJadwal); // Baris data dikunci agar tidak bisa dibaca/diedit oleh user lain bersamaan
 
+                // Jika ternyata slot sudah diambil user lain beberapa milidetik sebelumnya:
                 if (!$jadwal || $jadwal->status != 'tersedia') {
-                    DB::rollBack();
-                    return back()->with('error', 'Jadwal tidak tersedia!');
+                    DB::rollBack(); // Batalkan seluruh transaksi
+                    return back()->with('error', 'Maaf, salah satu slot jadwal yang Anda pilih baru saja dipesan oleh orang lain!');
                 }
             }
 
+            // 4. Generate kode reservasi unik berbasis timestamp
             $kode = 'RSV' . time();
 
             // Ambil tanggal dari jadwal pertama
             $jadwalPertama = Jadwal::find($jadwalDipilih[0]);
 
-            $durasi = count($jadwalDipilih);
+            $durasi = count($jadwalDipilih); // Hitung total jam durasi main
 
             $pengaturan = active_arena();
 
             if ($request->has('is_member')) {
-                // Harga member (contoh: di override di hasil saja)
+                $total = $pengaturan->member_harga ?? 1000000;
             } else {
                 $hargaPerJam = $pengaturan ? $pengaturan->harga_per_jam : 80000;
-                $total = $durasi * $hargaPerJam;
+                $total = $durasi * $hargaPerJam; // Hitung total harga = durasi x harga per jam
             }
 
+            // 5. Simpan data master pemesanan berstatus 'pending'
             $pemesanan = \App\Models\Pemesanan::create([
                 'kode_reservasi' => $kode,
                 'user_id' => auth()->id(),
                 'tanggal_mulai' => $jadwalPertama->tanggal,
                 'jenis_user' => $request->has('is_member') ? 'member' : 'non_member',
                 'durasi' => $durasi,
-                'total_harga' => $total ?? ($pengaturan->member_harga ?? 1000000),
+                'total_harga' => $total,
                 'status' => 'pending'
             ]);
 
+            // 6. Simpan rincian slot pemesanan dan ubah status jadwal menjadi 'proses' (terkunci)
             foreach ($jadwalDipilih as $idJadwal) {
 
                 $jadwal = Jadwal::lockForUpdate()->find($idJadwal);
@@ -280,21 +295,23 @@ class ReservasiController extends Controller
                     'jam_selesai' => $jadwal->jam_selesai
                 ]);
 
+                // Kunci slot agar tidak bisa dipilih oleh pengunjung lain di beranda
                 $jadwal->update([
                     'status' => 'proses'
                 ]);
             }
 
+            // 7. Commit transaksi: Semua perubahan resmi tersimpan secara permanen dan aman
             DB::commit();
 
-            // Langsung ke 1 halaman pembayaran
+            // Arahkan pelanggan ke halaman pembayaran QRIS
             return redirect('/pembayaran/' . $pemesanan->id);
 
         } catch (\Exception $e) {
 
-            DB::rollBack();
+            DB::rollBack(); // Batalkan jika terjadi galat sistem
 
-            return back()->with('error', 'Terjadi kesalahan');
+            return back()->with('error', 'Terjadi kesalahan saat memproses jadwal.');
         }
     }
 
