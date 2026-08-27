@@ -11,6 +11,10 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    // =========================================================================
+    // FITUR 1: DASHBOARD STATISTIK & RINGKASAN AKTIVITAS ARENA
+    // Fungsi: Menampilkan metrik lapangan aktif, reservasi hari ini, transaksi pending, dan grafik tren
+    // =========================================================================
     public function dashboard()
     {
         $activeArenaId = active_arena()->id;
@@ -93,6 +97,10 @@ class AdminController extends Controller
         ));
     }
 
+    // =========================================================================
+    // FITUR 2: KELOLA DATA PEMESANAN & FILTER STATUS TRANSAKSI
+    // Fungsi: Menampilkan daftar riwayat reservasi pelanggan dengan filter tab dan pencarian
+    // =========================================================================
     public function pemesanan(Request $request)
     {
         // Auto-Cancel Reservasi Pending yang lewat 10 menit
@@ -141,6 +149,10 @@ class AdminController extends Controller
         return view('admin.pemesanan.index', compact('pemesanan', 'status', 'search'));
     }
 
+    // =========================================================================
+    // FITUR 3: KONFIRMASI PEMBAYARAN RESERVASI (TERBITKAN E-TIKET)
+    // Fungsi: Memvalidasi bukti transfer pelanggan dan mengunci status slot jadwal menjadi booked
+    // =========================================================================
     public function konfirmasiPemesanan($id)
     {
         \Illuminate\Support\Facades\DB::transaction(function() use ($id) {
@@ -291,6 +303,10 @@ class AdminController extends Controller
         return back()->with('success', 'Gambar QRIS Statis berhasil diperbarui!');
     }
 
+    // =========================================================================
+    // FITUR 7: RINCIAN DETAIL TRANSAKSI & JADWAL PELANGGAN
+    // Fungsi: Menampilkan informasi lengkap pemesan, status bukti transfer, dan daftar slot
+    // =========================================================================
     public function detailPemesanan($id)
     {
         $pemesanan = Pemesanan::with([
@@ -316,6 +332,10 @@ class AdminController extends Controller
         ));
     }
 
+    // =========================================================================
+    // FITUR 8: MONITORING MATRIKS JADWAL LAPANGAN REAL-TIME
+    // Fungsi: Menampilkan halaman matriks ketersediaan seluruh jam dan lapangan
+    // =========================================================================
     public function jadwal()
     {
         return view('admin.jadwal');
@@ -381,6 +401,10 @@ class AdminController extends Controller
         ]);
     }
 
+    // =========================================================================
+    // FITUR 9: UPDATE STATUS SLOT JADWAL (TERSEDIA, EVENT, PERBAIKAN, TUTUP)
+    // Fungsi: Mengubah status ketersediaan slot waktu tertentu secara langsung oleh admin
+    // =========================================================================
     public function jadwalUpdate(\Illuminate\Http\Request $request)
     {
         $ids = $request->ids;
@@ -485,6 +509,10 @@ class AdminController extends Controller
         return response()->json(['success' => true]);
     }
 
+    // =========================================================================
+    // FITUR 10: KELOLA DATA LAPANGAN & TAMBAH CABANG LAPANGAN BARU
+    // Fungsi: Mengatur nama arena, harga sewa per jam, paket member, dan jumlah lapangan
+    // =========================================================================
     public function indexLapangan()
     {
         return redirect()->route('admin.lapangan.edit', active_arena()->id);
@@ -833,6 +861,10 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Slide berhasil diperbarui.')->with('step', 2);
     }
 
+    // =========================================================================
+    // FITUR 11: PEMINDAI KAMERA QR CODE & VALIDASI KEHADIRAN (CHECK-IN TIKET)
+    // Fungsi: Membuka antarmuka scanner kamera dan memproses verifikasi kode tiket pengunjung
+    // =========================================================================
     public function scan()
     {
         return view('admin.scan.index');
