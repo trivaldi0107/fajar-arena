@@ -127,29 +127,17 @@ body{
 </style>
 
 
-<!-- ================= TOMBOL INFO PRICELIST & KEBIJAKAN (HANYA ICON DI SUDUT KANAN ATAS) ================= -->
+<!-- ================= TOMBOL INFO PRICELIST & KEBIJAKAN (HANYA ICON BERSIH DI SUDUT KANAN ATAS) ================= -->
 <div x-data="{ showKebijakanModal: false }">
-    <!-- Floating Icon Button di Sudut Kanan Atas -->
-    <div class="fixed top-20 sm:top-24 right-4 sm:right-6 md:right-8 z-40">
+    <!-- Floating Icon Button di Sudut Kanan Atas (Diberi Jarak Pas dari Topbar) -->
+    <div class="fixed top-24 sm:top-28 right-4 sm:right-6 md:right-8 z-40">
         <button @click="showKebijakanModal = true" type="button" 
-            class="group relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-[0_8px_25px_rgba(37,99,235,0.35)] hover:shadow-[0_12px_30px_rgba(37,99,235,0.5)] border border-white/20 hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer"
-            title="Pricelist & Kebijakan Reservasi">
+            class="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_8px_20px_rgba(37,99,235,0.35)] hover:shadow-[0_12px_28px_rgba(37,99,235,0.45)] border border-white/20 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer">
             
-            <!-- Icon -->
-            <svg class="w-5 h-5 transition-transform duration-300 group-hover:rotate-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Icon Saja Tanpa Teks & Tanpa Bulatan -->
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
             </svg>
-
-            <!-- Pulsing Badge Indicator -->
-            <span class="absolute -top-1 -right-1 flex h-3 w-3 pointer-events-none">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-400 border-2 border-white"></span>
-            </span>
-
-            <!-- Tooltip on Hover (Desktop) -->
-            <span class="absolute right-full mr-3 px-3 py-1.5 bg-slate-900/90 text-white text-xs font-semibold rounded-xl whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200 shadow-lg backdrop-blur-sm hidden sm:block">
-                Pricelist & Kebijakan 📋
-            </span>
         </button>
     </div>
 
