@@ -129,8 +129,8 @@ body{
 
 <!-- ================= TOMBOL INFO PRICELIST & KEBIJAKAN (HANYA ICON BERSIH DI SUDUT KANAN ATAS) ================= -->
 <div x-data="{ showKebijakanModal: false }">
-    <!-- Floating Icon Button di Sudut Kanan Atas (Diberi Jarak Lega dari Topbar Putih) -->
-    <div class="fixed top-28 sm:top-32 md:top-36 right-4 sm:right-6 md:right-8 z-40">
+    <!-- Floating Icon Button di Sudut Kanan Atas (Diberi Jarak Pasti dari Topbar Putih) -->
+    <div style="position: fixed; top: 95px; right: 20px; z-index: 40;">
         <button @click="showKebijakanModal = true" type="button" 
             class="flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_10px_25px_rgba(37,99,235,0.4)] hover:shadow-[0_14px_30px_rgba(37,99,235,0.55)] border border-white/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer">
             
