@@ -137,6 +137,26 @@
                     </div>
                     <p class="text-xs text-gray-500 mt-2">Biarkan kosong jika tidak ingin mengubah gambar.</p>
                 </div>
+
+                <!-- CATATAN PRICELIST & KEBIJAKAN KHUSUS CABOR INI -->
+                <div class="p-5 bg-gradient-to-br from-blue-50/70 to-indigo-50/50 rounded-2xl border border-blue-200/80">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800">Catatan Pricelist & Kebijakan Pemesanan (Khusus Cabang Ini)</label>
+                            <p class="text-xs text-gray-500">Teks ini akan muncul saat pengunjung mengklik icon/tab cabor ini di modal pricelist beranda.</p>
+                        </div>
+                    </div>
+                    <textarea name="catatan_member" rows="5" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-800 transition-all bg-white focus:ring-2 focus:ring-blue-500 text-sm leading-relaxed" placeholder="Contoh:
+1. Waktu Pembayaran: Batas waktu pembayaran adalah 10 menit setelah checkout.
+2. Verifikasi QRIS: Pastikan mengunggah bukti transfer yang jelas.
+3. E-Tiket: Tunjukkan QR Code saat kedatangan.
+4. Paket Member: Berlaku untuk 4 pekan rutin pada hari & jam yang sama.">{{ old('catatan_member', $pengaturan->catatan_member) }}</textarea>
+                </div>
             </div>
 
             <div class="bg-white rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-5 md:p-8 mb-6">
@@ -305,32 +325,12 @@
                         </div>
                     </div>
 
-                    <div class="mb-6">
+                    <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Harga (Paket Member) <span class="member-asterisk text-red-500 hidden">*</span></label>
                         <div class="relative">
                             <span class="absolute left-4 top-3.5 text-gray-500 font-medium">Rp</span>
                             <input type="text" name="member_harga" id="input_member_harga" class="form-input w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 text-gray-800 transition-all bg-gray-50 focus:bg-white" value="{{ number_format((float)preg_replace('/[^0-9]/', '', old('member_harga', $pengaturan->member_harga ?? 1000000)), 0, ',', '.') }}">
                         </div>
-                    </div>
-
-                    <!-- CATATAN PRICELIST & KEBIJAKAN KHUSUS CABOR INI -->
-                    <div class="p-5 bg-gradient-to-br from-blue-50/70 to-indigo-50/50 rounded-2xl border border-blue-200/80">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-sm">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-gray-800">Catatan Pricelist & Kebijakan Pemesanan (Khusus Cabang Ini)</label>
-                                <p class="text-xs text-gray-500">Teks ini akan muncul saat pengunjung mengklik tab cabor ini di modal pricelist beranda.</p>
-                            </div>
-                        </div>
-                        <textarea name="catatan_member" rows="5" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-800 transition-all bg-white focus:ring-2 focus:ring-blue-500 text-sm leading-relaxed" placeholder="Contoh:
-1. Waktu Pembayaran: Batas waktu pembayaran adalah 10 menit setelah checkout.
-2. Verifikasi QRIS: Pastikan mengunggah bukti transfer yang jelas.
-3. E-Tiket: Tunjukkan QR Code saat kedatangan.
-4. Paket Member: Berlaku untuk 4 pekan rutin pada hari & jam yang sama.">{{ old('catatan_member', $pengaturan->catatan_member) }}</textarea>
                     </div>
                 </div>
             </div>
