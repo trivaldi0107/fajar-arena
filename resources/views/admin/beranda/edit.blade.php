@@ -106,7 +106,6 @@
                     <input type="file" name="auth_bg_image" class="form-input w-full text-sm text-gray-700 border border-gray-200 rounded-xl focus:ring-blue-500 focus:border-blue-500 cursor-pointer bg-white" accept="image/*">
                 </div>
 
-                <div class="mb-6">
                 @php
                     $promosData = json_decode($pengaturan->pengumuman, true);
                     if (!is_array($promosData)) {
@@ -228,7 +227,11 @@
                 <!-- BAGIAN BERITA & HIGHLIGHT OLAHRAGA -->
                 <div class="mb-6 border-t border-gray-100 pt-6 mt-6">
                     @php
-                        $beritaData = old('berita_list', is_array($pengaturan->berita_list) && !empty($pengaturan->berita_list) ? $pengaturan->berita_list : []);
+                        $beritaRaw = $pengaturan->berita_list;
+                        if (is_string($beritaRaw)) {
+                            $beritaRaw = json_decode($beritaRaw, true) ?? [];
+                        }
+                        $beritaData = old('berita_list', is_array($beritaRaw) && !empty($beritaRaw) ? $beritaRaw : []);
                     @endphp
 
                     <div x-data="{
