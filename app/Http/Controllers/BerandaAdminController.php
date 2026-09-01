@@ -100,22 +100,10 @@ class BerandaAdminController extends Controller
                 }
             }
 
-            if (!empty($promosList)) {
-                $data['pengumuman'] = json_encode($promosList);
-                $data['promo_judul'] = $promosList[0]['judul'] ?? null;
-                $data['promo_label'] = $promosList[0]['label'] ?? null;
-                $data['gambar_pengumuman'] = $promosList[0]['gambar'] ?? null;
-            } else {
-                $data['pengumuman'] = null;
-                $data['promo_judul'] = null;
-                $data['promo_label'] = null;
-                $data['gambar_pengumuman'] = null;
-            }
-        } else {
-            $data['pengumuman'] = null;
-            $data['promo_judul'] = null;
-            $data['promo_label'] = null;
-            $data['gambar_pengumuman'] = null;
+            $data['pengumuman'] = !empty($promosList) ? json_encode($promosList) : null;
+            $data['promo_judul'] = $promosList[0]['judul'] ?? null;
+            $data['promo_label'] = $promosList[0]['label'] ?? null;
+            $data['gambar_pengumuman'] = $promosList[0]['gambar'] ?? null;
         }
 
         // Process Dynamic Berita & Artikel Olahraga (Headline & Detail Portal News)
@@ -170,24 +158,13 @@ class BerandaAdminController extends Controller
                 }
             }
             $data['berita_list'] = $beritaList;
-        } else {
-            $data['berita_list'] = [];
         }
-
-        $pengaturan->fill($data);
 
         if ($request->hasFile('gambar_utama')) {
             if ($pengaturan->gambar_utama) {
                 Storage::disk('public')->delete($pengaturan->gambar_utama);
             }
-            $pengaturan->gambar_utama = $request->file('gambar_utama')->store('pengaturan', 'public');
-        }
-
-        if ($request->hasFile('gambar_pengumuman') && !$request->has('promo_juduls')) {
-            if ($pengaturan->gambar_pengumuman) {
-                Storage::disk('public')->delete($pengaturan->gambar_pengumuman);
-            }
-            $pengaturan->gambar_pengumuman = $request->file('gambar_pengumuman')->store('pengaturan', 'public');
+            $data['gambar_utama'] = $request->file('gambar_utama')->store('pengaturan', 'public');
         }
 
         if ($request->hasFile('auth_bg_image')) {
@@ -202,7 +179,7 @@ class BerandaAdminController extends Controller
             $data['auth_bg_image'] = null;
         }
 
-        $pengaturan->update($data);
+        $pengaturan->fill($data);
         $pengaturan->save();
 
         return redirect()->route('admin.beranda.edit', $pengaturan->id)->with('success', 'Pengaturan beranda berhasil diperbarui.')->with('step', $request->step ?? 1);
