@@ -224,11 +224,11 @@ body{
                 <div class="border-t border-slate-100 pt-5">
                     <h4 class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3">Kebijakan & Ketentuan Reservasi</h4>
                     @if(!empty($pengaturan->catatan_member))
-                        <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4.5 text-slate-700 leading-relaxed space-y-2 whitespace-pre-line text-sm">
-                            {!! nl2br(e($pengaturan->catatan_member)) !!}
+                        <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 text-slate-700 leading-relaxed text-sm">
+                            {!! nl2br(e(trim($pengaturan->catatan_member))) !!}
                         </div>
                     @else
-                        <div class="bg-slate-50 border border-slate-200/70 rounded-2xl p-4 text-slate-600 leading-relaxed text-sm space-y-2">
+                        <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 text-slate-700 leading-relaxed text-sm space-y-2">
                             <p>1. <strong>Waktu Pembayaran:</strong> Batas waktu pembayaran adalah <strong>10 menit</strong> setelah checkout. Jika melewati batas waktu, pesanan akan otomatis dibatalkan.</p>
                             <p>2. <strong>Verifikasi QRIS:</strong> Pastikan mengunggah bukti transfer yang jelas agar operator dapat segera mengonfirmasi pesanan Anda.</p>
                             <p>3. <strong>E-Tiket & Check-in:</strong> Tunjukkan E-Tiket ber-QR Code kepada petugas di lokasi lapangan saat kedatangan untuk proses check-in kehadiran.</p>
@@ -240,8 +240,43 @@ body{
             </div>
 
             <!-- Modal Footer -->
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-                <p class="text-xs text-slate-500 text-center sm:text-left">Ada pertanyaan lain? Hubungi WhatsApp: <strong>{{ $pengaturan->beranda_no_telp ?? $pengaturan->no_telp ?? '0853-9993-9799' }}</strong></p>
+            <div class="px-6 py-4 bg-slate-50/90 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
+                <!-- Kontak Telepon / WhatsApp & Email -->
+                @php
+                    $telepon = $pengaturan->beranda_no_telp ?? $pengaturan->no_telp ?? '0853-9993-9799';
+                    $email = $pengaturan->beranda_email ?? $pengaturan->email ?? 'fajararena@gmail.com';
+                    $cleanTelp = preg_replace('/[^0-9]/', '', $telepon);
+                    if (str_starts_with($cleanTelp, '0')) {
+                        $waTelp = '62' . substr($cleanTelp, 1);
+                    } else {
+                        $waTelp = $cleanTelp;
+                    }
+                @endphp
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs font-semibold text-slate-600">
+                    @if(!empty($telepon))
+                    <a href="https://wa.me/{{ $waTelp }}" target="_blank" class="flex items-center gap-2 hover:text-blue-600 transition-colors group" title="Hubungi WhatsApp / Telepon">
+                        <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            </svg>
+                        </div>
+                        <span>{{ $telepon }}</span>
+                    </a>
+                    @endif
+
+                    @if(!empty($email))
+                    <a href="mailto:{{ $email }}" class="flex items-center gap-2 hover:text-blue-600 transition-colors group" title="Kirim Email">
+                        <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <span>{{ $email }}</span>
+                    </a>
+                    @endif
+                </div>
+
+                <!-- Action Button -->
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <a href="/pilih-cabang" class="w-full sm:w-auto text-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 hover:shadow-lg transition-all">
                         Pesan Lapangan 🏸
