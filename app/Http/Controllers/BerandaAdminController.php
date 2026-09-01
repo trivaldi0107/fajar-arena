@@ -40,7 +40,7 @@ class BerandaAdminController extends Controller
             'pengumuman', 'promo_label', 'promo_judul', 'promo_teks_tombol',
             'fitur_judul', 'fitur_deskripsi', 'fitur_cards', 
             'beranda_alamat', 'beranda_kota', 'beranda_link_maps', 'beranda_no_telp', 'beranda_email',
-            'navbar_name'
+            'navbar_name', 'catatan_member'
         ]);
 
         $youtubeData = [];

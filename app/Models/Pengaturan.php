@@ -54,6 +54,7 @@ class Pengaturan extends Model
         'youtube_link',
         'qris_image',
         'rekening_bank',
+        'catatan_member',
         'berita_list',
         'auth_bg_image'
     ];

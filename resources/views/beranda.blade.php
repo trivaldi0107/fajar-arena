@@ -127,6 +127,140 @@ body{
 </style>
 
 
+<!-- ================= TOMBOL INFO PRICELIST & KEBIJAKAN (SUDUT KANAN ATAS) ================= -->
+<div x-data="{ showKebijakanModal: false }">
+    <!-- Floating Button di Sudut Kanan Atas -->
+    <div class="fixed top-20 sm:top-24 right-3.5 sm:right-6 z-40">
+        <button @click="showKebijakanModal = true" type="button" 
+            class="group flex items-center gap-2.5 bg-white/95 hover:bg-white text-slate-800 backdrop-blur-md px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-200/90 hover:border-blue-500 hover:shadow-[0_10px_35px_rgba(37,99,235,0.25)] transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer">
+            <div class="relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-sm group-hover:scale-105 transition-transform">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+                <span class="absolute -top-1 -right-1 flex h-2.5 w-2.5 sm:h-3 sm:w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-full w-full bg-blue-500"></span>
+                </span>
+            </div>
+            <div class="text-left">
+                <p class="text-[10px] font-bold text-blue-600 uppercase tracking-wider leading-none">Info Tarif</p>
+                <p class="text-xs font-bold text-gray-800 group-hover:text-blue-600 transition-colors">Pricelist & Kebijakan</p>
+            </div>
+        </button>
+    </div>
+
+    <!-- MODAL POPUP PRICELIST & KEBIJAKAN -->
+    <div x-show="showKebijakanModal" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6" 
+         style="display: none;"
+         @keydown.escape.window="showKebijakanModal = false">
+        
+        <div x-show="showKebijakanModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+             x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+             @click.away="showKebijakanModal = false"
+             class="bg-white rounded-3xl shadow-2xl border border-slate-100 w-full max-w-2xl overflow-hidden my-8 flex flex-col max-h-[90vh]">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white flex items-center justify-between relative shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/30 shadow-inner">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg sm:text-xl font-bold leading-tight">Pricelist & Kebijakan Reservasi</h3>
+                        <p class="text-xs text-blue-100 mt-0.5">Informasi tarif dan ketentuan pemesanan di {{ $pengaturan->nama_arena ?? 'Fajar Arena' }}</p>
+                    </div>
+                </div>
+                <button @click="showKebijakanModal = false" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-colors cursor-pointer" title="Tutup">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto space-y-6 text-sm text-slate-600">
+                
+                <!-- Quick Pricelist Cards -->
+                <div>
+                    <h4 class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3">Daftar Tarif Sewa Lapangan</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <!-- Card Non-Member -->
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 relative overflow-hidden">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Sewa Reguler</span>
+                                <span class="text-[10px] bg-slate-200/70 text-slate-700 px-2 py-0.5 rounded-full font-semibold">Harian</span>
+                            </div>
+                            <div class="text-xl sm:text-2xl font-black text-slate-800">
+                                Rp {{ number_format($pengaturan->harga_per_jam ?? 80000, 0, ',', '.') }}
+                                <span class="text-xs font-medium text-slate-400">/ jam</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-1.5 leading-snug">Pemesanan fleksibel per jam dengan rekomendasi filter cerdas otomatis.</p>
+                        </div>
+
+                        <!-- Card Member -->
+                        <div class="p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50/60 border border-blue-200/90 relative overflow-hidden">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Paket Member</span>
+                                <span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">Hemat Rutin</span>
+                            </div>
+                            <div class="text-xl sm:text-2xl font-black text-blue-700">
+                                Rp {{ number_format($pengaturan->member_harga ?? 1000000, 0, ',', '.') }}
+                                <span class="text-xs font-medium text-blue-500">/ paket</span>
+                            </div>
+                            <p class="text-xs text-blue-900/80 mt-1.5 leading-snug">
+                                {{ $pengaturan->member_jumlah_pekan ?? 4 }} pekan rutin ({{ $pengaturan->member_jam_per_pertemuan ?? 2 }} jam/pertemuan) pada jam & hari tetap.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Catatan / Kebijakan dari Admin -->
+                <div class="border-t border-slate-100 pt-5">
+                    <h4 class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3">Kebijakan & Ketentuan Reservasi</h4>
+                    @if(!empty($pengaturan->catatan_member))
+                        <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4.5 text-slate-700 leading-relaxed space-y-2 whitespace-pre-line text-sm">
+                            {!! nl2br(e($pengaturan->catatan_member)) !!}
+                        </div>
+                    @else
+                        <div class="bg-slate-50 border border-slate-200/70 rounded-2xl p-4 text-slate-600 leading-relaxed text-sm space-y-2">
+                            <p>1. <strong>Waktu Pembayaran:</strong> Batas waktu pembayaran adalah <strong>10 menit</strong> setelah checkout. Jika melewati batas waktu, pesanan akan otomatis dibatalkan.</p>
+                            <p>2. <strong>Verifikasi QRIS:</strong> Pastikan mengunggah bukti transfer yang jelas agar operator dapat segera mengonfirmasi pesanan Anda.</p>
+                            <p>3. <strong>E-Tiket & Check-in:</strong> Tunjukkan E-Tiket ber-QR Code kepada petugas di lokasi lapangan saat kedatangan untuk proses check-in kehadiran.</p>
+                            <p>4. <strong>Paket Member:</strong> Berlaku untuk 4 pekan berturut-turut pada hari dan jam yang telah dipilih secara otomatis oleh sistem.</p>
+                        </div>
+                    @endif
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+                <p class="text-xs text-slate-500 text-center sm:text-left">Ada pertanyaan lain? Hubungi WhatsApp: <strong>{{ $pengaturan->beranda_no_telp ?? $pengaturan->no_telp ?? '0853-9993-9799' }}</strong></p>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <a href="/pilih-cabang" class="w-full sm:w-auto text-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 hover:shadow-lg transition-all">
+                        Pesan Lapangan 🏸
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <!-- ================= HERO ================= -->
 @if(isset($sliders) && $sliders->count() > 0)
 <section class="relative md:h-screen bg-gradient-to-b from-gray-900 to-slate-950 overflow-hidden flex flex-col justify-start md:flex-row md:items-center pt-3 sm:pt-6 md:pt-0 pb-12 md:pb-0">

@@ -55,6 +55,26 @@
                     <p class="text-xs text-gray-500 mt-1">Nama ini akan muncul di ujung kiri menu bar (navbar) pengguna.</p>
                 </div>
 
+                <!-- CATATAN PRICELIST & KEBIJAKAN PEMESANAN MEMBER -->
+                <div class="mb-6 p-5 bg-gradient-to-br from-blue-50/70 to-indigo-50/50 rounded-2xl border border-blue-200/80">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800">Catatan Pricelist & Kebijakan Pemesanan Member</label>
+                            <p class="text-xs text-gray-500">Teks ini akan muncul saat pengunjung mengklik icon info/pricelist di sudut kanan atas halaman beranda.</p>
+                        </div>
+                    </div>
+                    <textarea name="catatan_member" rows="6" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-800 transition-all bg-white focus:ring-2 focus:ring-blue-500 text-sm leading-relaxed" placeholder="Contoh:
+1. Paket Member berlaku untuk 4 pekan berturut-turut pada hari & jam yang sama.
+2. Pembayaran wajib diselesaikan maksimal 10 menit setelah checkout.
+3. Reschedule jadwal member wajib dikonfirmasi H-2 sebelum jadwal bermain.
+4. Harap menunjukkan e-tiket dengan QR code kepada petugas saat kedatangan.">{{ old('catatan_member', $pengaturan->catatan_member) }}</textarea>
+                </div>
+
                 <div class="mb-6 p-5 bg-slate-50/70 rounded-2xl border border-slate-200/80" x-data="{
                     removed: false,
                     confirmRemove() {
