@@ -243,8 +243,8 @@ body{
             <div class="px-6 py-4 bg-slate-50/90 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
                 <!-- Kontak Telepon / WhatsApp & Email -->
                 @php
-                    $telepon = $pengaturan->beranda_no_telp ?? $pengaturan->no_telp ?? '0853-9993-9799';
-                    $email = $pengaturan->beranda_email ?? $pengaturan->email ?? 'fajararena@gmail.com';
+                    $telepon = !empty($pengaturan->no_telp) ? $pengaturan->no_telp : ($pengaturan->beranda_no_telp ?? '0813-5593-8559');
+                    $email = !empty($pengaturan->email) ? $pengaturan->email : ($pengaturan->beranda_email ?? 'fajararenabadminton@gmail.com');
                     $cleanTelp = preg_replace('/[^0-9]/', '', $telepon);
                     if (str_starts_with($cleanTelp, '0')) {
                         $waTelp = '62' . substr($cleanTelp, 1);
