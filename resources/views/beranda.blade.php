@@ -128,7 +128,15 @@ body{
 
 
 <!-- ================= TOMBOL INFO PRICELIST & KEBIJAKAN (HANYA ICON BERSIH DI SUDUT KANAN ATAS) ================= -->
-<div x-data="{ showKebijakanModal: false }">
+@php
+    $cabangsList = (isset($semuaCabang) && $semuaCabang->count() > 0) ? $semuaCabang : collect([$pengaturan]);
+    $defaultCabangId = $cabangsList->first()->id ?? 1;
+@endphp
+
+<div x-data="{ 
+    showKebijakanModal: false,
+    activeCabangId: {{ $defaultCabangId }}
+}">
     <!-- Floating Icon Button di Sudut Kanan Atas (Diberi Jarak Pasti dari Topbar Putih) -->
     <div style="position: fixed; top: 95px; right: 20px; z-index: 40;">
         <button @click="showKebijakanModal = true" type="button" 
@@ -141,7 +149,7 @@ body{
         </button>
     </div>
 
-    <!-- MODAL POPUP PRICELIST & KEBIJAKAN -->
+    <!-- MODAL POPUP PRICELIST & KEBIJAKAN (MENDUKUNG MULTI-CABOR / MULTI-CABANG) -->
     <div x-show="showKebijakanModal" 
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
@@ -173,7 +181,7 @@ body{
                     </div>
                     <div>
                         <h3 class="text-lg sm:text-xl font-bold leading-tight">Pricelist & Kebijakan Reservasi</h3>
-                        <p class="text-xs text-blue-100 mt-0.5">Informasi tarif dan ketentuan pemesanan di {{ $pengaturan->nama_arena ?? 'Fajar Arena' }}</p>
+                        <p class="text-xs text-blue-100 mt-0.5">Informasi tarif dan ketentuan pemesanan fasilitas arena</p>
                     </div>
                 </div>
                 <button @click="showKebijakanModal = false" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-colors cursor-pointer" title="Tutup">
@@ -186,66 +194,105 @@ body{
             <!-- Modal Body -->
             <div class="p-6 overflow-y-auto space-y-6 text-sm text-slate-600">
                 
-                <!-- Quick Pricelist Cards -->
-                <div>
-                    <h4 class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3">Daftar Tarif Sewa Lapangan</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <!-- Card Non-Member -->
-                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 relative overflow-hidden">
-                            <div class="flex items-center justify-between mb-1.5">
-                                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Sewa Reguler</span>
-                                <span class="text-[10px] bg-slate-200/70 text-slate-700 px-2 py-0.5 rounded-full font-semibold">Harian</span>
-                            </div>
-                            <div class="text-xl sm:text-2xl font-black text-slate-800">
-                                Rp {{ number_format($pengaturan->harga_per_jam ?? 80000, 0, ',', '.') }}
-                                <span class="text-xs font-medium text-slate-400">/ jam</span>
-                            </div>
-                            <p class="text-xs text-slate-500 mt-1.5 leading-snug">Pemesanan fleksibel per jam dengan rekomendasi filter cerdas otomatis.</p>
-                        </div>
-
-                        <!-- Card Member -->
-                        <div class="p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50/60 border border-blue-200/90 relative overflow-hidden">
-                            <div class="flex items-center justify-between mb-1.5">
-                                <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Paket Member</span>
-                                <span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">Hemat Rutin</span>
-                            </div>
-                            <div class="text-xl sm:text-2xl font-black text-blue-700">
-                                Rp {{ number_format($pengaturan->member_harga ?? 1000000, 0, ',', '.') }}
-                                <span class="text-xs font-medium text-blue-500">/ paket</span>
-                            </div>
-                            <p class="text-xs text-blue-900/80 mt-1.5 leading-snug">
-                                {{ $pengaturan->member_jumlah_pekan ?? 4 }} pekan rutin ({{ $pengaturan->member_jam_per_pertemuan ?? 2 }} jam/pertemuan) pada jam & hari tetap.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Catatan / Kebijakan dari Admin (Hanya tampil jika diisi oleh Admin) -->
-                @if(!empty(trim($pengaturan->catatan_member ?? '')))
-                <div class="border-t border-slate-100 pt-5">
-                    <h4 class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3">Kebijakan & Ketentuan Reservasi</h4>
-                    <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 text-slate-700 leading-relaxed text-sm">
-                        {!! nl2br(e(trim($pengaturan->catatan_member))) !!}
-                    </div>
+                <!-- TAB PILIHAN CABOR / CABANG (JIKA LEBIH DARI 1 CABANG) -->
+                @if($cabangsList->count() > 1)
+                <div class="flex items-center gap-2 overflow-x-auto pb-1 border-b border-slate-100 no-scrollbar">
+                    @foreach($cabangsList as $cabangItem)
+                    <button type="button" 
+                        @click="activeCabangId = {{ $cabangItem->id }}"
+                        :class="activeCabangId === {{ $cabangItem->id }} ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 border-blue-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 border-transparent'"
+                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 whitespace-nowrap border flex items-center gap-2 cursor-pointer">
+                        @if(stripos($cabangItem->jenis_olahraga, 'futsal') !== false || stripos($cabangItem->nama_arena, 'futsal') !== false)
+                            <span>⚽</span>
+                        @elseif(stripos($cabangItem->jenis_olahraga, 'basket') !== false || stripos($cabangItem->nama_arena, 'basket') !== false)
+                            <span>🏀</span>
+                        @elseif(stripos($cabangItem->jenis_olahraga, 'tenis') !== false || stripos($cabangItem->nama_arena, 'tenis') !== false)
+                            <span>🎾</span>
+                        @else
+                            <span>🏸</span>
+                        @endif
+                        <span>{{ $cabangItem->nama_arena ?? $cabangItem->jenis_olahraga }}</span>
+                    </button>
+                    @endforeach
                 </div>
                 @endif
+
+                <!-- KONTEN TARIF & KEBIJAKAN PER CABOR / CABANG -->
+                @foreach($cabangsList as $cabang)
+                <div x-show="activeCabangId === {{ $cabang->id ?? 1 }}" class="space-y-6">
+                    <!-- Quick Pricelist Cards -->
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-xs uppercase tracking-widest text-slate-400 font-bold">Daftar Tarif Sewa Lapangan</h4>
+                            @if($cabangsList->count() > 1)
+                            <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">
+                                {{ $cabang->nama_arena }}
+                            </span>
+                            @endif
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <!-- Card Non-Member -->
+                            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 relative overflow-hidden">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Sewa Reguler</span>
+                                    <span class="text-[10px] bg-slate-200/70 text-slate-700 px-2 py-0.5 rounded-full font-semibold">Harian</span>
+                                </div>
+                                <div class="text-xl sm:text-2xl font-black text-slate-800">
+                                    Rp {{ number_format($cabang->harga_per_jam ?? 80000, 0, ',', '.') }}
+                                    <span class="text-xs font-medium text-slate-400">/ jam</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-1.5 leading-snug">Pemesanan fleksibel per jam dengan rekomendasi filter cerdas otomatis.</p>
+                            </div>
+
+                            <!-- Card Member -->
+                            @if($cabang->is_member_active ?? true)
+                            <div class="p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50/60 border border-blue-200/90 relative overflow-hidden">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Paket Member</span>
+                                    <span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">Hemat Rutin</span>
+                                </div>
+                                <div class="text-xl sm:text-2xl font-black text-blue-700">
+                                    Rp {{ number_format($cabang->member_harga ?? 1000000, 0, ',', '.') }}
+                                    <span class="text-xs font-medium text-blue-500">/ paket</span>
+                                </div>
+                                <p class="text-xs text-blue-900/80 mt-1.5 leading-snug">
+                                    {{ $cabang->member_jumlah_pekan ?? 4 }} pekan rutin ({{ $cabang->member_jam_per_pertemuan ?? 2 }} jam/pertemuan) pada jam & hari tetap.
+                                </p>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Catatan / Kebijakan dari Admin (Hanya tampil jika diisi oleh Admin) -->
+                    @if(!empty(trim($cabang->catatan_member ?? '')))
+                    <div class="border-t border-slate-100 pt-5">
+                        <h4 class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3">Kebijakan & Ketentuan Reservasi</h4>
+                        <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 text-slate-700 leading-relaxed text-sm">
+                            {!! nl2br(e(trim($cabang->catatan_member))) !!}
+                        </div>
+                    </div>
+                    @endif
+                </div>
+                @endforeach
 
             </div>
 
             <!-- Modal Footer -->
             <div class="px-6 py-4 bg-slate-50/90 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
-                <!-- Kontak Telepon / WhatsApp & Email -->
-                @php
-                    $telepon = !empty($pengaturan->no_telp) ? $pengaturan->no_telp : ($pengaturan->beranda_no_telp ?? '0813-5593-8559');
-                    $email = !empty($pengaturan->email) ? $pengaturan->email : ($pengaturan->beranda_email ?? 'fajararenabadminton@gmail.com');
-                    $cleanTelp = preg_replace('/[^0-9]/', '', $telepon);
-                    if (str_starts_with($cleanTelp, '0')) {
-                        $waTelp = '62' . substr($cleanTelp, 1);
-                    } else {
-                        $waTelp = $cleanTelp;
-                    }
-                @endphp
-                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs font-semibold text-slate-600">
+                <!-- Kontak Telepon / WhatsApp & Email Sesuai Cabor Aktif -->
+                @foreach($cabangsList as $cabang)
+                <div x-show="activeCabangId === {{ $cabang->id ?? 1 }}" class="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs font-semibold text-slate-600">
+                    @php
+                        $telepon = !empty($cabang->no_telp) ? $cabang->no_telp : ($cabang->beranda_no_telp ?? '0813-5593-8559');
+                        $email = !empty($cabang->email) ? $cabang->email : ($cabang->beranda_email ?? 'fajararenabadminton@gmail.com');
+                        $cleanTelp = preg_replace('/[^0-9]/', '', $telepon);
+                        if (str_starts_with($cleanTelp, '0')) {
+                            $waTelp = '62' . substr($cleanTelp, 1);
+                        } else {
+                            $waTelp = $cleanTelp;
+                        }
+                    @endphp
+
                     @if(!empty($telepon))
                     <a href="https://wa.me/{{ $waTelp }}" target="_blank" class="flex items-center gap-2 hover:text-blue-600 transition-colors group" title="Hubungi WhatsApp / Telepon">
                         <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -268,6 +315,7 @@ body{
                     </a>
                     @endif
                 </div>
+                @endforeach
 
                 <!-- Action Button -->
                 <div class="flex items-center gap-2 w-full sm:w-auto">
