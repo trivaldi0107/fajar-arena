@@ -676,7 +676,7 @@ class AdminController extends Controller
             'no_telp', 'email', 'link_maps',
             'jumlah_lapangan', 'jam_buka', 'jam_tutup', 'harga_per_jam',
             'is_member_active', 'member_jumlah_pekan', 'member_pertemuan_per_pekan',
-            'member_jam_per_pertemuan', 'member_harga', 'fasilitas_tambahan'
+            'member_jam_per_pertemuan', 'member_harga', 'catatan_member', 'fasilitas_tambahan'
         ]));
 
         if ($request->has('fasilitas') && is_array($request->fasilitas)) {

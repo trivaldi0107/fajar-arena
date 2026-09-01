@@ -11,7 +11,7 @@ class BerandaAdminController extends Controller
 {
     public function index()
     {
-        $pengaturan = Pengaturan::first();
+        $pengaturan = active_arena() ?: Pengaturan::first();
         if (!$pengaturan) {
             return redirect()->route('admin.lapangan.index')->with('error', 'Buat arena terlebih dahulu.');
         }
