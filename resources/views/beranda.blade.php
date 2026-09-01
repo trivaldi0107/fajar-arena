@@ -220,22 +220,15 @@ body{
                     </div>
                 </div>
 
-                <!-- Catatan / Kebijakan dari Admin -->
+                <!-- Catatan / Kebijakan dari Admin (Hanya tampil jika diisi oleh Admin) -->
+                @if(!empty(trim($pengaturan->catatan_member ?? '')))
                 <div class="border-t border-slate-100 pt-5">
                     <h4 class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3">Kebijakan & Ketentuan Reservasi</h4>
-                    @if(!empty($pengaturan->catatan_member))
-                        <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 text-slate-700 leading-relaxed text-sm">
-                            {!! nl2br(e(trim($pengaturan->catatan_member))) !!}
-                        </div>
-                    @else
-                        <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 text-slate-700 leading-relaxed text-sm space-y-2">
-                            <p>1. <strong>Waktu Pembayaran:</strong> Batas waktu pembayaran adalah <strong>10 menit</strong> setelah checkout. Jika melewati batas waktu, pesanan akan otomatis dibatalkan.</p>
-                            <p>2. <strong>Verifikasi QRIS:</strong> Pastikan mengunggah bukti transfer yang jelas agar operator dapat segera mengonfirmasi pesanan Anda.</p>
-                            <p>3. <strong>E-Tiket & Check-in:</strong> Tunjukkan E-Tiket ber-QR Code kepada petugas di lokasi lapangan saat kedatangan untuk proses check-in kehadiran.</p>
-                            <p>4. <strong>Paket Member:</strong> Berlaku untuk 4 pekan berturut-turut pada hari dan jam yang telah dipilih secara otomatis oleh sistem.</p>
-                        </div>
-                    @endif
+                    <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 text-slate-700 leading-relaxed text-sm">
+                        {!! nl2br(e(trim($pengaturan->catatan_member))) !!}
+                    </div>
                 </div>
+                @endif
 
             </div>
 
