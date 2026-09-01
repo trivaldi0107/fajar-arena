@@ -201,16 +201,7 @@ body{
                     <button type="button" 
                         @click="activeCabangId = {{ $cabangItem->id }}"
                         :class="activeCabangId === {{ $cabangItem->id }} ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 border-blue-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 border-transparent'"
-                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 whitespace-nowrap border flex items-center gap-2 cursor-pointer">
-                        @if(stripos($cabangItem->jenis_olahraga, 'futsal') !== false || stripos($cabangItem->nama_arena, 'futsal') !== false)
-                            <span>⚽</span>
-                        @elseif(stripos($cabangItem->jenis_olahraga, 'basket') !== false || stripos($cabangItem->nama_arena, 'basket') !== false)
-                            <span>🏀</span>
-                        @elseif(stripos($cabangItem->jenis_olahraga, 'tenis') !== false || stripos($cabangItem->nama_arena, 'tenis') !== false)
-                            <span>🎾</span>
-                        @else
-                            <span>🏸</span>
-                        @endif
+                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 whitespace-nowrap border flex items-center justify-center cursor-pointer">
                         <span>{{ $cabangItem->nama_arena ?? $cabangItem->jenis_olahraga }}</span>
                     </button>
                     @endforeach
@@ -320,7 +311,7 @@ body{
                 <!-- Action Button -->
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <a href="/pilih-cabang" class="w-full sm:w-auto text-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 hover:shadow-lg transition-all">
-                        Pesan Lapangan 🏸
+                        Pesan Lapangan
                     </a>
                 </div>
             </div>
