@@ -125,7 +125,7 @@ body{
     box-shadow:0 20px 35px rgba(0,0,0,.08);
 }
 
-/* ================= PLAYFUL TUING ENTRANCE ANIMATION (HANYA 1 KALI SAAT DIBUKA) ================= */
+/* ================= PLAYFUL TUING ENTRANCE ANIMATION ================= */
 @keyframes tuingPop {
     0% {
         transform: scale(0.5) translateY(-8px);
@@ -149,6 +149,48 @@ body{
 .animate-tuing {
     animation: tuingPop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
+
+/* ================= SLIDING TEXT TRACK & CONTENT (GAYA RECAPTCHA DRAWER) ================= */
+.slide-text-track {
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    transition: max-width 0.65s cubic-bezier(0.16, 1, 0.3, 1), 
+                opacity 0.45s ease, 
+                margin-right 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slide-text-content {
+    display: inline-block;
+    transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), 
+                opacity 0.45s ease;
+}
+
+.slide-text-track.closed {
+    max-width: 0px !important;
+    opacity: 0 !important;
+    margin-right: 0px !important;
+    pointer-events: none !important;
+}
+
+.slide-text-track.closed .slide-text-content {
+    transform: translateX(100%) !important;
+    opacity: 0 !important;
+}
+
+.slide-text-track.open {
+    max-width: 260px !important;
+    opacity: 1 !important;
+    margin-right: 12px !important;
+    pointer-events: auto !important;
+}
+
+.slide-text-track.open .slide-text-content {
+    transform: translateX(0%) !important;
+    opacity: 1 !important;
+}
 </style>
 
 
@@ -165,7 +207,7 @@ body{
     isHovered: false
 }"
 x-init="
-    setTimeout(() => { showLabel = true }, 1050);
+    setTimeout(() => { showLabel = true }, 1000);
     setTimeout(() => { showLabel = false }, 4800);
 ">
     <!-- Floating Icon Button & Sliding Label di Sudut Kanan Atas (Gaya reCAPTCHA Badge) -->
@@ -174,16 +216,11 @@ x-init="
              @mouseenter="isHovered = true" 
              @mouseleave="isHovered = false">
             
-            <!-- Sliding Text Murni Tanpa Kotak bergaya reCAPTCHA (Clipped Drawer Slide Effect) -->
+            <!-- Sliding Text Murni Tanpa Kotak bergaya reCAPTCHA Drawer -->
             <div @click="showKebijakanModal = true"
-                 :style="(showLabel || isHovered) 
-                     ? 'max-width: 220px; opacity: 1; margin-right: 12px; pointer-events: auto;' 
-                     : 'max-width: 0px; opacity: 0; margin-right: 0px; pointer-events: none;'"
-                 class="whitespace-nowrap select-none cursor-pointer flex items-center justify-end"
-                 style="max-width: 0px; opacity: 0; margin-right: 0px; pointer-events: none; overflow: hidden; transition: max-width 0.55s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, margin-right 0.55s cubic-bezier(0.4, 0, 0.2, 1);">
-                <span :style="(showLabel || isHovered) ? 'transform: translateX(0);' : 'transform: translateX(35px);'"
-                      class="inline-block text-xs sm:text-sm font-bold text-white tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]"
-                      style="transform: translateX(35px); transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);">
+                 :class="(showLabel || isHovered) ? 'open' : 'closed'"
+                 class="slide-text-track closed select-none cursor-pointer">
+                <span class="slide-text-content text-xs sm:text-sm font-bold text-white tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
                     Pricelist & Kebijakan
                 </span>
             </div>
