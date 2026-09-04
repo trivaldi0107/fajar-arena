@@ -174,11 +174,11 @@ x-init="
              @mouseenter="isHovered = true" 
              @mouseleave="isHovered = false">
             
-            <!-- Sliding Text Murni Tanpa Kotak (Awalnya tersembunyi total, baru muncul slide dari kanan ke kiri setelah icon memantul) -->
+            <!-- Sliding Text Murni Tanpa Kotak (Muncul dari kanan ke kiri setelah icon memantul, lalu hilang sebaliknya ke kanan) -->
             <div @click="showKebijakanModal = true"
-                 :class="(showLabel || isHovered) ? '!opacity-100 !translate-x-0 !max-w-[240px] !mr-3 !pointer-events-auto' : ''"
-                 class="opacity-0 max-w-0 mr-0 translate-x-8 pointer-events-none transition-all duration-700 ease-in-out flex items-center justify-end whitespace-nowrap overflow-hidden select-none cursor-pointer"
-                 style="opacity: 0; max-width: 0;">
+                 :style="(showLabel || isHovered) ? 'opacity: 1; max-width: 260px; transform: translateX(0); margin-right: 12px; pointer-events: auto;' : 'opacity: 0; max-width: 0px; transform: translateX(25px); margin-right: 0px; pointer-events: none;'"
+                 class="flex items-center justify-end whitespace-nowrap overflow-hidden select-none cursor-pointer"
+                 style="opacity: 0; max-width: 0px; transform: translateX(25px); margin-right: 0px; pointer-events: none; transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);">
                 <span class="text-xs sm:text-sm font-bold text-white tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                     Pricelist & Kebijakan
                 </span>
