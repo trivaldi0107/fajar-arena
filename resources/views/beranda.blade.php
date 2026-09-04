@@ -168,27 +168,29 @@ x-init="
     setTimeout(() => { showLabel = true }, 1050);
     setTimeout(() => { showLabel = false }, 4800);
 ">
-    <!-- Floating Icon Button & Sliding Label di Sudut Kanan Atas -->
+    <!-- Floating Icon Button & Sliding Label di Sudut Kanan Atas (Gaya reCAPTCHA Badge) -->
     <div style="position: fixed; top: 95px; right: 20px; z-index: 40;">
-        <div class="relative flex items-center justify-end"
+        <div class="flex items-center justify-end"
              @mouseenter="isHovered = true" 
              @mouseleave="isHovered = false">
             
-            <!-- Sliding Text Murni Tanpa Kotak (Berada tepat di belakang icon dan meluncur keluar ke kiri) -->
+            <!-- Sliding Text Murni Tanpa Kotak bergaya reCAPTCHA (Clipped Drawer Slide Effect) -->
             <div @click="showKebijakanModal = true"
                  :style="(showLabel || isHovered) 
-                     ? 'opacity: 1; transform: translateX(0); pointer-events: auto;' 
-                     : 'opacity: 0; transform: translateX(65px); pointer-events: none;'"
-                 class="whitespace-nowrap select-none cursor-pointer flex items-center pr-2"
-                 style="position: absolute; right: 52px; opacity: 0; transform: translateX(65px); pointer-events: none; transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;">
-                <span class="text-xs sm:text-sm font-bold text-white tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+                     ? 'max-width: 220px; opacity: 1; margin-right: 12px; pointer-events: auto;' 
+                     : 'max-width: 0px; opacity: 0; margin-right: 0px; pointer-events: none;'"
+                 class="whitespace-nowrap select-none cursor-pointer flex items-center justify-end"
+                 style="max-width: 0px; opacity: 0; margin-right: 0px; pointer-events: none; overflow: hidden; transition: max-width 0.55s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, margin-right 0.55s cubic-bezier(0.4, 0, 0.2, 1);">
+                <span :style="(showLabel || isHovered) ? 'transform: translateX(0);' : 'transform: translateX(35px);'"
+                      class="inline-block text-xs sm:text-sm font-bold text-white tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]"
+                      style="transform: translateX(35px); transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);">
                     Pricelist & Kebijakan
                 </span>
             </div>
 
-            <!-- Floating Button Trigger dengan z-index di atas teks -->
+            <!-- Floating Button Trigger dengan Animasi Tuing Bounce 1x Saat Masuk -->
             <button @click="showKebijakanModal = true" type="button" 
-                class="animate-tuing relative z-10 flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_10px_25px_rgba(37,99,235,0.4)] hover:shadow-[0_14px_30px_rgba(37,99,235,0.55)] border border-white/30 hover:scale-105 active:scale-95 transition-transform duration-200 cursor-pointer shrink-0"
+                class="animate-tuing flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_10px_25px_rgba(37,99,235,0.4)] hover:shadow-[0_14px_30px_rgba(37,99,235,0.55)] border border-white/30 hover:scale-105 active:scale-95 transition-transform duration-200 cursor-pointer shrink-0"
                 title="Pricelist & Kebijakan">
                 
                 <!-- Icon Saja -->
