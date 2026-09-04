@@ -165,8 +165,8 @@ body{
     isHovered: false
 }"
 x-init="
-    setTimeout(() => { showLabel = true }, 800);
-    setTimeout(() => { showLabel = false }, 4400);
+    setTimeout(() => { showLabel = true }, 1050);
+    setTimeout(() => { showLabel = false }, 4800);
 ">
     <!-- Floating Icon Button & Sliding Label di Sudut Kanan Atas -->
     <div style="position: fixed; top: 95px; right: 20px; z-index: 40;">
@@ -174,11 +174,11 @@ x-init="
              @mouseenter="isHovered = true" 
              @mouseleave="isHovered = false">
             
-            <!-- Sliding Text Murni Tanpa Kotak (Slide dari belakang icon ke arah kiri dan kembali) -->
+            <!-- Sliding Text Murni Tanpa Kotak (Muncul dari kanan ke kiri setelah icon memantul, lalu hilang sebaliknya ke kanan) -->
             <div @click="showKebijakanModal = true"
-                 :class="(showLabel || isHovered) ? 'opacity-100 translate-x-0 max-w-[220px] mr-2.5' : 'opacity-0 translate-x-6 max-w-0 mr-0 pointer-events-none'"
-                 class="transition-all duration-500 ease-out flex items-center whitespace-nowrap overflow-hidden select-none cursor-pointer">
-                <span class="text-xs sm:text-sm font-bold text-white tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
+                 :class="(showLabel || isHovered) ? 'opacity-100 translate-x-0 max-w-[240px] mr-3 pointer-events-auto' : 'opacity-0 translate-x-8 max-w-0 mr-0 pointer-events-none'"
+                 class="transition-all duration-700 ease-in-out flex items-center justify-end whitespace-nowrap overflow-hidden select-none cursor-pointer">
+                <span class="text-xs sm:text-sm font-bold text-white tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                     Pricelist & Kebijakan
                 </span>
             </div>
