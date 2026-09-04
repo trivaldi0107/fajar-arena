@@ -124,10 +124,23 @@ body{
     transform:translateY(-6px);
     box-shadow:0 20px 35px rgba(0,0,0,.08);
 }
+
+/* ================= FLOATING ICON ANIMATION ================= */
+@keyframes floatSubtle {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+.animate-float-subtle {
+    animation: floatSubtle 3s ease-in-out infinite;
+}
 </style>
 
 
-<!-- ================= TOMBOL INFO PRICELIST & KEBIJAKAN (HANYA ICON BERSIH DI SUDUT KANAN ATAS) ================= -->
+<!-- ================= TOMBOL INFO PRICELIST & KEBIJAKAN DENGAN ANIMASI MENGAMBANG & SLIDE LABEL ================= -->
 @php
     $cabangsList = (isset($semuaCabang) && $semuaCabang->count() > 0) ? $semuaCabang : collect([$pengaturan]);
     $defaultCabangId = $cabangsList->first()->id ?? 1;
@@ -135,18 +148,38 @@ body{
 
 <div x-data="{ 
     showKebijakanModal: false,
-    activeCabangId: {{ $defaultCabangId }}
-}">
-    <!-- Floating Icon Button di Sudut Kanan Atas (Diberi Jarak Pasti dari Topbar Putih) -->
-    <div style="position: fixed; top: 95px; right: 20px; z-index: 40;">
-        <button @click="showKebijakanModal = true" type="button" 
-            class="flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_10px_25px_rgba(37,99,235,0.4)] hover:shadow-[0_14px_30px_rgba(37,99,235,0.55)] border border-white/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer">
+    activeCabangId: {{ $defaultCabangId }},
+    showLabel: false,
+    isHovered: false
+}"
+x-init="
+    setTimeout(() => { showLabel = true }, 600);
+    setTimeout(() => { showLabel = false }, 4200);
+">
+    <!-- Floating Icon Button & Sliding Label di Sudut Kanan Atas -->
+    <div class="animate-float-subtle" style="position: fixed; top: 95px; right: 20px; z-index: 40;">
+        <div class="flex items-center justify-end"
+             @mouseenter="isHovered = true" 
+             @mouseleave="isHovered = false">
             
-            <!-- Icon Saja Tanpa Teks & Tanpa Bulatan -->
-            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-            </svg>
-        </button>
+            <!-- Sliding Text Label (Slide dari belakang icon ke arah kiri dan kembali) -->
+            <div @click="showKebijakanModal = true"
+                 :class="(showLabel || isHovered) ? 'opacity-100 translate-x-0 max-w-[220px] mr-2.5 px-3.5 py-2 shadow-xl' : 'opacity-0 translate-x-8 max-w-0 mr-0 px-0 py-2 pointer-events-none shadow-none'"
+                 class="transition-all duration-500 ease-out bg-slate-900/90 hover:bg-slate-900 backdrop-blur-md text-white rounded-xl border border-slate-700/60 flex items-center whitespace-nowrap overflow-hidden select-none cursor-pointer">
+                <span class="text-xs font-bold tracking-wide">Pricelist & Kebijakan</span>
+            </div>
+
+            <!-- Floating Button Trigger -->
+            <button @click="showKebijakanModal = true" type="button" 
+                class="flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_10px_25px_rgba(37,99,235,0.4)] hover:shadow-[0_14px_30px_rgba(37,99,235,0.55)] border border-white/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer shrink-0"
+                title="Pricelist & Kebijakan">
+                
+                <!-- Icon Saja -->
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <!-- MODAL POPUP PRICELIST & KEBIJAKAN (MENDUKUNG MULTI-CABOR / MULTI-CABANG) -->
@@ -171,8 +204,8 @@ body{
              @click.away="showKebijakanModal = false"
              class="bg-white rounded-3xl shadow-2xl border border-slate-100 w-full max-w-2xl overflow-hidden my-8 flex flex-col max-h-[90vh]">
             
-            <!-- Modal Header -->
-            <div class="px-6 py-5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white flex items-center justify-between relative shrink-0">
+            <!-- Modal Header (Clean Solid Gradient, No White Fade) -->
+            <div class="px-6 py-5 text-white flex items-center justify-between relative shrink-0" style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/30 shadow-inner">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,11 +213,11 @@ body{
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-lg sm:text-xl font-bold leading-tight">Pricelist & Kebijakan Reservasi</h3>
-                        <p class="text-xs text-blue-100 mt-0.5">Informasi tarif dan ketentuan pemesanan fasilitas arena</p>
+                        <h3 class="text-lg sm:text-xl font-bold leading-tight">Pricelist & Kebijakan</h3>
+                        <p class="text-xs text-blue-100 mt-0.5">Informasi tarif dan kebijakan pemesanan fasilitas arena</p>
                     </div>
                 </div>
-                <button @click="showKebijakanModal = false" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-colors cursor-pointer" title="Tutup">
+                <button @click="showKebijakanModal = false" class="w-9 h-9 rounded-xl bg-white/15 hover:bg-white/30 text-white flex items-center justify-center transition-colors cursor-pointer" title="Tutup">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -257,7 +290,7 @@ body{
                     <!-- Catatan / Kebijakan dari Admin (Hanya tampil jika diisi oleh Admin) -->
                     @if(!empty(trim($cabang->catatan_member ?? '')))
                     <div class="border-t border-slate-100 pt-5">
-                        <h4 class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3">Kebijakan & Ketentuan Reservasi</h4>
+                        <h4 class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3">Kebijakan Reservasi</h4>
                         <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 text-slate-700 leading-relaxed text-sm">
                             {!! nl2br(e(trim($cabang->catatan_member))) !!}
                         </div>
